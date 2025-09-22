@@ -7,13 +7,12 @@ class AddNewSongButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Color.fromRGBO(206, 160, 221, 1),
+      color: Theme.of(context).colorScheme.primary,
       borderRadius: BorderRadius.circular(10),
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         child: SizedBox(
-          width: 200,
-          height: 34,
+          height: 50,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [Icon(Icons.add), Text("Create a new")],

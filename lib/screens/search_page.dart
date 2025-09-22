@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/screens/Components/search_options.dart';
 import 'package:guitar_song_improvement/screens/Components/search_song.dart';
+import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
@@ -8,7 +9,7 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(47, 48, 54, 1),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         leading: InkWell(
           customBorder: CircleBorder(),
@@ -17,27 +18,32 @@ class SearchPage extends StatelessWidget {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: Spacing.sm),
             child: InkWell(
               customBorder: CircleBorder(),
               child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: Icon(Icons.dark_mode, color: Colors.white),
+                child: Icon(
+                  Icons.dark_mode,
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                ),
               ),
               onTap: () {},
             ),
           ),
         ],
-        backgroundColor: Color.fromRGBO(47, 48, 54, 1),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          Spacing.lg,
+          Spacing.sm,
+          Spacing.lg,
+          Spacing.sm,
+        ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SearchSong("Search a song"),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: 12),
-              child: SearchOptions(),
-            ),
             // Expanded(
             //   child: Padding(
             //     padding: const EdgeInsets.only(
@@ -63,6 +69,7 @@ class SearchPage extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: Placeholder(),
     );
   }
 }

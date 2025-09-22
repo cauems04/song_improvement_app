@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SaveSongPage extends StatelessWidget {
   const SaveSongPage({super.key});
@@ -6,54 +7,49 @@ class SaveSongPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(47, 48, 54, 1),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         leading: InkWell(
           customBorder: CircleBorder(),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Icon(Icons.close, color: Colors.white),
-          ),
+          child: Icon(Icons.close, color: Colors.white),
           onTap: () {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Color.fromRGBO(47, 48, 54, 1),
       ),
       body: Center(
         child: SizedBox(
           height: 600,
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 100, right: 26, left: 26),
+            padding: const EdgeInsets.only(
+              bottom: 100,
+              right: Spacing.xl,
+              left: Spacing.xl,
+            ),
             child: Form(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
                     "Save Song",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   CustomTextFormField("Title"),
                   CustomTextFormField("Artist"),
                   CustomTextFormField("Album"),
-                  Material(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Color.fromRGBO(206, 160, 221, 1),
-                    child: InkWell(
+                  SizedBox(
+                    height: 40,
+                    child: Material(
                       borderRadius: BorderRadius.circular(10),
-                      child: SizedBox(
-                        width: 200,
-                        height: 34,
+                      color: Theme.of(context).colorScheme.primary,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [Text("Save")],
                         ),
+                        onTap: () {},
                       ),
-                      onTap: () {},
                     ),
                   ),
                 ],
@@ -72,11 +68,32 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        labelText: fieldName,
-        labelStyle: TextStyle(color: Colors.white60, fontSize: 16),
+    return Container(
+      height: 50,
+      child: TextFormField(
+        style: Theme.of(context).textTheme.bodyLarge,
+        decoration: InputDecoration(
+          labelText: fieldName,
+          labelStyle: Theme.of(context).textTheme.bodyLarge,
+          floatingLabelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+          border: InputBorder.none,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.surface,
+            ),
+          ),
+          filled: true,
+          fillColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
+        ),
       ),
     );
   }

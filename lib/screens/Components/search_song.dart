@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/screens/search_page.dart';
+import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SearchSong extends StatelessWidget {
   final String hint;
@@ -8,24 +9,28 @@ class SearchSong extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double spacingMd = Spacing.md;
+
     return Container(
-      width: 280,
-      height: 40,
+      height: 50,
       decoration: BoxDecoration(
-        color: Colors.black45,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10),
+        padding: EdgeInsets.only(left: spacingMd, right: spacingMd),
         child: TextField(
-          style: TextStyle(color: Colors.white),
           textAlignVertical: TextAlignVertical.center,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge!.copyWith(color: Colors.black),
           decoration: InputDecoration(
-            prefixIcon: Icon(Icons.search, size: 20, color: Colors.white),
+            prefixIcon: Icon(Icons.search, size: 20, color: Colors.black),
             hintText: hint,
             border: InputBorder.none,
-            hintStyle: TextStyle(color: Colors.white),
-            labelStyle: TextStyle(color: Colors.white),
+            hintStyle: Theme.of(
+              context,
+            ).textTheme.bodyLarge!.copyWith(color: Colors.black),
             isDense: true,
           ),
           onSubmitted: (value) {
