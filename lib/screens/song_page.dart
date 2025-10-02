@@ -62,7 +62,7 @@ class _SongPageState extends State<SongPage> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                _linkSection(),
+                _LinkSection(),
               ],
             ),
           ),
@@ -88,14 +88,14 @@ class CustomTextFormField extends StatelessWidget {
   }
 }
 
-class _linkSection extends StatefulWidget {
-  const _linkSection({super.key});
+class _LinkSection extends StatefulWidget {
+  const _LinkSection({super.key});
 
   @override
-  State<_linkSection> createState() => _linkSectionState();
+  State<_LinkSection> createState() => _linkSectionState();
 }
 
-class _linkSectionState extends State<_linkSection> {
+class _linkSectionState extends State<_LinkSection> {
   @override
   Widget build(BuildContext context) {
     return Column(

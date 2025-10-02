@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SaveSongPage extends StatelessWidget {
-  const SaveSongPage({super.key});
+  final Song? song;
+
+  SaveSongPage({super.key, this.song}) {
+    titleEditingController = TextEditingController();
+    albumEditingController = TextEditingController();
+    artistEditingController = TextEditingController();
+
+    initState();
+  }
+
+  late TextEditingController titleEditingController;
+  late TextEditingController albumEditingController;
+  late TextEditingController artistEditingController;
+
+  void initState() {
+    if (song != null) {
+      titleEditingController.text = song!.name;
+      albumEditingController.text = song!.album;
+      artistEditingController.text = song!.artist;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +55,9 @@ class SaveSongPage extends StatelessWidget {
                     "Save Song",
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
-                  CustomTextFormField("Title"),
-                  CustomTextFormField("Artist"),
-                  CustomTextFormField("Album"),
+                  CustomTextFormField("Title", titleEditingController),
+                  CustomTextFormField("Artist", artistEditingController),
+                  CustomTextFormField("Album", albumEditingController),
                   SizedBox(
                     height: 40,
                     child: Material(
@@ -48,7 +69,10 @@ class SaveSongPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [Text("Save")],
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          //Implements song saving !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                          Navigator.pop(context);
+                        },
                       ),
                     ),
                   ),
@@ -64,13 +88,20 @@ class SaveSongPage extends StatelessWidget {
 
 class CustomTextFormField extends StatelessWidget {
   final String fieldName;
-  const CustomTextFormField(this.fieldName, {super.key});
+  final TextEditingController textEditingController;
+
+  const CustomTextFormField(
+    this.fieldName,
+    this.textEditingController, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 50,
       child: TextFormField(
+        controller: textEditingController,
         style: Theme.of(context).textTheme.bodyLarge,
         decoration: InputDecoration(
           labelText: fieldName,

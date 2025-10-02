@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/screens/Components/BoxForm.dart';
 import 'package:guitar_song_improvement/screens/Components/add_new_song_button.dart';
 import 'package:guitar_song_improvement/screens/Components/search_song.dart';
@@ -26,23 +27,21 @@ class NoSongsHomePage extends StatelessWidget {
         leading: Icon(Icons.settings, color: Colors.white),
         backgroundColor: Theme.of(context).colorScheme.surface,
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.only(left: Spacing.xl, right: Spacing.xl),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SearchSong("Search a new song..."),
-              Padding(
-                padding: EdgeInsets.only(top: Spacing.xl, bottom: Spacing.xl),
-                child: Text(
-                  "Or",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: Spacing.xl, right: Spacing.xl),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SearchSong(hint: "Search a new song..."),
+            Padding(
+              padding: EdgeInsets.only(top: Spacing.xl, bottom: Spacing.xl),
+              child: Text(
+                "Or",
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
-              AddNewSongButton(),
-            ],
-          ),
+            ),
+            AddNewSongButton(),
+          ],
         ),
       ),
     );
@@ -104,21 +103,36 @@ class StandardHomePage extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: Spacing.sm),
-              child: SearchSong("Search a song"),
+              child: SearchSong(hint: "Search a song"),
             ),
-            BoxForm(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Last added",
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  SongCard("Nutshell", "Alice in Chains", "5:50"),
-                  SongCard("Still remains", "Stone Temple Pilots", "4:40"),
-                  SongCard("Down in a hole", "Alice in Chains", "3:20"),
-                  SongCard("One", "Mettalica", "1:58"),
-                ],
+            Padding(
+              padding: const EdgeInsets.only(top: Spacing.xs),
+              child: BoxForm(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Last added",
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    SongCard(
+                      Song(
+                        name: "Nutshell",
+                        artist: "Alice in Chains",
+                        album: "5:50",
+                      ),
+                    ),
+                    SongCard(
+                      Song(
+                        name: "Still remains",
+                        artist: "Stone Temple Pilots",
+                        album: "4:40",
+                      ),
+                    ),
+                    // SongCard("Down in a hole", "Alice in Chains", "3:20"),
+                    // SongCard("One", "Mettalica", "1:58"),
+                  ],
+                ),
               ),
             ),
           ],

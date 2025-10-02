@@ -5,11 +5,15 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 class SearchSong extends StatelessWidget {
   final String hint;
 
-  const SearchSong(this.hint, {super.key});
+  final String? search;
+
+  const SearchSong({super.key, required this.hint, this.search});
 
   @override
   Widget build(BuildContext context) {
-    final double spacingMd = Spacing.md;
+    TextEditingController searchController = TextEditingController(
+      text: (search != null) ? search : "",
+    );
 
     return Container(
       height: 50,
@@ -18,8 +22,9 @@ class SearchSong extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
-        padding: EdgeInsets.only(left: spacingMd, right: spacingMd),
+        padding: EdgeInsets.only(left: Spacing.md, right: Spacing.md),
         child: TextField(
+          controller: searchController,
           textAlignVertical: TextAlignVertical.center,
           style: Theme.of(
             context,
@@ -34,9 +39,11 @@ class SearchSong extends StatelessWidget {
             isDense: true,
           ),
           onSubmitted: (value) {
-            Navigator.of(
-              context,
-            ).push(MaterialPageRoute(builder: (context) => SearchPage()));
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => SearchPage(search: searchController.text),
+              ),
+            );
           },
         ),
       ),

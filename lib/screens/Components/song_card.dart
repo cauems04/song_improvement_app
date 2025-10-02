@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/screens/save_song_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SongCard extends StatelessWidget {
-  final String title;
-  final String artist;
-  final String time;
+  final Song song;
 
-  const SongCard(this.title, this.artist, this.time, {super.key});
+  const SongCard(this.song, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +19,9 @@ class SongCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           onTap: () {},
           child: Padding(
+            // Take off this padding logic from here and aply inside the BoxForm
+            // (Because it works well in the HomePage Sections, but not while
+            // searching songs)
             padding: EdgeInsetsGeometry.fromLTRB(
               Spacing.md,
               Spacing.xs,
@@ -33,13 +36,18 @@ class SongCard extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          title,
-                          style: Theme.of(context).textTheme.bodyLarge!
-                              .copyWith(fontWeight: FontWeight.w500),
+                        SizedBox(
+                          width: 150,
+                          child: Text(
+                            song.name,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(fontWeight: FontWeight.w500),
+                          ),
                         ),
                         Text(
-                          artist,
+                          song.artist,
                           textAlign: TextAlign.start,
                           style: Theme.of(context).textTheme.bodyLarge!
                               .copyWith(fontWeight: FontWeight.w300),
@@ -71,6 +79,102 @@ class SongCard extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SongCardSearch extends StatelessWidget {
+  final Song song;
+
+  const SongCardSearch(this.song, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 60,
+      child: Padding(
+        // Take off this padding logic from here and aply inside the BoxForm
+        // (Because it works well in the HomePage Sections, but not while
+        // searching songs)
+        padding: EdgeInsetsGeometry.fromLTRB(
+          Spacing.md,
+          Spacing.xs,
+          Spacing.xs,
+          Spacing.xs,
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image.network(
+                  song.image ?? "",
+                  height: 40,
+                  width: 40,
+                  fit: BoxFit.fill,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      "assets/images/songPlaceholderImage.png",
+                    );
+                  },
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: Spacing.xs),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 150,
+                          child: Text(
+                            song.name,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Text(
+                          song.artist,
+                          textAlign: TextAlign.start,
+                          style: Theme.of(context).textTheme.bodyLarge!
+                              .copyWith(fontWeight: FontWeight.w300),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Material(
+                  color: Theme.of(context).colorScheme.primary,
+                  borderRadius: BorderRadius.circular(10),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(10),
+                    splashColor: Theme.of(context).colorScheme.onPrimary,
+                    child: SizedBox(
+                      height: 30,
+                      width: 45,
+                      child: Center(
+                        child: Text(
+                          "Add",
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SaveSongPage(song: song),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
