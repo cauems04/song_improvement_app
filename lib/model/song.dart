@@ -21,7 +21,15 @@ class Song implements IModel {
       album = json["collectionName"].toString(),
       image = json["artworkUrl60"].toString();
 
+  Song.fromDbJson(
+    Map<String, dynamic> json,
+  ) // Tentar mudar de dynamic pra object para melhor performance
+  : name = json["title"].toString(),
+      artist = json["artist_name"].toString(),
+      album = json["album_title"].toString(),
+      image = null;
+
   Map<String, String> toMap() {
-    return {};
+    return {"title": name, "artist_name": artist, "album_title": album};
   }
 }

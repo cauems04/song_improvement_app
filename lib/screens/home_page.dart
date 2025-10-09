@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
 import 'package:guitar_song_improvement/screens/Components/BoxForm.dart';
 import 'package:guitar_song_improvement/screens/Components/add_new_song_button.dart';
 import 'package:guitar_song_improvement/screens/Components/search_song.dart';
@@ -82,7 +83,10 @@ class StandardHomePage extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
-              onTap: () {
+              onTap: () async {
+                List<Song> songs = await SongDao().readAll();
+                print("------------------------------");
+                print(songs[1].name + songs[1].artist + songs[1].album);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SaveSongPage()),

@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
+import 'package:guitar_song_improvement/repository/database_manager.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SaveSongPage extends StatelessWidget {
   final Song? song;
+
+  late TextEditingController titleEditingController;
+  late TextEditingController albumEditingController;
+  late TextEditingController artistEditingController;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   SaveSongPage({super.key, this.song}) {
     titleEditingController = TextEditingController();
     albumEditingController = TextEditingController();
     artistEditingController = TextEditingController();
 
-    initState();
+    initFields();
   }
 
-  late TextEditingController titleEditingController;
-  late TextEditingController albumEditingController;
-  late TextEditingController artistEditingController;
-
-  void initState() {
+  void initFields() {
     if (song != null) {
       titleEditingController.text = song!.name;
       albumEditingController.text = song!.album;
@@ -48,6 +52,7 @@ class SaveSongPage extends StatelessWidget {
               left: Spacing.xl,
             ),
             child: Form(
+              key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -55,7 +60,16 @@ class SaveSongPage extends StatelessWidget {
                     "Save Song",
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
-                  CustomTextFormField("Title", titleEditingController),
+                  CustomTextFormField(
+                    "Title",
+                    titleEditingController,
+                    validation: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Fill the field ${titleEditingController.text}";
+                      }
+                      return null;
+                    },
+                  ),
                   CustomTextFormField("Artist", artistEditingController),
                   CustomTextFormField("Album", albumEditingController),
                   SizedBox(
@@ -70,8 +84,28 @@ class SaveSongPage extends StatelessWidget {
                           children: [Text("Save")],
                         ),
                         onTap: () {
-                          //Implements song saving !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                          Navigator.pop(context);
+                          if (_formKey.currentState!.validate()) {
+                            SongDao songDao = SongDao();
+
+                            String nameText = titleEditingController.text;
+                            String albumText =
+                                (albumEditingController.text.isEmpty)
+                                ? "Other"
+                                : albumEditingController.text;
+                            String artistText =
+                                (artistEditingController.text.isEmpty)
+                                ? "Other"
+                                : artistEditingController.text;
+
+                            songDao.create(
+                              Song(
+                                name: nameText,
+                                album: albumText,
+                                artist: artistText,
+                              ),
+                            );
+                            Navigator.pop(context);
+                          }
                         },
                       ),
                     ),
@@ -90,18 +124,22 @@ class CustomTextFormField extends StatelessWidget {
   final String fieldName;
   final TextEditingController textEditingController;
 
+  final String? Function(String?)? validation;
+
   const CustomTextFormField(
     this.fieldName,
     this.textEditingController, {
     super.key,
+    this.validation,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
+    return SizedBox(
+      height: 70,
       child: TextFormField(
         controller: textEditingController,
+        validator: validation,
         style: Theme.of(context).textTheme.bodyLarge,
         decoration: InputDecoration(
           labelText: fieldName,
@@ -109,12 +147,9 @@ class CustomTextFormField extends StatelessWidget {
           floatingLabelStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
             color: Theme.of(context).colorScheme.onPrimary,
           ),
-          border: InputBorder.none,
-          enabledBorder: OutlineInputBorder(
+          border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.surface,
-            ),
+            borderSide: BorderSide.none,
           ),
           filled: true,
           fillColor: Theme.of(context).colorScheme.surfaceContainerLowest,
@@ -124,6 +159,8 @@ class CustomTextFormField extends StatelessWidget {
               color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
+          errorStyle: TextStyle(color: Theme.of(context).colorScheme.onError),
+          helperText: "",
         ),
       ),
     );

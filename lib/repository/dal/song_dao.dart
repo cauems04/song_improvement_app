@@ -6,13 +6,13 @@ class SongDao {
   SongDao();
 
   void create(Song song) async {
-    DatabaseManager databaseManager = await DatabaseManager.databaseManager;
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.insert(databaseManager.songTableName, song.toMap());
   }
 
   void delete(Song song) async {
-    DatabaseManager databaseManager = await DatabaseManager.databaseManager;
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.delete(
       databaseManager.songTableName,
@@ -29,7 +29,7 @@ class SongDao {
   Future<Song> read(Song song) async {
     // This is gonna be implemented for the search feature
     // Review and apply it correctly later
-    DatabaseManager databaseManager = await DatabaseManager.databaseManager;
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
 
     List<Map<String, Object?>> result = await database.query(
@@ -49,7 +49,7 @@ class SongDao {
   }
 
   Future<List<Song>> readAll() async {
-    DatabaseManager databaseManager = await DatabaseManager.databaseManager;
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
 
     List<Map<String, Object?>> data = await database.query(
@@ -58,9 +58,16 @@ class SongDao {
 
     List<Song> songs = [];
     for (Map<String, Object?> song in data) {
-      songs.add(Song.fromJson(song));
+      songs.add(Song.fromDbJson(song));
     }
 
     return songs;
+  }
+
+  void deleteAllSongs() async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    print("All deleted");
+    database.delete("song");
   }
 }

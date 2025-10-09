@@ -10,6 +10,8 @@ class DatabaseManager {
   Future<Database> get database async {
     _db ??= await _getDabatase();
 
+    printDbPath();
+
     return _db!;
   }
 
@@ -57,5 +59,10 @@ class DatabaseManager {
     );
 
     return database;
+  }
+
+  void printDbPath() async {
+    String path = await getDatabasesPath();
+    print("Database path: " + path);
   }
 }
