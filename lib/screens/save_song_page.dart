@@ -104,6 +104,9 @@ class SaveSongPage extends StatelessWidget {
                                 artist: artistText,
                               ),
                             );
+                            print(
+                              "Song created - $nameText - $albumText - $artistText",
+                            );
                             Navigator.pop(context);
                           }
                         },

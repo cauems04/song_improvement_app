@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Guitar Improving',
       theme: appTheme,
       themeMode: ThemeMode.dark,
-      home: const HomePage(),
+      home: HomePage(),
     );
   }
 }

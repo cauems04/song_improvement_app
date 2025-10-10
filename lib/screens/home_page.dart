@@ -9,11 +9,55 @@ import 'package:guitar_song_improvement/screens/save_song_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key}) {
+    songs = getData();
+  }
+
+  Future<List<Song>>? songs;
 
   @override
   Widget build(BuildContext context) {
-    return StandardHomePage();
+    return FutureBuilder(
+      future: songs,
+      builder: (context, snapshot) {
+        Widget child;
+
+        if (snapshot.hasError) {
+          child = Center(child: Text("An error has shown up, try again later"));
+        }
+
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            child = CircularProgressIndicator();
+
+          case ConnectionState.active:
+            child = CircularProgressIndicator();
+
+          case ConnectionState.none:
+            print("X No songs found X - None");
+            child = NoSongsHomePage();
+
+          case ConnectionState.done:
+            List<Song>? songsData = snapshot.data;
+            (songsData == null || songsData.isEmpty)
+                ? print(
+                    "X No songs found X",
+                  ) // Take it off later !!!!!!!!!!!!!!!!!!!!
+                : print("! All songs found !");
+            child = (songsData == null || songsData.isEmpty)
+                ? NoSongsHomePage()
+                : StandardHomePage(songsData);
+        }
+
+        return child;
+      },
+    );
+  }
+
+  Future<List<Song>>? getData() async {
+    SongDao songDao = SongDao();
+    List<Song>? songs = await songDao.readAll();
+    return songs;
   }
 }
 
@@ -25,7 +69,19 @@ class NoSongsHomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        leading: Icon(Icons.settings, color: Colors.white),
+        leading: IconButton(
+          icon: Icon(Icons.settings),
+          color: Colors.white,
+          onPressed: () async {
+            SongDao songDao = SongDao();
+
+            List<Song> songs = await songDao.readAll();
+
+            for (Song song in songs) {
+              print("${song.name} - ${song.album} - ${song.artist}\n");
+            }
+          },
+        ),
         backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: Padding(
@@ -50,7 +106,9 @@ class NoSongsHomePage extends StatelessWidget {
 }
 
 class StandardHomePage extends StatelessWidget {
-  const StandardHomePage({super.key});
+  final List<Song> songs;
+
+  const StandardHomePage(this.songs, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +119,11 @@ class StandardHomePage extends StatelessWidget {
         leading: InkWell(
           customBorder: CircleBorder(),
           child: Icon(Icons.settings, color: Colors.white),
-          onTap: () {},
+          onTap: () {
+            SongDao songDao = SongDao();
+            songDao
+                .deleteAllSongs(); // Just testing!!! Take it off later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+          },
         ),
         actions: [
           InkWell(
@@ -111,36 +173,43 @@ class StandardHomePage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.only(top: Spacing.xs),
-              child: BoxForm(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Last added",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    SongCard(
-                      Song(
-                        name: "Nutshell",
-                        artist: "Alice in Chains",
-                        album: "5:50",
-                      ),
-                    ),
-                    SongCard(
-                      Song(
-                        name: "Still remains",
-                        artist: "Stone Temple Pilots",
-                        album: "4:40",
-                      ),
-                    ),
-                    // SongCard("Down in a hole", "Alice in Chains", "3:20"),
-                    // SongCard("One", "Mettalica", "1:58"),
-                  ],
-                ),
-              ),
+              child: HomePageSection("Last added", songs),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class HomePageSection extends StatelessWidget {
+  final List<Song> songs;
+  final String title;
+
+  const HomePageSection(this.title, this.songs, {super.key});
+
+  List<SongCard> songToCard(List<Song> songs) {
+    List<SongCard> songCards = [];
+    for (Song song in songs) {
+      songCards.add(SongCard(song));
+    }
+
+    return songCards;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<SongCard> songCards = songToCard(songs);
+
+    return BoxForm(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: Theme.of(context).textTheme.headlineSmall),
+          ...songCards,
+          // SongCard("Down in a hole", "Alice in Chains", "3:20"),
+          // SongCard("One", "Mettalica", "1:58"),
+        ],
       ),
     );
   }
