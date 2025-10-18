@@ -37,7 +37,7 @@ ThemeData appTheme = ThemeData(
     titleLarge: TextStyle(
       color: Colors.white,
       fontSize: 16,
-      fontWeight: FontWeight.normal,
+      fontWeight: FontWeight.w500,
     ),
     bodyLarge: TextStyle(
       color: Colors.white,

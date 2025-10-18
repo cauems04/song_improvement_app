@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/screens/save_song_page.dart';
+import 'package:guitar_song_improvement/screens/song_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SongCard extends StatelessWidget {
@@ -17,7 +18,12 @@ class SongCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SongPage(song)),
+            );
+          },
           child: Padding(
             // Take off this padding logic from here and aply inside the BoxForm
             // (Because it works well in the HomePage Sections, but not while

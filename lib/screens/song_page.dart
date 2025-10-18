@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SongPage extends StatefulWidget {
-  final String title;
-  final String artist;
-  final String album;
-  const SongPage(this.title, this.artist, this.album, {super.key});
+  final Song song;
+  const SongPage(this.song, {super.key});
 
   @override
   State<SongPage> createState() => _SongPageState();
@@ -14,7 +14,7 @@ class _SongPageState extends State<SongPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(47, 48, 54, 1),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         leading: InkWell(
           customBorder: CircleBorder(),
@@ -26,7 +26,7 @@ class _SongPageState extends State<SongPage> {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Color.fromRGBO(47, 48, 54, 1),
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
@@ -36,33 +36,29 @@ class _SongPageState extends State<SongPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  widget.title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                  widget.song.name,
+                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8, bottom: 8),
                   child: Text(
-                    widget.artist,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    widget.song.artist,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 Text(
-                  widget.album,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  widget.song.album,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
-                _LinkSection(),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 200,
+                  ), // TESTESTESTESTESTESTESTESTESTE
+                  child: _LinkSection(),
+                ),
               ],
             ),
           ),
@@ -101,9 +97,15 @@ class _linkSectionState extends State<_LinkSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Support Links"),
-        Container(width: 300, height: 2, color: Colors.white),
-        Text("www.youtube.com/2rdchfidsbds78dh8i"),
+        Text("Support Links", style: Theme.of(context).textTheme.titleLarge),
+        Padding(
+          padding: const EdgeInsets.only(top: Spacing.xs, bottom: Spacing.xs),
+          child: Container(width: 300, height: 2, color: Colors.white),
+        ),
+        Text(
+          "www.youtube.com/2rdchfidsbds78dh8i",
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
         Icon(Icons.add),
       ],
     );

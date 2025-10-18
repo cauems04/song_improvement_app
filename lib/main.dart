@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/model/songs_provider.dart';
 import 'package:guitar_song_improvement/screens/home_page.dart';
 import 'package:guitar_song_improvement/themes/dark_theme.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => SongsProvider(songs: []),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

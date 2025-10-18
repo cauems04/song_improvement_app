@@ -6,6 +6,7 @@ import 'package:guitar_song_improvement/screens/Components/add_new_song_button.d
 import 'package:guitar_song_improvement/screens/Components/search_song.dart';
 import 'package:guitar_song_improvement/screens/Components/song_card.dart';
 import 'package:guitar_song_improvement/screens/save_song_page.dart';
+import 'package:guitar_song_improvement/screens/search_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class HomePage extends StatelessWidget {
@@ -89,7 +90,14 @@ class NoSongsHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SearchSong(hint: "Search a new song..."),
+            SearchSong(
+              hint: "Search a new song...",
+              onSearch: (value) => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SearchPage(search: value),
+                ),
+              ),
+            ),
             Padding(
               padding: EdgeInsets.only(top: Spacing.xl, bottom: Spacing.xl),
               child: Text(
@@ -148,7 +156,6 @@ class StandardHomePage extends StatelessWidget {
               onTap: () async {
                 List<Song> songs = await SongDao().readAll();
                 print("------------------------------");
-                print(songs[1].name + songs[1].artist + songs[1].album);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SaveSongPage()),
@@ -169,7 +176,14 @@ class StandardHomePage extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: Spacing.sm),
-              child: SearchSong(hint: "Search a song"),
+              child: SearchSong(
+                hint: "Search a song",
+                onSearch: (value) => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SearchPage(search: value),
+                  ),
+                ),
+              ),
             ),
             Padding(
               padding: const EdgeInsets.only(top: Spacing.xs),

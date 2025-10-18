@@ -1,10 +1,16 @@
 import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
 import 'package:guitar_song_improvement/services/i_tunes_search_service.dart';
 
 class Songcontroller {
   const Songcontroller();
 
   saveSong() {}
+
+  Future<List<Song>> readAll() async {
+    SongDao songDao = SongDao();
+    return await songDao.readAll();
+  }
 
   Future<List<Song>> searchSongs(String parameter) async {
     List<Map<String, dynamic>> response = await ITunesSearchService.search(

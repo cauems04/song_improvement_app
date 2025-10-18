@@ -6,8 +6,8 @@ import 'package:guitar_song_improvement/screens/Components/song_card.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SearchPage extends StatefulWidget {
-  final String? search;
-  const SearchPage({super.key, this.search});
+  final String search;
+  const SearchPage({super.key, this.search = ""});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -15,15 +15,13 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   int currentPageIndex = 0;
-  final Songcontroller songcontroller = Songcontroller();
-  late Future<List<Song>> songsFound;
+  Songcontroller songController = Songcontroller();
+  String search = "";
 
   @override
   void initState() {
     super.initState();
-    songsFound = songcontroller.searchSongs(
-      widget.search ?? "",
-    ); // Verify when the search is empty later, to eventually treat it
+    search = widget.search;
   }
 
   @override
@@ -58,60 +56,18 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SearchSong(hint: "Search a song", search: widget.search),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: Spacing.md),
-                child: FutureBuilder(
-                  future: songsFound,
-                  builder: (context, snapshot) {
-                    Widget child;
-
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text("An error has shown up, try again later"),
-                      );
-                    }
-
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        child = Center(child: CircularProgressIndicator());
-                        break;
-                      case ConnectionState.none:
-                        child = Center(child: Text("No songs found"));
-                        break;
-                      case ConnectionState.done:
-                        List<SongCardSearch> songWidgets = [];
-                        if (snapshot.data != null) {
-                          for (Song song in snapshot.data!) {
-                            songWidgets.add(SongCardSearch(song));
-                          }
-                        }
-                        child = ListView(children: songWidgets);
-                        break;
-                      default:
-                        child = Center(child: Text("Resposta padrão"));
-                        break;
-                    }
-                    return child;
-                  },
-                  // child: ListView(
-                  //   children: [
-                  //     SongCard("Nutshell", "Alice in Chains", "5:50"),
-                  //     SongCard("Still remains", "Stone Temple Pilots", "4:40"),
-                  //     SongCard("Down in a hole", "Alice in Chains", "3:20"),
-                  //     SongCard("One", "Mettalica", "1:58"),
-                  //     SongCard("Afterlife", "Avenged Sevenfold", "1:20"),
-                  //     SongCard("Arabella", "Arctic Monkeys", "2:48"),
-                  //     SongCard("Na sua estante", "Pitty", "2:40"),
-                  //     SongCard("Hit that", "The Offspring", "3:22"),
-                  //     SongCard("Hit that", "The Offspring", "3:22"),
-                  //     SongCard("Hit that", "The Offspring", "3:22"),
-                  //   ],
-                  // ),
-                ),
-              ),
+            SearchSong(
+              hint: "Search a song",
+              search: search,
+              onSearch: (value) {
+                setState(() {
+                  search = value;
+                });
+              },
             ),
+            (currentPageIndex == 0)
+                ? _OnlineSearch(songController, search: search)
+                : _LocalSearch(songController, search: search),
           ],
         ),
       ),
@@ -131,6 +87,123 @@ class _SearchPageState extends State<SearchPage> {
           NavigationDestination(icon: Icon(Icons.list), label: "Saved Songs"),
         ],
         selectedIndex: currentPageIndex,
+      ),
+    );
+  }
+}
+
+class _OnlineSearch extends StatelessWidget {
+  final Songcontroller songController;
+  final String search;
+
+  const _OnlineSearch(this.songController, {this.search = ""});
+
+  @override
+  Widget build(BuildContext context) {
+    final Future<List<Song>> songsFound = songController.searchSongs(search);
+
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(top: Spacing.md),
+        child: FutureBuilder(
+          future: songsFound,
+          builder: (context, snapshot) {
+            Widget child;
+
+            if (snapshot.hasError) {
+              return Center(
+                child: Text("An error has shown up, try again later"),
+              );
+            }
+
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                child = Center(child: CircularProgressIndicator());
+                break;
+              case ConnectionState.none:
+                child = Center(child: Text("No songs found"));
+                break;
+              case ConnectionState.done:
+                List<SongCardSearch> songWidgets = [];
+                if (snapshot.data != null) {
+                  for (Song song in snapshot.data!) {
+                    songWidgets.add(SongCardSearch(song));
+                  }
+                }
+                child = ListView(children: songWidgets);
+                break;
+              default:
+                child = Center(child: Text("Resposta padrão"));
+                break;
+            }
+            return child;
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _LocalSearch extends StatefulWidget {
+  final Songcontroller songController;
+  final String search;
+
+  const _LocalSearch(this.songController, {this.search = ""});
+
+  @override
+  State<_LocalSearch> createState() => __LocalSearchState();
+}
+
+class __LocalSearchState extends State<_LocalSearch> {
+  late Future<List<Song>> songsFound = widget.songController.readAll();
+
+  @override
+  void didUpdateWidget(covariant _LocalSearch oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.search != widget.search) {
+      setState(() {
+        // I'll probably need to implement a logic to get new values to songsFound
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(top: Spacing.md),
+        child: FutureBuilder(
+          future: songsFound,
+          builder: (context, snapshot) {
+            Widget child;
+
+            if (snapshot.hasError) {
+              return Center(child: Text("An error has shown up, try again"));
+            }
+
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                child = Center(child: CircularProgressIndicator());
+                break;
+              case ConnectionState.none:
+                child = Center(child: Text("No songs found"));
+                break;
+              case ConnectionState.done:
+                List<SongCard> songWidgets = [];
+                if (snapshot.data != null) {
+                  for (Song song in snapshot.data!) {
+                    songWidgets.add(SongCard(song));
+                  }
+                }
+                child = ListView(children: songWidgets);
+                break;
+              default:
+                child = Center(child: Text("Resposta padrão"));
+                break;
+            }
+            return child;
+          },
+        ),
       ),
     );
   }
