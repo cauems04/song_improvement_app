@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => SongsProvider(songs: []),
+      create: (context) => SongsProvider(),
       child: const MyApp(),
     ),
   );
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Guitar Improving',
       theme: appTheme,
       themeMode: ThemeMode.dark,
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }

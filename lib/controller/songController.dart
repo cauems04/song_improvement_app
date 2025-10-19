@@ -12,6 +12,12 @@ class Songcontroller {
     return await songDao.readAll();
   }
 
+  // filters
+  List<Song> readFiltered(List<Song> songs, String filter) {
+    return songs.where((song) => song.name.contains(filter)).toList();
+  }
+  //Following filters.....
+
   Future<List<Song>> searchSongs(String parameter) async {
     List<Map<String, dynamic>> response = await ITunesSearchService.search(
       // Tentar mudar de dynamic pra object para melhor performance

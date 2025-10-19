@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/controller/songController.dart';
 import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/model/songs_provider.dart';
 import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
 import 'package:guitar_song_improvement/screens/Components/BoxForm.dart';
 import 'package:guitar_song_improvement/screens/Components/add_new_song_button.dart';
@@ -8,57 +10,59 @@ import 'package:guitar_song_improvement/screens/Components/song_card.dart';
 import 'package:guitar_song_improvement/screens/save_song_page.dart';
 import 'package:guitar_song_improvement/screens/search_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key}) {
-    songs = getData();
-  }
+  const HomePage({super.key});
 
-  Future<List<Song>>? songs;
+  Future<List<Song>>? getData() async {
+    Songcontroller songController = Songcontroller();
+    List<Song>? songs = await songController.readAll();
+    return songs;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: songs,
-      builder: (context, snapshot) {
-        Widget child;
+    return Consumer<SongsProvider>(
+      builder: (context, songsData, child) {
+        songsData.songs =
+            getData(); // Initialize on splash screen when created / When changing the song list, can create a method with notifylistener instead of putting the value of database in here (because notifylisteners make the widgets that use consumer reload)
 
-        if (snapshot.hasError) {
-          child = Center(child: Text("An error has shown up, try again later"));
-        }
+        return FutureBuilder(
+          future: songsData.songs,
+          builder: (context, snapshot) {
+            Widget child;
 
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            child = CircularProgressIndicator();
+            if (snapshot.hasError) {
+              child = Center(
+                child: Text("An error has shown up, try again later"),
+              );
+            }
 
-          case ConnectionState.active:
-            child = CircularProgressIndicator();
+            switch (snapshot.connectionState) {
+              case ConnectionState.waiting:
+                child = CircularProgressIndicator();
 
-          case ConnectionState.none:
-            print("X No songs found X - None");
-            child = NoSongsHomePage();
+              case ConnectionState.active:
+                child = CircularProgressIndicator();
 
-          case ConnectionState.done:
-            List<Song>? songsData = snapshot.data;
-            (songsData == null || songsData.isEmpty)
-                ? print(
-                    "X No songs found X",
-                  ) // Take it off later !!!!!!!!!!!!!!!!!!!!
-                : print("! All songs found !");
-            child = (songsData == null || songsData.isEmpty)
-                ? NoSongsHomePage()
-                : StandardHomePage(songsData);
-        }
+              case ConnectionState.none:
+                print("X No songs found X - None");
+                child = NoSongsHomePage();
 
-        return child;
+              case ConnectionState.done:
+                List<Song>? songsData = snapshot.data;
+
+                child = (songsData == null || songsData.isEmpty)
+                    ? NoSongsHomePage()
+                    : StandardHomePage(songsData);
+            }
+
+            return child;
+          },
+        );
       },
     );
-  }
-
-  Future<List<Song>>? getData() async {
-    SongDao songDao = SongDao();
-    List<Song>? songs = await songDao.readAll();
-    return songs;
   }
 }
 
@@ -154,8 +158,6 @@ class StandardHomePage extends StatelessWidget {
                 ),
               ),
               onTap: () async {
-                List<Song> songs = await SongDao().readAll();
-                print("------------------------------");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SaveSongPage()),
@@ -221,8 +223,6 @@ class HomePageSection extends StatelessWidget {
         children: [
           Text(title, style: Theme.of(context).textTheme.headlineSmall),
           ...songCards,
-          // SongCard("Down in a hole", "Alice in Chains", "3:20"),
-          // SongCard("One", "Mettalica", "1:58"),
         ],
       ),
     );
