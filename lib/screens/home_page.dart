@@ -3,7 +3,7 @@ import 'package:guitar_song_improvement/controller/songController.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/model/songs_provider.dart';
 import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
-import 'package:guitar_song_improvement/screens/Components/BoxForm.dart';
+import 'package:guitar_song_improvement/screens/Components/box_form.dart';
 import 'package:guitar_song_improvement/screens/Components/add_new_song_button.dart';
 import 'package:guitar_song_improvement/screens/Components/search_song.dart';
 import 'package:guitar_song_improvement/screens/Components/song_card.dart';

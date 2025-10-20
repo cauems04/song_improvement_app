@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/screens/search_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class SearchSong extends StatefulWidget {
   final String hint;
   final String? search;
   final Function(String) onSearch;
+  final Function(String)? onChanged;
 
   const SearchSong({
     super.key,
     required this.hint,
     this.search,
     required this.onSearch,
+    this.onChanged,
   });
 
   @override
@@ -19,12 +20,18 @@ class SearchSong extends StatefulWidget {
 }
 
 class _SearchSongState extends State<SearchSong> {
+  late TextEditingController searchController;
+
   @override
-  Widget build(BuildContext context) {
-    TextEditingController searchController = TextEditingController(
+  void initState() {
+    super.initState();
+    searchController = TextEditingController(
       text: (widget.search != null) ? widget.search : "",
     );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 50,
       decoration: BoxDecoration(
@@ -48,9 +55,8 @@ class _SearchSongState extends State<SearchSong> {
             ).textTheme.bodyLarge!.copyWith(color: Colors.black),
             isDense: true,
           ),
-          onSubmitted: (value) {
-            widget.onSearch(value);
-          },
+          onChanged: (value) => widget.onChanged?.call(value),
+          onSubmitted: (value) => widget.onSearch(value),
         ),
       ),
     );
