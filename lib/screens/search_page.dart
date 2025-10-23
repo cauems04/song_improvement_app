@@ -77,9 +77,11 @@ class _SearchPageState extends State<SearchPage> {
                 }
               },
             ),
-            (currentPageIndex == 0)
-                ? _OnlineSearch(songController, search: search)
-                : _LocalSearch(search: search),
+            Expanded(
+              child: (currentPageIndex == 0)
+                  ? _OnlineSearch(songController, search: search)
+                  : _LocalSearch(search: search),
+            ),
           ],
         ),
       ),
@@ -114,43 +116,41 @@ class _OnlineSearch extends StatelessWidget {
   Widget build(BuildContext context) {
     final Future<List<Song>> songsFound = songController.searchSongs(search);
 
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(top: Spacing.md),
-        child: FutureBuilder(
-          future: songsFound,
-          builder: (context, snapshot) {
-            Widget child;
+    return Padding(
+      padding: const EdgeInsets.only(top: Spacing.md),
+      child: FutureBuilder(
+        future: songsFound,
+        builder: (context, snapshot) {
+          Widget child;
 
-            if (snapshot.hasError) {
-              return Center(
-                child: Text("An error has shown up, try again later"),
-              );
-            }
+          if (snapshot.hasError) {
+            return Center(
+              child: Text("An error has shown up, try again later"),
+            );
+          }
 
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                child = Center(child: CircularProgressIndicator());
-                break;
-              case ConnectionState.none:
-                child = Center(child: Text("No songs found"));
-                break;
-              case ConnectionState.done:
-                List<SongCardSearch> songWidgets = [];
-                if (snapshot.data != null) {
-                  for (Song song in snapshot.data!) {
-                    songWidgets.add(SongCardSearch(song));
-                  }
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              child = Center(child: CircularProgressIndicator());
+              break;
+            case ConnectionState.none:
+              child = Center(child: Text("No songs found"));
+              break;
+            case ConnectionState.done:
+              List<SongCardSearch> songWidgets = [];
+              if (snapshot.data != null) {
+                for (Song song in snapshot.data!) {
+                  songWidgets.add(SongCardSearch(song));
                 }
-                child = ListView(children: songWidgets);
-                break;
-              default:
-                child = Center(child: Text("Resposta padrão"));
-                break;
-            }
-            return child;
-          },
-        ),
+              }
+              child = ListView(children: songWidgets);
+              break;
+            default:
+              child = Center(child: Text("Resposta padrão"));
+              break;
+          }
+          return child;
+        },
       ),
     );
   }
@@ -166,16 +166,7 @@ class _LocalSearch extends StatefulWidget {
 }
 
 class __LocalSearchState extends State<_LocalSearch> {
-  // @override
-  // void didUpdateWidget(covariant _LocalSearch oldWidget) {
-  //   //Try to implement on online search too
-  //   super.didUpdateWidget(oldWidget);
-  //   if (oldWidget.search != widget.search) {
-  //     setState(() {
-  //       // I'll probably need to implement a logic to get new values to songsFound
-  //     });
-  //   }
-  // }
+  String? currentFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -183,15 +174,62 @@ class __LocalSearchState extends State<_LocalSearch> {
       padding: const EdgeInsets.only(top: Spacing.md),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.md),
-            child: ListView(children: [FilterOption("Favorites")]),
+          SizedBox(
+            height: 50,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.md),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  FilterOption(
+                    label: "Albums",
+                    isSelected: (currentFilter == "albums"),
+                    onTap: () {
+                      setState(() {
+                        if (currentFilter == "albums") {
+                          currentFilter = null;
+                          return;
+                        }
+
+                        currentFilter = "albums";
+                      });
+                    },
+                  ),
+                  FilterOption(
+                    label: "Artists",
+                    isSelected: (currentFilter == "artists"),
+                    onTap: () {
+                      setState(() {
+                        if (currentFilter == "artists") {
+                          currentFilter = null;
+                          return;
+                        }
+
+                        currentFilter = "artists";
+                      });
+                    },
+                  ),
+                  FilterOption(
+                    label: "Favorites",
+                    isSelected: (currentFilter == "favorites"),
+                    onTap: () {
+                      setState(() {
+                        if (currentFilter == "favorites") {
+                          currentFilter = null;
+                          return;
+                        }
+
+                        currentFilter = "favorites";
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
           ),
           Expanded(
             child: Consumer<SongsProvider>(
               builder: (context, songsData, child) {
-                if (widget.search.isNotEmpty) {}
-
                 return FutureBuilder(
                   future: (widget.search.isNotEmpty)
                       ? songsData.filterSong(widget.search)
