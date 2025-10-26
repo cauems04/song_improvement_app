@@ -85,7 +85,7 @@ class CustomTextFormField extends StatelessWidget {
 }
 
 class _LinkSection extends StatefulWidget {
-  const _LinkSection({super.key});
+  const _LinkSection();
 
   @override
   State<_LinkSection> createState() => _linkSectionState();

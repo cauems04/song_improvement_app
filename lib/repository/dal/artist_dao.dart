@@ -24,6 +24,13 @@ class ArtistDao {
     );
   }
 
+  Future<void> deleteAll() async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    print("All artists deleted");
+    database.delete("artist");
+  }
+
   Future<Artist> read(Artist artist) async {
     // This is gonna be implemented for the search feature
     // Review and apply it correctly later

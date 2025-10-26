@@ -4,10 +4,10 @@ import 'package:guitar_song_improvement/controller/artist_controller.dart';
 import 'package:guitar_song_improvement/controller/song_controller.dart';
 import 'package:guitar_song_improvement/model/album.dart';
 import 'package:guitar_song_improvement/model/artist.dart';
+import 'package:guitar_song_improvement/model/music_provider.dart';
 import 'package:guitar_song_improvement/model/song.dart';
-import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
-import 'package:guitar_song_improvement/repository/database_manager.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:provider/provider.dart';
 
 class SaveSongPage extends StatelessWidget {
   final Song? song;
@@ -110,6 +110,11 @@ class SaveSongPage extends StatelessWidget {
                             await artistController.create(
                               Artist(name: artistEditingController.text),
                             );
+
+                            Provider.of<MusicProvider>(
+                              context,
+                              listen: false,
+                            ).getData();
 
                             print(
                               "Song created - $titleEditingController.text - $albumEditingController.text - $artistEditingController.text",

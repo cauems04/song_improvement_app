@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/controller/album_controller.dart';
+import 'package:guitar_song_improvement/controller/artist_controller.dart';
+import 'package:guitar_song_improvement/controller/song_controller.dart';
+import 'package:guitar_song_improvement/model/album.dart';
+import 'package:guitar_song_improvement/model/artist.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/model/music_provider.dart';
+import 'package:guitar_song_improvement/repository/dal/album_dao.dart';
+import 'package:guitar_song_improvement/repository/dal/artist_dao.dart';
 import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
-import 'package:guitar_song_improvement/screens/Components/box_form.dart';
-import 'package:guitar_song_improvement/screens/Components/add_new_song_button.dart';
-import 'package:guitar_song_improvement/screens/Components/search_song.dart';
-import 'package:guitar_song_improvement/screens/Components/song_card.dart';
+import 'package:guitar_song_improvement/screens/components/box_form.dart';
+import 'package:guitar_song_improvement/screens/components/add_new_song_button.dart';
+import 'package:guitar_song_improvement/screens/components/search_song.dart';
+import 'package:guitar_song_improvement/screens/components/song_card.dart';
 import 'package:guitar_song_improvement/screens/save_song_page.dart';
 import 'package:guitar_song_improvement/screens/search_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
@@ -19,7 +26,7 @@ class HomePage extends StatelessWidget {
     return Consumer<MusicProvider>(
       builder: (context, data, child) {
         if (!data.isLoaded) {
-          data.getData(); // Initialize on splash screen when created / When changing the song list, can create a method with notifylistener instead of putting the value of database in here (because notifylisteners make the widgets that use consumer reload)
+          // data.getData(); // Initialize on splash screen when created / When changing the song list, can create a method with notifylistener instead of putting the value of database in here (because notifylisteners make the widgets that use consumer reload)
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -28,40 +35,6 @@ class HomePage extends StatelessWidget {
         }
 
         return StandardHomePage(data.songs!);
-
-        // return FutureBuilder(
-        //   future: data.songs,
-        //   builder: (context, snapshot) {
-        //     Widget child;
-
-        //     if (snapshot.hasError) {
-        //       child = Center(
-        //         child: Text("An error has shown up, try again later"),
-        //       );
-        //     }
-
-        //     switch (snapshot.connectionState) {
-        //       case ConnectionState.waiting:
-        //         child = CircularProgressIndicator();
-
-        //       case ConnectionState.active:
-        //         child = CircularProgressIndicator();
-
-        //       case ConnectionState.none:
-        //         print("X No songs found X - None");
-        //         child = NoSongsHomePage();
-
-        //       case ConnectionState.done:
-        //         List<Song>? songsData = snapshot.data;
-
-        //         child = (songsData == null || songsData.isEmpty)
-        //             ? NoSongsHomePage()
-        //             : StandardHomePage(songsData);
-        //     }
-
-        //     return child;
-        //   },
-        // );
       },
     );
   }
@@ -135,7 +108,15 @@ class StandardHomePage extends StatelessWidget {
           onTap: () {
             SongDao songDao = SongDao();
             songDao
-                .deleteAllSongs(); // Just testing!!! Take it off later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                .deleteAll(); // Just testing!!! Take it off later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+            AlbumDao albumDao = AlbumDao();
+            ArtistDao artistDao = ArtistDao();
+
+            albumDao.deleteAll();
+            artistDao.deleteAll();
+
+            Provider.of<MusicProvider>(context, listen: false).getData();
           },
         ),
         actions: [
@@ -159,6 +140,8 @@ class StandardHomePage extends StatelessWidget {
                 ),
               ),
               onTap: () async {
+                printData();
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SaveSongPage()),
@@ -196,6 +179,42 @@ class StandardHomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> printData() async {
+    // This is a test function used to debug and see data, take it off later, i won't be useful for the app itself
+    Songcontroller songController = Songcontroller();
+    Albumcontroller albumcontroller = Albumcontroller();
+    ArtistController artistController = ArtistController();
+
+    List<Song> songs = await songController.readAll();
+    List<Album> albums = await albumcontroller.readAll();
+    List<Artist> artists = await artistController.readAll();
+
+    print("\n\n\n\nSONGS\n\n");
+    for (int i = 0; i < songs.length; i++) {
+      print(
+        "Song ${i + 1} - ${songs[i].name} | ${songs[i].album} | ${songs[i].artist}",
+      );
+    }
+
+    print(
+      "\n\n\n\n--------------------------------------------------------------------------------\n\n",
+    );
+    print("ALBÚMS\n\n");
+    for (int i = 0; i < albums.length; i++) {
+      print("Albúm ${i + 1} - ${albums[i].name}}");
+    }
+
+    print(
+      "\n\n\n\n--------------------------------------------------------------------------------\n\n",
+    );
+    print("ARTISTS\n\n");
+    for (int i = 0; i < artists.length; i++) {
+      print("Artist ${i + 1} - ${artists[i].name}}");
+    }
+
+    print("\n\n\n\n");
   }
 }
 

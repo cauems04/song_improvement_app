@@ -64,7 +64,7 @@ class SongDao {
     return songs;
   }
 
-  Future<void> deleteAllSongs() async {
+  Future<void> deleteAll() async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     print("All deleted");
