@@ -5,13 +5,13 @@ import 'package:guitar_song_improvement/repository/database_manager.dart';
 class SongDao {
   SongDao();
 
-  void create(Song song) async {
+  Future<void> create(Song song) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.insert(databaseManager.songTableName, song.toMap());
   }
 
-  void delete(Song song) async {
+  Future<void> delete(Song song) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.delete(
@@ -64,7 +64,7 @@ class SongDao {
     return songs;
   }
 
-  void deleteAllSongs() async {
+  Future<void> deleteAllSongs() async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     print("All deleted");

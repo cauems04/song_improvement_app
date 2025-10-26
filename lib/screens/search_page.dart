@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/controller/songController.dart';
+import 'package:guitar_song_improvement/controller/album_controller.dart';
+import 'package:guitar_song_improvement/controller/artist_controller.dart';
+import 'package:guitar_song_improvement/controller/song_controller.dart';
+import 'package:guitar_song_improvement/model/album.dart';
+import 'package:guitar_song_improvement/model/artist.dart';
+import 'package:guitar_song_improvement/model/i_model.dart';
 import 'package:guitar_song_improvement/model/song.dart';
-import 'package:guitar_song_improvement/model/songs_provider.dart';
+import 'package:guitar_song_improvement/model/music_provider.dart';
+import 'package:guitar_song_improvement/screens/Components/album_card.dart';
+import 'package:guitar_song_improvement/screens/Components/artist_card.dart';
 import 'package:guitar_song_improvement/screens/Components/filter_option.dart';
 import 'package:guitar_song_improvement/screens/Components/search_song.dart';
 import 'package:guitar_song_improvement/screens/Components/song_card.dart';
+import 'package:guitar_song_improvement/services/filter_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
 
@@ -228,44 +236,115 @@ class __LocalSearchState extends State<_LocalSearch> {
             ),
           ),
           Expanded(
-            child: Consumer<SongsProvider>(
-              builder: (context, songsData, child) {
-                return FutureBuilder(
-                  future: (widget.search.isNotEmpty)
-                      ? songsData.filterSong(widget.search)
-                      : songsData.songs,
-                  builder: (context, snapshot) {
-                    Widget child;
+            child: Consumer<MusicProvider>(
+              builder: (context, data, child) {
+                if (!data.isLoaded) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text("An error has shown up, try again"),
-                      );
-                    }
-
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        child = Center(child: CircularProgressIndicator());
-                        break;
-                      case ConnectionState.none:
-                        child = Center(child: Text("No songs found"));
-                        break;
-                      case ConnectionState.done:
-                        List<SongCard> songWidgets = [];
-                        if (snapshot.data != null) {
-                          for (Song song in snapshot.data!) {
-                            songWidgets.add(SongCard(song));
-                          }
-                        }
-                        child = ListView(children: songWidgets);
-                        break;
-                      default:
-                        child = Center(child: Text("Resposta padrão"));
-                        break;
-                    }
-                    return child;
-                  },
+                Widget resultWidget = const Center(
+                  child: CircularProgressIndicator(),
                 );
+
+                switch (currentFilter) {
+                  case "albums":
+                    if (data.albums == null || data.albums!.isEmpty) {
+                      resultWidget = Center(child: Text("No albums found"));
+                    }
+
+                    List<Album> albums = (widget.search.isEmpty)
+                        ? data.albums!
+                        : FilterService.filter<Album>(
+                            data.albums!,
+                            widget.search,
+                          );
+
+                    List<AlbumCard> albumCards = albums
+                        .map((album) => AlbumCard(album))
+                        .toList();
+                    resultWidget = ListView(children: albumCards);
+                    break;
+
+                  case "artists":
+                    if (data.artists == null || data.artists!.isEmpty) {
+                      resultWidget = Center(child: Text("No artists found"));
+                    }
+
+                    List<Artist> artists = (widget.search.isEmpty)
+                        ? data.artists!
+                        : FilterService.filter<Artist>(
+                            data.artists!,
+                            widget.search,
+                          );
+
+                    List<ArtistCard> artistCards = artists
+                        .map((artist) => ArtistCard(artist))
+                        .toList();
+                    resultWidget = ListView(children: artistCards);
+                    break;
+
+                  // case "favorites":    ***REMEMBER*** Favorites will work together with the others, so its implementation's gonna be kinda different
+                  //   break;
+
+                  default:
+                    if (data.songs == null || data.songs!.isEmpty) {
+                      resultWidget = Center(child: Text("No songs found"));
+                    }
+
+                    List<Song> songs = (widget.search.isEmpty)
+                        ? data.songs!
+                        : FilterService.filter<Song>(
+                            data.songs!,
+                            widget.search,
+                          );
+
+                    List<SongCard> songCards = songs
+                        .map((song) => SongCard(song))
+                        .toList();
+                    resultWidget = ListView(
+                      shrinkWrap: true,
+                      children: songCards,
+                    );
+                    break;
+                }
+
+                return resultWidget;
+                // return FutureBuilder(
+                //   future: (widget.search.isNotEmpty)
+                //       ? songsData.filterSong(widget.search)
+                //       : songsData.songs,
+                //   builder: (context, snapshot) {
+                //     Widget child;
+
+                //     if (snapshot.hasError) {
+                //       return Center(
+                //         child: Text("An error has shown up, try again"),
+                //       );
+                //     }
+
+                //     switch (snapshot.connectionState) {
+                //       case ConnectionState.waiting:
+                //         child = Center(child: CircularProgressIndicator());
+                //         break;
+                //       case ConnectionState.none:
+                //         child = Center(child: Text("No songs found"));
+                //         break;
+                //       case ConnectionState.done:
+                //         List<SongCard> songWidgets = [];
+                //         if (snapshot.data != null) {
+                //           for (Song song in snapshot.data!) {
+                //             songWidgets.add(SongCard(song));
+                //           }
+                //         }
+                //         child = ListView(children: songWidgets);
+                //         break;
+                //       default:
+                //         child = Center(child: Text("Resposta padrão"));
+                //         break;
+                //     }
+                //     return child;
+                //   },
+                // );
               },
             ),
           ),

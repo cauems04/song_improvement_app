@@ -1,3 +1,5 @@
 abstract class IModel {
-  IModel.fromJson();
+  String get name;
+
+  Map<String, String> toMap();
 }

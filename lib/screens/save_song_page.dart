@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/controller/album_controller.dart';
+import 'package:guitar_song_improvement/controller/artist_controller.dart';
+import 'package:guitar_song_improvement/controller/song_controller.dart';
+import 'package:guitar_song_improvement/model/album.dart';
+import 'package:guitar_song_improvement/model/artist.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
 import 'package:guitar_song_improvement/repository/database_manager.dart';
@@ -83,29 +88,31 @@ class SaveSongPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [Text("Save")],
                         ),
-                        onTap: () {
+                        onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            SongDao songDao = SongDao();
+                            Songcontroller songController = Songcontroller();
+                            Albumcontroller albumController = Albumcontroller();
+                            ArtistController artistController =
+                                ArtistController();
 
-                            String nameText = titleEditingController.text;
-                            String albumText =
-                                (albumEditingController.text.isEmpty)
-                                ? "Other"
-                                : albumEditingController.text;
-                            String artistText =
-                                (artistEditingController.text.isEmpty)
-                                ? "Other"
-                                : artistEditingController.text;
-
-                            songDao.create(
+                            await songController.create(
                               Song(
-                                name: nameText,
-                                album: albumText,
-                                artist: artistText,
+                                name: titleEditingController.text,
+                                album: albumEditingController.text,
+                                artist: artistEditingController.text,
                               ),
                             );
+
+                            await albumController.create(
+                              Album(name: albumEditingController.text),
+                            );
+
+                            await artistController.create(
+                              Artist(name: artistEditingController.text),
+                            );
+
                             print(
-                              "Song created - $nameText - $albumText - $artistText",
+                              "Song created - $titleEditingController.text - $albumEditingController.text - $artistEditingController.text",
                             );
                             Navigator.of(context).pop(1);
                           }

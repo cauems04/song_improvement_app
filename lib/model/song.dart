@@ -1,22 +1,25 @@
 import 'package:guitar_song_improvement/model/i_model.dart';
 
 class Song implements IModel {
-  final String name;
+  final String _name;
   final String artist;
   final String album;
   final String? image;
 
+  @override
+  String get name => _name;
+
   const Song({
-    required this.name,
+    required String name,
     required this.artist,
     required this.album,
     this.image,
-  });
+  }) : _name = name;
 
   Song.fromJson(
     Map<String, dynamic> json,
   ) // Tentar mudar de dynamic pra object para melhor performance
-  : name = json["trackName"].toString(),
+  : _name = json["trackName"].toString(),
       artist = json["artistName"].toString(),
       album = json["collectionName"].toString(),
       image = json["artworkUrl60"].toString();
@@ -24,7 +27,7 @@ class Song implements IModel {
   Song.fromDbJson(
     Map<String, dynamic> json,
   ) // Tentar mudar de dynamic pra object para melhor performance
-  : name = json["title"].toString(),
+  : _name = json["title"].toString(),
       artist = json["artist_name"].toString(),
       album = json["album_title"].toString(),
       image = null;

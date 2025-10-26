@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/controller/songController.dart';
 import 'package:guitar_song_improvement/model/song.dart';
-import 'package:guitar_song_improvement/model/songs_provider.dart';
+import 'package:guitar_song_improvement/model/music_provider.dart';
 import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
 import 'package:guitar_song_improvement/screens/Components/box_form.dart';
 import 'package:guitar_song_improvement/screens/Components/add_new_song_button.dart';
@@ -15,52 +14,54 @@ import 'package:provider/provider.dart';
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  Future<List<Song>>? getData() async {
-    Songcontroller songController = Songcontroller();
-    List<Song>? songs = await songController.readAll();
-    return songs;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<SongsProvider>(
-      builder: (context, songsData, child) {
-        songsData.songs =
-            getData(); // Initialize on splash screen when created / When changing the song list, can create a method with notifylistener instead of putting the value of database in here (because notifylisteners make the widgets that use consumer reload)
+    return Consumer<MusicProvider>(
+      builder: (context, data, child) {
+        if (!data.isLoaded) {
+          data.getData(); // Initialize on splash screen when created / When changing the song list, can create a method with notifylistener instead of putting the value of database in here (because notifylisteners make the widgets that use consumer reload)
+          return const Center(child: CircularProgressIndicator());
+        }
 
-        return FutureBuilder(
-          future: songsData.songs,
-          builder: (context, snapshot) {
-            Widget child;
+        if (data.songs == null || data.songs!.isEmpty) {
+          return const NoSongsHomePage();
+        }
 
-            if (snapshot.hasError) {
-              child = Center(
-                child: Text("An error has shown up, try again later"),
-              );
-            }
+        return StandardHomePage(data.songs!);
 
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                child = CircularProgressIndicator();
+        // return FutureBuilder(
+        //   future: data.songs,
+        //   builder: (context, snapshot) {
+        //     Widget child;
 
-              case ConnectionState.active:
-                child = CircularProgressIndicator();
+        //     if (snapshot.hasError) {
+        //       child = Center(
+        //         child: Text("An error has shown up, try again later"),
+        //       );
+        //     }
 
-              case ConnectionState.none:
-                print("X No songs found X - None");
-                child = NoSongsHomePage();
+        //     switch (snapshot.connectionState) {
+        //       case ConnectionState.waiting:
+        //         child = CircularProgressIndicator();
 
-              case ConnectionState.done:
-                List<Song>? songsData = snapshot.data;
+        //       case ConnectionState.active:
+        //         child = CircularProgressIndicator();
 
-                child = (songsData == null || songsData.isEmpty)
-                    ? NoSongsHomePage()
-                    : StandardHomePage(songsData);
-            }
+        //       case ConnectionState.none:
+        //         print("X No songs found X - None");
+        //         child = NoSongsHomePage();
 
-            return child;
-          },
-        );
+        //       case ConnectionState.done:
+        //         List<Song>? songsData = snapshot.data;
+
+        //         child = (songsData == null || songsData.isEmpty)
+        //             ? NoSongsHomePage()
+        //             : StandardHomePage(songsData);
+        //     }
+
+        //     return child;
+        //   },
+        // );
       },
     );
   }
