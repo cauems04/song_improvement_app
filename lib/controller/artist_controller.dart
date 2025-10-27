@@ -17,4 +17,12 @@ class ArtistController {
     ArtistDao artistDao = ArtistDao();
     await artistDao.create(artistFixed);
   }
+
+  Future<void> delete(Artist artist) async {
+    ArtistDao artistDao = ArtistDao();
+    if (!(await artistDao.hasSongs(artist))) {
+      // Check where to use this function
+      artistDao.delete(artist);
+    }
+  }
 }

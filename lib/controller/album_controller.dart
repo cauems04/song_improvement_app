@@ -17,4 +17,12 @@ class Albumcontroller {
     AlbumDao albumDao = AlbumDao();
     await albumDao.create(albumFixed);
   }
+
+  Future<void> delete(Album album) async {
+    AlbumDao albumDao = AlbumDao();
+    if (!(await albumDao.hasSongs(album))) {
+      // Check where to use this function
+      albumDao.delete(album);
+    }
+  }
 }

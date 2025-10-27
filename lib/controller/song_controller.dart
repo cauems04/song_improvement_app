@@ -1,3 +1,5 @@
+import 'package:guitar_song_improvement/model/album.dart';
+import 'package:guitar_song_improvement/model/artist.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
 import 'package:guitar_song_improvement/services/i_tunes_search_service.dart';
@@ -37,6 +39,21 @@ class Songcontroller {
     return songs;
   }
 
+  Future<List<Song>> getSongsByAlbum(Album album) async {
+    SongDao songDao = SongDao();
+    List<Song> songs = await songDao.getSongsByAlbum(album);
+
+    return songs;
+  }
+
+  Future<List<Song>> getSongsByArtist(Artist artist) async {
+    SongDao songDao = SongDao();
+    List<Song> songs = await songDao.getSongsByArtist(artist);
+
+    return songs;
+  }
+
+  //Check if i'm using this function right here
   // filters
   List<Song> readFiltered(List<Song> songs, String filter) {
     return songs.where((song) => song.name.contains(filter)).toList();

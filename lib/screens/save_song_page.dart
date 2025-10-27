@@ -95,21 +95,31 @@ class SaveSongPage extends StatelessWidget {
                             ArtistController artistController =
                                 ArtistController();
 
-                            await songController.create(
-                              Song(
-                                name: titleEditingController.text,
-                                album: albumEditingController.text,
-                                artist: artistEditingController.text,
-                              ),
-                            );
+                            try {
+                              await albumController.create(
+                                Album(name: albumEditingController.text),
+                              );
 
-                            await albumController.create(
-                              Album(name: albumEditingController.text),
-                            );
+                              await artistController.create(
+                                Artist(name: artistEditingController.text),
+                              );
 
-                            await artistController.create(
-                              Artist(name: artistEditingController.text),
-                            );
+                              await songController.create(
+                                Song(
+                                  name: titleEditingController.text,
+                                  album: albumEditingController.text,
+                                  artist: artistEditingController.text,
+                                ),
+                              );
+                            } catch (e) {
+                              // Try catch logic - A song must be created only whether both artist and album were created
+                              // If something happens when creating one of them, it'll catch an error and the song won't be created
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Erro ao salvar música: $e'),
+                                ),
+                              );
+                            }
 
                             Provider.of<MusicProvider>(
                               context,

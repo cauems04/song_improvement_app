@@ -187,6 +187,10 @@ class StandardHomePage extends StatelessWidget {
     Albumcontroller albumcontroller = Albumcontroller();
     ArtistController artistController = ArtistController();
 
+    AlbumDao albumDao = AlbumDao();
+    ArtistDao artistDao = ArtistDao();
+    SongDao songDao = SongDao();
+
     List<Song> songs = await songController.readAll();
     List<Album> albums = await albumcontroller.readAll();
     List<Artist> artists = await artistController.readAll();
@@ -203,7 +207,16 @@ class StandardHomePage extends StatelessWidget {
     );
     print("ALBÚMS\n\n");
     for (int i = 0; i < albums.length; i++) {
-      print("Albúm ${i + 1} - ${albums[i].name}}");
+      print(
+        "Albúm ${i + 1} - ${albums[i].name} - Has songs : ${await albumDao.hasSongs(albums[i])} - Exists : ${await albumDao.exists(albums[i])}",
+      );
+      print("\n");
+
+      final List<Song> songsByAlbum = await songDao.getSongsByAlbum(albums[i]);
+
+      for (int i = 0; i < songsByAlbum.length; i++) {
+        print("---- ${songsByAlbum[i].name} - ${songsByAlbum[i].artist}\n");
+      }
     }
 
     print(
@@ -211,7 +224,18 @@ class StandardHomePage extends StatelessWidget {
     );
     print("ARTISTS\n\n");
     for (int i = 0; i < artists.length; i++) {
-      print("Artist ${i + 1} - ${artists[i].name}}");
+      print(
+        "Artist ${i + 1} - ${artists[i].name} - Has songs : ${await artistDao.hasSongs(artists[i])} - Exists : ${await artistDao.exists(artists[i])}",
+      );
+      print("\n");
+
+      final List<Song> songsByArtist = await songDao.getSongsByArtist(
+        artists[i],
+      );
+
+      for (int i = 0; i < songsByArtist.length; i++) {
+        print("---- ${songsByArtist[i].name} - ${songsByArtist[i].album}\n");
+      }
     }
 
     print("\n\n\n\n");

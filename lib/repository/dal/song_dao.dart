@@ -1,3 +1,5 @@
+import 'package:guitar_song_improvement/model/album.dart';
+import 'package:guitar_song_improvement/model/artist.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:guitar_song_improvement/repository/database_manager.dart';
@@ -69,5 +71,43 @@ class SongDao {
     Database database = await databaseManager.database;
     print("All deleted");
     database.delete("song");
+  }
+
+  Future<List<Song>> getSongsByAlbum(Album album) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+
+    List<Map<String, Object?>> songsFound = await database.query(
+      // Verify indexes creation on foreign keys to improve performance (fk for albums and artists)
+      databaseManager.songTableName,
+      where: "${databaseManager.songAlbumLabel} = ?",
+      whereArgs: [album.name],
+    );
+
+    if (songsFound.isEmpty) {
+      return [];
+    }
+
+    List<Song> songs = songsFound.map((song) => Song.fromDbJson(song)).toList();
+    return songs;
+  }
+
+  Future<List<Song>> getSongsByArtist(Artist artist) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+
+    List<Map<String, Object?>> songsFound = await database.query(
+      // Verify indexes creation on foreign keys to improve performance (fk for albums and artists)
+      databaseManager.songTableName,
+      where: "${databaseManager.songArtistLabel} = ?",
+      whereArgs: [artist.name],
+    );
+
+    if (songsFound.isEmpty) {
+      return [];
+    }
+
+    List<Song> songs = songsFound.map((song) => Song.fromDbJson(song)).toList();
+    return songs;
   }
 }

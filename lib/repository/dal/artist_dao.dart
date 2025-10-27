@@ -66,4 +66,34 @@ class ArtistDao {
 
     return artists;
   }
+
+  Future<bool> hasSongs(Artist artist) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+
+    final List<Map<String, Object?>> result = await database.query(
+      databaseManager.songTableName,
+      columns: [
+        'COUNT(*) as count',
+      ], // Check how it works later!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      where: "${databaseManager.songArtistLabel} = ?",
+      whereArgs: [artist.name],
+    );
+
+    int count = Sqflite.firstIntValue(result) ?? 0;
+
+    return count > 0;
+  }
+
+  Future<bool> exists(Artist artist) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+
+    final List<Map<String, Object?>> result = await database.rawQuery(
+      "SELECT EXISTS(SELECT 1 FROM ${databaseManager.artistTableName} WHERE ${databaseManager.artistNameLabel} = ?) AS result;",
+      [artist.name],
+    );
+
+    return result.first["result"] == 1;
+  }
 }

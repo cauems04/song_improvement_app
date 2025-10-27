@@ -1,4 +1,5 @@
 import 'package:guitar_song_improvement/model/album.dart';
+import 'package:guitar_song_improvement/model/song.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:guitar_song_improvement/repository/database_manager.dart';
 
@@ -65,5 +66,35 @@ class AlbumDao {
     }
 
     return albums;
+  }
+
+  Future<bool> hasSongs(Album album) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+
+    final List<Map<String, Object?>> result = await database.query(
+      databaseManager.songTableName,
+      columns: [
+        'COUNT(*) as count',
+      ], // Check how it works later!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      where: "${databaseManager.songAlbumLabel} = ?",
+      whereArgs: [album.name],
+    );
+
+    int count = Sqflite.firstIntValue(result) ?? 0;
+
+    return count > 0;
+  }
+
+  Future<bool> exists(Album album) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+
+    final List<Map<String, Object?>> result = await database.rawQuery(
+      "SELECT EXISTS(SELECT 1 FROM ${databaseManager.albumTableName} WHERE ${databaseManager.albumNameLabel} = ?) AS result;",
+      [album.name],
+    );
+
+    return result.first["result"] == 1;
   }
 }
