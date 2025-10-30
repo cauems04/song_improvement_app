@@ -2,6 +2,7 @@ import 'package:guitar_song_improvement/model/i_model.dart';
 
 class Song implements IModel {
   final String _name;
+  // Maybe in the future will need to pass Albums/Artists classes to songs, so it can have their covers for example, or to treat the values easily, for example, songController is fixing album and artist names (and it doesn't look cool being there).
   final String artist;
   final String album;
   final String? image;

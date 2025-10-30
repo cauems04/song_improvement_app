@@ -110,4 +110,16 @@ class SongDao {
     List<Song> songs = songsFound.map((song) => Song.fromDbJson(song)).toList();
     return songs;
   }
+
+  Future<bool> exists(Song song) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+
+    final List<Map<String, Object?>> result = await database.rawQuery(
+      "SELECT EXISTS(SELECT 1 FROM ${databaseManager.songTableName} WHERE ${databaseManager.songNameLabel} = ? AND ${databaseManager.songAlbumLabel} = ? AND ${databaseManager.songArtistLabel} = ?) AS result;",
+      [song.name, song.album, song.artist],
+    );
+
+    return result.first["result"] == 1;
+  }
 }

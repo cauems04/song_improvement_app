@@ -95,25 +95,38 @@ class SaveSongPage extends StatelessWidget {
                             ArtistController artistController =
                                 ArtistController();
 
+                            Song song = Song(
+                              name: titleEditingController.text.trim(),
+                              album: albumEditingController.text
+                                  .trim(), // Maybe in the future will need to pass Albums/Artists classes to songs, so it can have their covers for example, or to treat the values easily, for example, songController is fixing album and artist names (and it doesn't look cool being there).
+                              artist: artistEditingController.text.trim(),
+                            );
+                            Album album = Album(
+                              name: albumEditingController.text.trim(),
+                            );
+                            Artist artist = Artist(
+                              name: artistEditingController.text.trim(),
+                            );
+
                             try {
-                              await albumController.create(
-                                Album(name: albumEditingController.text),
-                              );
+                              await artistController.create(artist);
 
-                              await artistController.create(
-                                Artist(name: artistEditingController.text),
-                              );
+                              await albumController.create(album);
 
-                              await songController.create(
-                                Song(
-                                  name: titleEditingController.text,
-                                  album: albumEditingController.text,
-                                  artist: artistEditingController.text,
-                                ),
-                              );
+                              await songController.create(song);
+
+                              Provider.of<MusicProvider>(
+                                context,
+                                listen: false,
+                              ).getData();
                             } catch (e) {
+                              artistController.delete(artist);
+                              albumController.delete(album);
+                              songController.delete(song);
+
                               // Try catch logic - A song must be created only whether both artist and album were created
                               // If something happens when creating one of them, it'll catch an error and the song won't be created
+                              // ALBUM and ARTIST can't be deleted if there's songs atached to them!!!!
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Erro ao salvar música: $e'),
@@ -121,14 +134,10 @@ class SaveSongPage extends StatelessWidget {
                               );
                             }
 
-                            Provider.of<MusicProvider>(
-                              context,
-                              listen: false,
-                            ).getData();
-
                             print(
                               "Song created - $titleEditingController.text - $albumEditingController.text - $artistEditingController.text",
                             );
+
                             Navigator.of(context).pop(1);
                           }
                         },

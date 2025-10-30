@@ -25,6 +25,18 @@ class Songcontroller {
     await songDao.create(songFixed);
   }
 
+  Future<void> delete(Song song) async {
+    final Song songFixed = Song(
+      name: song.name,
+      album: (song.album.isEmpty) ? "Other" : song.album,
+      artist: (song.artist.isEmpty) ? "Unkown" : song.artist,
+    );
+
+    SongDao songDao = SongDao();
+
+    if (await songDao.exists(songFixed)) songDao.delete(songFixed);
+  }
+
   Future<List<Song>> searchSongs(String parameter) async {
     List<Map<String, dynamic>> response = await ITunesSearchService.search(
       // Tentar mudar de dynamic pra object para melhor perform ance

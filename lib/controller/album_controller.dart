@@ -11,18 +11,34 @@ class Albumcontroller {
 
   Future<void> create(Album album) async {
     final Album albumFixed = Album(
-      name: (album.name.isEmpty) ? "Other" : album.name,
+      name: (album.name.isEmpty)
+          ? "Other"
+          : album
+                .name, // Create a function on the album model to to this itself
     );
 
     AlbumDao albumDao = AlbumDao();
+
+    final bool albumExists = await albumDao.exists(albumFixed);
+
+    if (albumExists) return;
+
     await albumDao.create(albumFixed);
   }
 
   Future<void> delete(Album album) async {
+    final Album albumFixed = Album(
+      name: (album.name.isEmpty)
+          ? "Other"
+          : album
+                .name, // Create a function on the album model to to this itself
+    );
+
     AlbumDao albumDao = AlbumDao();
-    if (!(await albumDao.hasSongs(album))) {
+
+    if (!(await albumDao.hasSongs(albumFixed))) {
       // Check where to use this function
-      albumDao.delete(album);
+      albumDao.delete(albumFixed);
     }
   }
 }
