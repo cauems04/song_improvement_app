@@ -1,5 +1,4 @@
 import 'package:guitar_song_improvement/model/album.dart';
-import 'package:guitar_song_improvement/model/song.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:guitar_song_improvement/repository/database_manager.dart';
 

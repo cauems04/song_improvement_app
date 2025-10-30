@@ -9,10 +9,6 @@ class FilterService {
         .where((item) => item.name.toLowerCase().contains(nameFilter))
         .toList();
 
-    for (T item in items) {
-      if (item.name.contains(nameFilter)) filteredItems.add(item);
-    }
-
     return filteredItems;
   }
 }
