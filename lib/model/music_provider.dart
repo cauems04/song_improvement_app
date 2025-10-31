@@ -20,8 +20,8 @@ class MusicProvider extends ChangeNotifier {
   Future<void> getData() async {
     // _isLoaded = false;
 
-    Songcontroller songController = Songcontroller();
-    Albumcontroller albumcontroller = Albumcontroller();
+    SongController songController = SongController();
+    AlbumController albumcontroller = AlbumController();
     ArtistController artistController = ArtistController();
 
     songs = await songController.readAll();

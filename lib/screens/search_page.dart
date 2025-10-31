@@ -23,7 +23,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   int currentPageIndex = 0;
-  Songcontroller songController = Songcontroller();
+  SongController songController = SongController();
   String search = "";
 
   @override
@@ -112,7 +112,7 @@ class _SearchPageState extends State<SearchPage> {
 }
 
 class _OnlineSearch extends StatelessWidget {
-  final Songcontroller songController;
+  final SongController songController;
   final String search;
 
   const _OnlineSearch(this.songController, {this.search = ""});

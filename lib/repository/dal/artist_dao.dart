@@ -15,7 +15,7 @@ class ArtistDao {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.delete(
-      databaseManager.artistNameLabel,
+      databaseManager.artistTableName,
       where:
           """
             ${databaseManager.artistNameLabel} = ?

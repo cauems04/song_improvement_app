@@ -1,8 +1,8 @@
 import 'package:guitar_song_improvement/model/album.dart';
 import 'package:guitar_song_improvement/repository/dal/album_dao.dart';
 
-class Albumcontroller {
-  const Albumcontroller();
+class AlbumController {
+  const AlbumController();
 
   Future<List<Album>> readAll() async {
     AlbumDao albumDao = AlbumDao();

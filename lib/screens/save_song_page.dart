@@ -12,13 +12,15 @@ import 'package:provider/provider.dart';
 class SaveSongPage extends StatelessWidget {
   final Song? song;
 
+  final bool isEditing;
+
   late TextEditingController titleEditingController;
   late TextEditingController albumEditingController;
   late TextEditingController artistEditingController;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  SaveSongPage({super.key, this.song}) {
+  SaveSongPage({super.key, this.song, this.isEditing = false}) {
     titleEditingController = TextEditingController();
     albumEditingController = TextEditingController();
     artistEditingController = TextEditingController();
@@ -90,55 +92,55 @@ class SaveSongPage extends StatelessWidget {
                         ),
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            Songcontroller songController = Songcontroller();
-                            Albumcontroller albumController = Albumcontroller();
+                            SongController songController = SongController();
+                            AlbumController albumController = AlbumController();
                             ArtistController artistController =
                                 ArtistController();
 
-                            Song song = Song(
+                            Song newSong = Song(
                               name: titleEditingController.text.trim(),
                               album: albumEditingController.text
                                   .trim(), // Maybe in the future will need to pass Albums/Artists classes to songs, so it can have their covers for example, or to treat the values easily, for example, songController is fixing album and artist names (and it doesn't look cool being there).
                               artist: artistEditingController.text.trim(),
                             );
-                            Album album = Album(
+                            Album newAlbum = Album(
                               name: albumEditingController.text.trim(),
                             );
-                            Artist artist = Artist(
+                            Artist newArtist = Artist(
                               name: artistEditingController.text.trim(),
                             );
 
-                            try {
-                              await artistController.create(artist);
+                            if (!isEditing) {
+                              try {
+                                await artistController.create(newArtist);
 
-                              await albumController.create(album);
+                                await albumController.create(newAlbum);
 
-                              await songController.create(song);
+                                await songController.create(newSong);
+                              } catch (e) {
+                                artistController.delete(newArtist);
+                                albumController.delete(newAlbum);
+                                songController.delete(newSong);
 
-                              Provider.of<MusicProvider>(
-                                context,
-                                listen: false,
-                              ).getData();
-                            } catch (e) {
-                              artistController.delete(artist);
-                              albumController.delete(album);
-                              songController.delete(song);
-
-                              // Try catch logic - A song must be created only whether both artist and album were created
-                              // If something happens when creating one of them, it'll catch an error and the song won't be created
-                              // ALBUM and ARTIST can't be deleted if there's songs atached to them!!!!
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Erro ao salvar música: $e'),
-                                ),
-                              );
+                                // Try catch logic - A song must be created only whether both artist and album were created
+                                // If something happens when creating one of them, it'll catch an error and the song won't be created
+                                // ALBUM and ARTIST can't be deleted if there's songs atached to them!!!!
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Erro ao salvar música: $e'),
+                                  ),
+                                );
+                              }
+                            } else {
+                              await songController.update(song!, newSong);
                             }
 
-                            print(
-                              "Song created - $titleEditingController.text - $albumEditingController.text - $artistEditingController.text",
-                            );
+                            Provider.of<MusicProvider>(
+                              context,
+                              listen: false,
+                            ).getData();
 
-                            Navigator.of(context).pop(1);
+                            Navigator.of(context).pop(newSong);
                           }
                         },
                       ),
@@ -152,6 +154,8 @@ class SaveSongPage extends StatelessWidget {
       ),
     );
   }
+
+  void saveSong(Song song, Album album, Artist artist) async {}
 }
 
 class CustomTextFormField extends StatelessWidget {

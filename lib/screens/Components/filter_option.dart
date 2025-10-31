@@ -37,9 +37,11 @@ class FilterOption extends StatelessWidget {
               padding: const EdgeInsets.all(Spacing.xs),
               child: Text(
                 label,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyMedium!
+                    .copyWith(fontWeight: FontWeight.bold)
+                    .copyWith(
+                      color: (isSelected) ? Colors.black : Colors.white,
+                    ),
               ),
             ),
             onTap: () {

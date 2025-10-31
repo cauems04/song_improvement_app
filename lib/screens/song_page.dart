@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/controller/album_controller.dart';
+import 'package:guitar_song_improvement/controller/artist_controller.dart';
+import 'package:guitar_song_improvement/controller/song_controller.dart';
+import 'package:guitar_song_improvement/model/album.dart';
+import 'package:guitar_song_improvement/model/artist.dart';
+import 'package:guitar_song_improvement/model/music_provider.dart';
 import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/screens/save_song_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:provider/provider.dart';
 
 class SongPage extends StatefulWidget {
   final Song song;
@@ -11,6 +19,14 @@ class SongPage extends StatefulWidget {
 }
 
 class _SongPageState extends State<SongPage> {
+  late Song song;
+
+  @override
+  void initState() {
+    super.initState();
+    song = widget.song;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,6 +42,60 @@ class _SongPageState extends State<SongPage> {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          InkWell(
+            customBorder: CircleBorder(),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Icon(Icons.edit, color: Colors.white),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      SaveSongPage(song: song, isEditing: true),
+                ),
+              ).then((result) {
+                if (result == null) return;
+
+                Song songReturned = result as Song;
+
+                setState(() {
+                  song = Song(
+                    id: song.id,
+                    name: songReturned.name,
+                    album: songReturned.album,
+                    artist: songReturned.artist,
+                  );
+                });
+              });
+            },
+          ),
+          InkWell(
+            customBorder: CircleBorder(),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Icon(Icons.delete, color: Colors.redAccent),
+            ),
+            onTap: () async {
+              SongController songController = SongController();
+              AlbumController albumController = AlbumController();
+              ArtistController artistController = ArtistController();
+
+              await songController.delete(song);
+              print("Song deleted");
+              await albumController.delete(Album(name: song.album));
+              print("Album deleted");
+              await artistController.delete(Artist(name: song.artist));
+              print("Artist deleted");
+
+              Provider.of<MusicProvider>(context, listen: false).getData();
+
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
         backgroundColor: Theme.of(context).colorScheme.surface,
       ),
       body: Padding(
@@ -36,7 +106,7 @@ class _SongPageState extends State<SongPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  widget.song.name,
+                  song.name,
                   style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -45,14 +115,11 @@ class _SongPageState extends State<SongPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8, bottom: 8),
                   child: Text(
-                    widget.song.artist,
+                    song.artist,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-                Text(
-                  widget.song.album,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text(song.album, style: Theme.of(context).textTheme.titleLarge),
                 Padding(
                   padding: const EdgeInsets.only(
                     top: 200,
@@ -68,21 +135,21 @@ class _SongPageState extends State<SongPage> {
   }
 }
 
-class CustomTextFormField extends StatelessWidget {
-  final String fieldName;
-  const CustomTextFormField(this.fieldName, {super.key});
+// class CustomTextFormField extends StatelessWidget {
+//   final String fieldName;
+//   const CustomTextFormField(this.fieldName, {super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      style: TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        labelText: fieldName,
-        labelStyle: TextStyle(color: Colors.white60, fontSize: 16),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextFormField(
+//       style: TextStyle(color: Colors.white),
+//       decoration: InputDecoration(
+//         labelText: fieldName,
+//         labelStyle: TextStyle(color: Colors.white60, fontSize: 16),
+//       ),
+//     );
+//   }
+// }
 
 class _LinkSection extends StatefulWidget {
   const _LinkSection();

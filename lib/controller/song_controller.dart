@@ -4,8 +4,8 @@ import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
 import 'package:guitar_song_improvement/services/i_tunes_search_service.dart';
 
-class Songcontroller {
-  const Songcontroller();
+class SongController {
+  const SongController();
 
   saveSong() {}
 
@@ -23,6 +23,12 @@ class Songcontroller {
 
     SongDao songDao = SongDao();
     await songDao.create(songFixed);
+  }
+
+  Future<void> update(Song oldSong, Song newSong) async {
+    SongDao songDao = SongDao();
+
+    if (oldSong.id != null) await songDao.update(oldSong, newSong);
   }
 
   Future<void> delete(Song song) async {

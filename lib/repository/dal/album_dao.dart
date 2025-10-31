@@ -15,7 +15,7 @@ class AlbumDao {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.delete(
-      databaseManager.albumNameLabel,
+      databaseManager.albumTableName,
       where:
           """
             ${databaseManager.albumNameLabel} = ?

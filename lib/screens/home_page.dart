@@ -183,8 +183,8 @@ class StandardHomePage extends StatelessWidget {
 
   Future<void> printData() async {
     // This is a test function used to debug and see data, take it off later, i won't be useful for the app itself
-    Songcontroller songController = Songcontroller();
-    Albumcontroller albumcontroller = Albumcontroller();
+    SongController songController = SongController();
+    AlbumController albumcontroller = AlbumController();
     ArtistController artistController = ArtistController();
 
     AlbumDao albumDao = AlbumDao();

@@ -13,6 +13,21 @@ class SongDao {
     await database.insert(databaseManager.songTableName, song.toMap());
   }
 
+  Future<void> update(Song oldSong, Song newSong) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    await database.update(
+      databaseManager.songTableName,
+      {
+        databaseManager.songNameLabel: newSong.name,
+        databaseManager.songAlbumLabel: newSong.album,
+        databaseManager.songArtistLabel: newSong.artist,
+      },
+      where: "id = ?",
+      whereArgs: [oldSong.id],
+    );
+  }
+
   Future<void> delete(Song song) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
