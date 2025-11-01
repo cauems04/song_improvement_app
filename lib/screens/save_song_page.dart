@@ -118,29 +118,59 @@ class SaveSongPage extends StatelessWidget {
 
                                 await songController.create(newSong);
                               } catch (e) {
+                                songController.delete(newSong);
                                 artistController.delete(newArtist);
                                 albumController.delete(newAlbum);
-                                songController.delete(newSong);
 
                                 // Try catch logic - A song must be created only whether both artist and album were created
                                 // If something happens when creating one of them, it'll catch an error and the song won't be created
                                 // ALBUM and ARTIST can't be deleted if there's songs atached to them!!!!
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Erro ao salvar música: $e'),
-                                  ),
-                                );
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Erro ao salvar música: $e',
+                                      ),
+                                    ),
+                                  );
+                                }
                               }
                             } else {
                               await songController.update(song!, newSong);
+
+                              if (song!.album != newAlbum.name) {
+                                await albumController.delete(
+                                  Album(name: song!.album),
+                                );
+                                await albumController.create(newAlbum);
+                              }
+
+                              if (song!.artist != newArtist.name) {
+                                await artistController.delete(
+                                  Artist(name: song!.artist),
+                                );
+                                await artistController.create(newArtist);
+                              }
                             }
 
-                            Provider.of<MusicProvider>(
-                              context,
-                              listen: false,
-                            ).getData();
+                            if (context.mounted) {
+                              // Check this later and what wrong can happen for us to treat it
+                              Provider.of<MusicProvider>(
+                                context,
+                                listen: false,
+                              ).getData();
+                              final Song newSongFixed = Song(
+                                name: newSong.name,
+                                album: (newSong.album.isEmpty)
+                                    ? "Other"
+                                    : newSong.album,
+                                artist: (newSong.artist.isEmpty)
+                                    ? "Unkown"
+                                    : newSong.artist,
+                              );
 
-                            Navigator.of(context).pop(newSong);
+                              Navigator.of(context).pop(newSongFixed);
+                            }
                           }
                         },
                       ),

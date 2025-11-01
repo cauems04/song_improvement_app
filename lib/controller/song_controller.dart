@@ -26,9 +26,16 @@ class SongController {
   }
 
   Future<void> update(Song oldSong, Song newSong) async {
+    final Song newSongFixed = Song(
+      name: newSong.name,
+      album: (newSong.album.isEmpty) ? "Other" : newSong.album,
+      artist: (newSong.artist.isEmpty) ? "Unkown" : newSong.artist,
+    );
+
     SongDao songDao = SongDao();
 
-    if (oldSong.id != null) await songDao.update(oldSong, newSong);
+    if (await songDao.exists(oldSong))
+      await songDao.update(oldSong, newSongFixed);
   }
 
   Future<void> delete(Song song) async {

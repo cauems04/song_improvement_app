@@ -36,9 +36,11 @@ class AlbumController {
 
     AlbumDao albumDao = AlbumDao();
 
-    if (!(await albumDao.hasSongs(albumFixed))) {
-      // Check where to use this function
-      albumDao.delete(albumFixed);
+    if (await albumDao.exists(album)) {
+      if (!(await albumDao.hasSongs(albumFixed))) {
+        // Check where to use this function
+        albumDao.delete(albumFixed);
+      }
     }
   }
 }

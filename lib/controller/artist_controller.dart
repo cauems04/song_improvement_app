@@ -36,9 +36,11 @@ class ArtistController {
 
     ArtistDao artistDao = ArtistDao();
 
-    if (!(await artistDao.hasSongs(artistFixed))) {
-      // Check where to use this function
-      artistDao.delete(artistFixed);
+    if (await artistDao.exists(artistFixed)) {
+      if (!(await artistDao.hasSongs(artistFixed))) {
+        // Check where to use this function
+        artistDao.delete(artistFixed);
+      }
     }
   }
 }

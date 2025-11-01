@@ -84,15 +84,14 @@ class _SongPageState extends State<SongPage> {
               ArtistController artistController = ArtistController();
 
               await songController.delete(song);
-              print("Song deleted");
               await albumController.delete(Album(name: song.album));
-              print("Album deleted");
               await artistController.delete(Artist(name: song.artist));
-              print("Artist deleted");
 
-              Provider.of<MusicProvider>(context, listen: false).getData();
+              if (context.mounted) {
+                Provider.of<MusicProvider>(context, listen: false).getData();
 
-              Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              }
             },
           ),
         ],
