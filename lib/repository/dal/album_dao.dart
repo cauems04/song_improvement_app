@@ -8,17 +8,17 @@ class AlbumDao {
   Future<void> create(Album album) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
-    await database.insert(databaseManager.albumTableName, album.toMap());
+    await database.insert(DatabaseManager.albumTableName, album.toMap());
   }
 
   Future<void> delete(Album album) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.delete(
-      databaseManager.albumTableName,
+      DatabaseManager.albumTableName,
       where:
           """
-            ${databaseManager.albumNameLabel} = ?
+            ${DatabaseManager.albumNameLabel} = ?
           """,
       whereArgs: [album.name],
     );
@@ -38,10 +38,10 @@ class AlbumDao {
     Database database = await databaseManager.database;
 
     List<Map<String, Object?>> result = await database.query(
-      databaseManager.albumTableName,
+      DatabaseManager.albumTableName,
       where:
           """
-            ${databaseManager.albumNameLabel} = ?
+            ${DatabaseManager.albumNameLabel} = ?
           """,
       whereArgs: [album.name],
     );
@@ -56,7 +56,7 @@ class AlbumDao {
     Database database = await databaseManager.database;
 
     List<Map<String, Object?>> data = await database.query(
-      databaseManager.albumTableName,
+      DatabaseManager.albumTableName,
     );
 
     List<Album> albums = [];
@@ -72,11 +72,11 @@ class AlbumDao {
     Database database = await databaseManager.database;
 
     final List<Map<String, Object?>> result = await database.query(
-      databaseManager.songTableName,
+      DatabaseManager.songTableName,
       columns: [
         'COUNT(*) as count',
       ], // Check how it works later!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      where: "${databaseManager.songAlbumLabel} = ?",
+      where: "${DatabaseManager.songAlbumLabel} = ?",
       whereArgs: [album.name],
     );
 
@@ -90,7 +90,7 @@ class AlbumDao {
     Database database = await databaseManager.database;
 
     final List<Map<String, Object?>> result = await database.rawQuery(
-      "SELECT EXISTS(SELECT 1 FROM ${databaseManager.albumTableName} WHERE ${databaseManager.albumNameLabel} = ?) AS result;",
+      "SELECT EXISTS(SELECT 1 FROM ${DatabaseManager.albumTableName} WHERE ${DatabaseManager.albumNameLabel} = ?) AS result;",
       [album.name],
     );
 

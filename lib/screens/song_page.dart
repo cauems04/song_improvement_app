@@ -7,6 +7,8 @@ import 'package:guitar_song_improvement/model/artist.dart';
 import 'package:guitar_song_improvement/model/music_provider.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/screens/save_song_page.dart';
+import 'package:guitar_song_improvement/screens/song_links_page.dart';
+import 'package:guitar_song_improvement/screens/song_overview_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +22,7 @@ class SongPage extends StatefulWidget {
 
 class _SongPageState extends State<SongPage> {
   late Song song;
+  int currentPage = 1;
 
   @override
   void initState() {
@@ -97,40 +100,109 @@ class _SongPageState extends State<SongPage> {
         ],
         backgroundColor: Theme.of(context).colorScheme.surface,
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  song.name,
-                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8, bottom: 8),
-                  child: Text(
-                    song.artist,
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ),
-                Text(song.album, style: Theme.of(context).textTheme.titleLarge),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 200,
-                  ), // TESTESTESTESTESTESTESTESTESTE
-                  child: _LinkSection(),
-                ),
-              ],
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              Spacing.sm,
+              Spacing.sm,
+              Spacing.sm,
+              Spacing.none,
             ),
+            child: TopNavigationBar(currentPage, (page) {
+              if (page != currentPage) {
+                setState(() {
+                  currentPage = page;
+                });
+              }
+            }),
           ),
+          if (currentPage == 0) (SongLinksPage(song)),
+          if (currentPage == 1) SongOverviewPage(song),
+        ],
+      ),
+    );
+  }
+}
+
+class TopNavigationBar extends StatelessWidget {
+  final int currentPage;
+
+  final Function(int) onTap;
+
+  const TopNavigationBar(this.currentPage, this.onTap, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        _NavElement(0, "Links", currentPage: currentPage, onTap: onTap),
+        _NavElement(1, "Overview", currentPage: currentPage, onTap: onTap),
+        _NavElement(2, "Records", currentPage: currentPage, onTap: onTap),
+      ],
+    );
+  }
+}
+
+class _NavElement extends StatelessWidget {
+  final int pageNumber;
+  final String label;
+  final int currentPage;
+  final Function(int) onTap;
+
+  const _NavElement(
+    this.pageNumber,
+    this.label, {
+    required this.currentPage,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onTap(pageNumber),
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.xs),
+        child: Column(
+          children: [
+            Text(
+              label,
+              style: (currentPage == pageNumber)
+                  ? Theme.of(context).textTheme.titleLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    )
+                  : Theme.of(context).textTheme.titleLarge,
+            ),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.easeInOut,
+              height: 3,
+              width: (currentPage == pageNumber) ? 20 : 0,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onPrimary,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+}
+
+class LinksPage extends StatefulWidget {
+  const LinksPage({super.key});
+
+  @override
+  State<LinksPage> createState() => _LinksPageState();
+}
+
+class _LinksPageState extends State<LinksPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
 
@@ -150,30 +222,30 @@ class _SongPageState extends State<SongPage> {
 //   }
 // }
 
-class _LinkSection extends StatefulWidget {
-  const _LinkSection();
+// class _LinkSection extends StatefulWidget {
+//   const _LinkSection();
 
-  @override
-  State<_LinkSection> createState() => _linkSectionState();
-}
+//   @override
+//   State<_LinkSection> createState() => _linkSectionState();
+// }
 
-class _linkSectionState extends State<_LinkSection> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Support Links", style: Theme.of(context).textTheme.titleLarge),
-        Padding(
-          padding: const EdgeInsets.only(top: Spacing.xs, bottom: Spacing.xs),
-          child: Container(width: 300, height: 2, color: Colors.white),
-        ),
-        Text(
-          "www.youtube.com/2rdchfidsbds78dh8i",
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        Icon(Icons.add),
-      ],
-    );
-  }
-}
+// class _linkSectionState extends State<_LinkSection> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Text("Support Links", style: Theme.of(context).textTheme.titleLarge),
+//         Padding(
+//           padding: const EdgeInsets.only(top: Spacing.xs, bottom: Spacing.xs),
+//           child: Container(width: 300, height: 2, color: Colors.white),
+//         ),
+//         Text(
+//           "www.youtube.com/2rdchfidsbds78dh8i",
+//           style: Theme.of(context).textTheme.bodyLarge,
+//         ),
+//         Icon(Icons.add),
+//       ],
+//     );
+//   }
+// }

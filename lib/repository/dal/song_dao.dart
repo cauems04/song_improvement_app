@@ -10,18 +10,18 @@ class SongDao {
   Future<void> create(Song song) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
-    await database.insert(databaseManager.songTableName, song.toMap());
+    await database.insert(DatabaseManager.songTableName, song.toMap());
   }
 
   Future<void> update(Song oldSong, Song newSong) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.update(
-      databaseManager.songTableName,
+      DatabaseManager.songTableName,
       {
-        databaseManager.songNameLabel: newSong.name,
-        databaseManager.songAlbumLabel: newSong.album,
-        databaseManager.songArtistLabel: newSong.artist,
+        DatabaseManager.songNameLabel: newSong.name,
+        DatabaseManager.songAlbumLabel: newSong.album,
+        DatabaseManager.songArtistLabel: newSong.artist,
       },
       where: "id = ?",
       whereArgs: [oldSong.id],
@@ -32,12 +32,12 @@ class SongDao {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.delete(
-      databaseManager.songTableName,
+      DatabaseManager.songTableName,
       where:
           """
-            ${databaseManager.songNameLabel} = ? AND
-            ${databaseManager.songAlbumLabel} = ? AND
-            ${databaseManager.songArtistLabel} = ?                              
+            ${DatabaseManager.songNameLabel} = ? AND
+            ${DatabaseManager.songAlbumLabel} = ? AND
+            ${DatabaseManager.songArtistLabel} = ?                              
           """,
       whereArgs: [song.name, song.album, song.artist],
     );
@@ -50,12 +50,12 @@ class SongDao {
     Database database = await databaseManager.database;
 
     List<Map<String, Object?>> result = await database.query(
-      databaseManager.songTableName,
+      DatabaseManager.songTableName,
       where:
           """
-            ${databaseManager.songNameLabel} = ? AND
-            ${databaseManager.songAlbumLabel} = ? AND
-            ${databaseManager.songArtistLabel} = ?                              
+            ${DatabaseManager.songNameLabel} = ? AND
+            ${DatabaseManager.songAlbumLabel} = ? AND
+            ${DatabaseManager.songArtistLabel} = ?                              
           """,
       whereArgs: [song.name, song.album, song.artist],
     );
@@ -70,7 +70,7 @@ class SongDao {
     Database database = await databaseManager.database;
 
     List<Map<String, Object?>> data = await database.query(
-      databaseManager.songTableName,
+      DatabaseManager.songTableName,
     );
 
     List<Song> songs = [];
@@ -94,8 +94,8 @@ class SongDao {
 
     List<Map<String, Object?>> songsFound = await database.query(
       // Verify indexes creation on foreign keys to improve performance (fk for albums and artists)
-      databaseManager.songTableName,
-      where: "${databaseManager.songAlbumLabel} = ?",
+      DatabaseManager.songTableName,
+      where: "${DatabaseManager.songAlbumLabel} = ?",
       whereArgs: [album.name],
     );
 
@@ -113,14 +113,12 @@ class SongDao {
 
     List<Map<String, Object?>> songsFound = await database.query(
       // Verify indexes creation on foreign keys to improve performance (fk for albums and artists)
-      databaseManager.songTableName,
-      where: "${databaseManager.songArtistLabel} = ?",
+      DatabaseManager.songTableName,
+      where: "${DatabaseManager.songArtistLabel} = ?",
       whereArgs: [artist.name],
     );
 
-    if (songsFound.isEmpty) {
-      return [];
-    }
+    if (songsFound.isEmpty) return [];
 
     List<Song> songs = songsFound.map((song) => Song.fromDbJson(song)).toList();
     return songs;
@@ -131,7 +129,7 @@ class SongDao {
     Database database = await databaseManager.database;
 
     final List<Map<String, Object?>> result = await database.rawQuery(
-      "SELECT EXISTS(SELECT 1 FROM ${databaseManager.songTableName} WHERE ${databaseManager.songNameLabel} = ? AND ${databaseManager.songAlbumLabel} = ? AND ${databaseManager.songArtistLabel} = ?) AS result;",
+      "SELECT EXISTS(SELECT 1 FROM ${DatabaseManager.songTableName} WHERE ${DatabaseManager.songNameLabel} = ? AND ${DatabaseManager.songAlbumLabel} = ? AND ${DatabaseManager.songArtistLabel} = ?) AS result;",
       [song.name, song.album, song.artist],
     );
 

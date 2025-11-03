@@ -8,17 +8,17 @@ class ArtistDao {
   Future<void> create(Artist artist) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
-    await database.insert(databaseManager.artistTableName, artist.toMap());
+    await database.insert(DatabaseManager.artistTableName, artist.toMap());
   }
 
   Future<void> delete(Artist artist) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.delete(
-      databaseManager.artistTableName,
+      DatabaseManager.artistTableName,
       where:
           """
-            ${databaseManager.artistNameLabel} = ?
+            ${DatabaseManager.artistNameLabel} = ?
           """,
       whereArgs: [artist.name],
     );
@@ -38,10 +38,10 @@ class ArtistDao {
     Database database = await databaseManager.database;
 
     List<Map<String, Object?>> result = await database.query(
-      databaseManager.artistTableName,
+      DatabaseManager.artistTableName,
       where:
           """
-            ${databaseManager.artistNameLabel} = ?
+            ${DatabaseManager.artistNameLabel} = ?
           """,
       whereArgs: [artist.name],
     );
@@ -56,7 +56,7 @@ class ArtistDao {
     Database database = await databaseManager.database;
 
     List<Map<String, Object?>> data = await database.query(
-      databaseManager.artistTableName,
+      DatabaseManager.artistTableName,
     );
 
     List<Artist> artists = [];
@@ -72,11 +72,11 @@ class ArtistDao {
     Database database = await databaseManager.database;
 
     final List<Map<String, Object?>> result = await database.query(
-      databaseManager.songTableName,
+      DatabaseManager.songTableName,
       columns: [
         'COUNT(*) as count',
       ], // Check how it works later!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      where: "${databaseManager.songArtistLabel} = ?",
+      where: "${DatabaseManager.songArtistLabel} = ?",
       whereArgs: [artist.name],
     );
 
@@ -90,7 +90,7 @@ class ArtistDao {
     Database database = await databaseManager.database;
 
     final List<Map<String, Object?>> result = await database.rawQuery(
-      "SELECT EXISTS(SELECT 1 FROM ${databaseManager.artistTableName} WHERE ${databaseManager.artistNameLabel} = ?) AS result;",
+      "SELECT EXISTS(SELECT 1 FROM ${DatabaseManager.artistTableName} WHERE ${DatabaseManager.artistNameLabel} = ?) AS result;",
       [artist.name],
     );
 

@@ -1,4 +1,5 @@
 import 'package:guitar_song_improvement/model/i_model.dart';
+import 'package:guitar_song_improvement/repository/database_manager.dart';
 
 class Song implements IModel {
   final int? id;
@@ -31,13 +32,17 @@ class Song implements IModel {
   Song.fromDbJson(
     Map<String, dynamic> json,
   ) // Tentar mudar de dynamic pra object para melhor performance
-  : id = json["id"],
-      _name = json["title"].toString(),
-      artist = json["artist_name"].toString(),
-      album = json["album_title"].toString(),
+  : id = json[DatabaseManager.songIdLabel],
+      _name = json[DatabaseManager.songNameLabel].toString(),
+      artist = json[DatabaseManager.songArtistLabel].toString(),
+      album = json[DatabaseManager.songAlbumLabel].toString(),
       image = null;
 
   Map<String, String> toMap() {
-    return {"title": name, "artist_name": artist, "album_title": album};
+    return {
+      DatabaseManager.songNameLabel: name,
+      DatabaseManager.songArtistLabel: artist,
+      DatabaseManager.songAlbumLabel: album,
+    };
   }
 }
