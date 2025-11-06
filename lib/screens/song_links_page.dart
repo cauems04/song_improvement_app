@@ -1,29 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/controller/link_controller.dart';
 import 'package:guitar_song_improvement/model/link.dart';
-import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/screens/components/link_card.dart';
 
 class SongLinksPage extends StatelessWidget {
   //Turn into a statefulidget
-  final Song song; //Turn into a statefulidget
-  late Future<List<Link>> //Turn into a statefulidget
-  links; // Instead of loading this data here, load on the SongPage(), at the beggining, so that the user doesn't load this everytime and passing pages become smoother
+  final Future<List<Link>> links;
 
-  SongLinksPage(this.song, {super.key}) {
-    links =
-        getLinks(); // Instead of loading this data here, load on the SongPage(), at the beggining, so that the user doesn't load this everytime and passing pages become smoother
-  }
-
-  Future<List<Link>> getLinks() async {
-    // Instead of loading this data here, load on the SongPage(), at the beggining, so that the user doesn't load this everytime and passing pages become smoother
-    // Instead of loading this data here, load on the SongPage(), at the beggining, so that the user doesn't load this everytime and passing pages become smoother
-    LinkController songController =
-        LinkController(); // Instead of loading this data here, load on the SongPage(), at the beggining, so that the user doesn't load this everytime and passing pages become smoother
-    return await songController.linksBySong(
-      song.id!,
-    ); // Instead of loading this data here, load on the SongPage(), at the beggining, so that the user doesn't load this everytime and passing pages become smoother
-  } // Instead of loading this data here, load on the SongPage(), at the beggining, so that the user doesn't load this everytime and passing pages become smoother
+  const SongLinksPage(this.links, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +30,10 @@ class SongLinksPage extends StatelessWidget {
               child = Center(child: CircularProgressIndicator());
               break;
             case ConnectionState.none:
-              child = Center(child: Text("No link found. Add one"));
+              child = Center(child: Text("No links found. Add one"));
               break;
             case ConnectionState.done:
-              List<LinkCard> songWidgets = [];
+              List<LinkCard> linkWidgets = [];
 
               if (snapshot.data == null || snapshot.data!.isEmpty) {
                 print(
@@ -61,13 +44,14 @@ class SongLinksPage extends StatelessWidget {
               }
 
               for (Link link in snapshot.data!) {
-                songWidgets.add(LinkCard(link));
+                linkWidgets.add(LinkCard(link));
               }
 
               child = ListView.builder(
-                itemCount: songWidgets.length,
+                shrinkWrap: true,
+                itemCount: linkWidgets.length,
                 itemBuilder: (context, index) {
-                  return songWidgets[index];
+                  return linkWidgets[index];
                 },
               );
               break;

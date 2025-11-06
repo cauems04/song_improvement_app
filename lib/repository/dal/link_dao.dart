@@ -11,14 +11,14 @@ class LinkDao {
     await database.insert(DatabaseManager.linkTableName, link.toMap());
   }
 
-  Future<List<Link>> linksBySong(int song_id) async {
+  Future<List<Link>> linksBySong(int songId) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
 
     List<Map<String, Object?>> linksFound = await database.query(
       DatabaseManager.linkTableName,
       where: "${DatabaseManager.linkSongLabel} = ?",
-      whereArgs: [song_id],
+      whereArgs: [songId],
     );
 
     if (linksFound.isEmpty) return [];

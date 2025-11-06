@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/controller/album_controller.dart';
 import 'package:guitar_song_improvement/controller/artist_controller.dart';
+import 'package:guitar_song_improvement/controller/link_controller.dart';
 import 'package:guitar_song_improvement/controller/song_controller.dart';
 import 'package:guitar_song_improvement/model/album.dart';
 import 'package:guitar_song_improvement/model/artist.dart';
+import 'package:guitar_song_improvement/model/link.dart';
 import 'package:guitar_song_improvement/model/music_provider.dart';
 import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/screens/save_link_page.dart';
 import 'package:guitar_song_improvement/screens/save_song_page.dart';
 import 'package:guitar_song_improvement/screens/song_links_page.dart';
 import 'package:guitar_song_improvement/screens/song_overview_page.dart';
@@ -22,81 +25,126 @@ class SongPage extends StatefulWidget {
 
 class _SongPageState extends State<SongPage> {
   late Song song;
+  late Future<List<Link>> links;
   int currentPage = 1;
 
   @override
   void initState() {
     super.initState();
     song = widget.song;
+
+    links = getLinks();
+  }
+
+  Future<List<Link>> getLinks() async {
+    LinkController songController = LinkController();
+    return songController.linksBySong(song.id!);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
+      floatingActionButton: (currentPage != 1)
+          ? FloatingActionButton(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              onPressed: () {
+                switch (currentPage) {
+                  case 0:
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SaveLinkPage(song: song),
+                      ),
+                    ).then((value) {
+                      if (value) {
+                        LinkController linkController = LinkController();
+
+                        setState(() {
+                          links = linkController.linksBySong(song.id!);
+                        });
+                      }
+                    });
+                    break;
+                  case 1:
+                    Navigator.push(
+                      context, // Implement for recording audio!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! instead of saving link
+                      MaterialPageRoute(
+                        builder: (context) => SaveLinkPage(song: song),
+                      ),
+                    );
+                    break;
+                }
+                return;
+              },
+              child: Icon(Icons.add_link),
+            )
+          : null,
       appBar: AppBar(
         leading: InkWell(
           customBorder: CircleBorder(),
           child: Padding(
             padding: const EdgeInsets.all(8),
-            child: Icon(Icons.close, color: Colors.white),
+            child: Icon(Icons.close),
           ),
           onTap: () {
             Navigator.pop(context);
           },
         ),
         actions: [
-          InkWell(
-            customBorder: CircleBorder(),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Icon(Icons.edit, color: Colors.white),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      SaveSongPage(song: song, isEditing: true),
-                ),
-              ).then((result) {
-                if (result == null) return;
+          if (currentPage == 1)
+            InkWell(
+              customBorder: CircleBorder(),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Icon(Icons.edit, color: Colors.white),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        SaveSongPage(song: song, isEditing: true),
+                  ),
+                ).then((result) {
+                  if (result == null) return;
 
-                Song songReturned = result as Song;
+                  Song songReturned = result as Song;
 
-                setState(() {
-                  song = Song(
-                    id: song.id,
-                    name: songReturned.name,
-                    album: songReturned.album,
-                    artist: songReturned.artist,
-                  );
+                  setState(() {
+                    song = Song(
+                      id: song.id,
+                      name: songReturned.name,
+                      album: songReturned.album,
+                      artist: songReturned.artist,
+                    );
+                  });
                 });
-              });
-            },
-          ),
-          InkWell(
-            customBorder: CircleBorder(),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Icon(Icons.delete, color: Colors.redAccent),
+              },
             ),
-            onTap: () async {
-              SongController songController = SongController();
-              AlbumController albumController = AlbumController();
-              ArtistController artistController = ArtistController();
+          if (currentPage == 1)
+            InkWell(
+              customBorder: CircleBorder(),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Icon(Icons.delete, color: Colors.redAccent),
+              ),
+              onTap: () async {
+                SongController songController = SongController();
+                AlbumController albumController = AlbumController();
+                ArtistController artistController = ArtistController();
 
-              await songController.delete(song);
-              await albumController.delete(Album(name: song.album));
-              await artistController.delete(Artist(name: song.artist));
+                await songController.delete(song);
+                await albumController.delete(Album(name: song.album));
+                await artistController.delete(Artist(name: song.artist));
 
-              if (context.mounted) {
-                Provider.of<MusicProvider>(context, listen: false).getData();
+                if (context.mounted) {
+                  Provider.of<MusicProvider>(context, listen: false).getData();
 
-                Navigator.of(context).pop();
-              }
-            },
-          ),
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
         ],
         backgroundColor: Theme.of(context).colorScheme.surface,
       ),
@@ -117,7 +165,7 @@ class _SongPageState extends State<SongPage> {
               }
             }),
           ),
-          if (currentPage == 0) (SongLinksPage(song)),
+          if (currentPage == 0) (SongLinksPage(links)),
           if (currentPage == 1) SongOverviewPage(song),
         ],
       ),

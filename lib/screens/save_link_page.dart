@@ -1,38 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/controller/album_controller.dart';
-import 'package:guitar_song_improvement/controller/artist_controller.dart';
-import 'package:guitar_song_improvement/controller/song_controller.dart';
+import 'package:guitar_song_improvement/controller/link_controller.dart';
 import 'package:guitar_song_improvement/model/album.dart';
 import 'package:guitar_song_improvement/model/artist.dart';
-import 'package:guitar_song_improvement/model/music_provider.dart';
+import 'package:guitar_song_improvement/model/link.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
-import 'package:provider/provider.dart';
 
-class SaveSongPage extends StatelessWidget {
-  final Song? song;
+class SaveLinkPage extends StatelessWidget {
+  final Song song;
+  final Link? link;
 
   final bool isEditing;
 
   late TextEditingController titleEditingController;
-  late TextEditingController albumEditingController;
-  late TextEditingController artistEditingController;
+  late TextEditingController urlEditingController;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  SaveSongPage({super.key, this.song, this.isEditing = false}) {
+  SaveLinkPage({
+    required this.song,
+    this.link,
+    super.key,
+    this.isEditing = false,
+  }) {
     titleEditingController = TextEditingController();
-    albumEditingController = TextEditingController();
-    artistEditingController = TextEditingController();
+    urlEditingController = TextEditingController();
 
     initFields();
   }
 
   void initFields() {
-    if (song != null) {
-      titleEditingController.text = song!.name;
-      albumEditingController.text = song!.album;
-      artistEditingController.text = song!.artist;
+    if (link != null) {
+      titleEditingController.text = link!.title;
+      urlEditingController.text = link!.url;
     }
   }
 
@@ -64,7 +64,7 @@ class SaveSongPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    "Save Song",
+                    "Save Link",
                     style: Theme.of(context).textTheme.headlineLarge,
                   ),
                   CustomTextFormField(
@@ -72,13 +72,21 @@ class SaveSongPage extends StatelessWidget {
                     titleEditingController,
                     validation: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Fill the field ${titleEditingController.text}";
+                        return "Fill the field";
                       }
                       return null;
                     },
                   ),
-                  CustomTextFormField("Artist", artistEditingController),
-                  CustomTextFormField("Album", albumEditingController),
+                  CustomTextFormField(
+                    "External link",
+                    urlEditingController,
+                    validation: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Fill the field";
+                      }
+                      return null;
+                    },
+                  ),
                   SizedBox(
                     height: 40,
                     child: Material(
@@ -92,81 +100,34 @@ class SaveSongPage extends StatelessWidget {
                         ),
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
-                            SongController songController = SongController();
-                            AlbumController albumController = AlbumController();
-                            ArtistController artistController =
-                                ArtistController();
+                            LinkController linkController = LinkController();
 
-                            Song newSong = Song(
-                              name: titleEditingController.text.trim(),
-                              album: albumEditingController.text
-                                  .trim(), // Maybe in the future will need to pass Albums/Artists classes to songs, so it can have their covers for example, or to treat the values easily, for example, songController is fixing album and artist names (and it doesn't look cool being there).
-                              artist: artistEditingController.text.trim(),
-                            );
-                            Album newAlbum = Album(
-                              name: albumEditingController.text.trim(),
-                            );
-                            Artist newArtist = Artist(
-                              name: artistEditingController.text.trim(),
+                            Link newLink = Link(
+                              title: titleEditingController.text,
+                              url: urlEditingController.text,
+                              songId: song.id!,
                             );
 
                             if (!isEditing) {
                               try {
-                                await artistController.create(newArtist);
-
-                                await albumController.create(newAlbum);
-
-                                await songController.create(newSong);
+                                await linkController.create(newLink);
                               } catch (e) {
-                                songController.delete(newSong);
-                                artistController.delete(newArtist);
-                                albumController.delete(newAlbum);
+                                // linkController.delete(link); Add this delete right here AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-                                // Try catch logic - A song must be created only whether both artist and album were created
-                                // If something happens when creating one of them, it'll catch an error and the song won't be created
-                                // ALBUM and ARTIST can't be deleted if there's songs atached to them!!!!
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text(
-                                        'Erro ao salvar música: $e',
-                                      ),
+                                      content: Text('Erro ao salvar link: $e'),
                                     ),
                                   );
                                 }
                               }
                             } else {
-                              await albumController.create(newAlbum);
-                              await artistController.create(newArtist);
-
-                              await songController.update(song!, newSong);
-
-                              await albumController.delete(
-                                Album(name: song!.album),
-                              );
-                              await artistController.delete(
-                                Artist(name: song!.artist),
-                              );
+                              // await linkController.update(link); ADD HERE TOOOOOOO!!!!!!!!!!
                             }
 
                             if (context.mounted) {
-                              // Check this later and what wrong can happen for us to treat it
-                              Provider.of<MusicProvider>(
-                                context,
-                                listen: false,
-                              ).getData();
-
-                              final Song newSongFixed = Song(
-                                name: newSong.name,
-                                album: (newSong.album.isEmpty)
-                                    ? "Other"
-                                    : newSong.album,
-                                artist: (newSong.artist.isEmpty)
-                                    ? "Unkown"
-                                    : newSong.artist,
-                              );
-
-                              Navigator.of(context).pop(newSongFixed);
+                              Navigator.of(context).pop(true);
                             }
                           }
                         },
@@ -188,7 +149,6 @@ class SaveSongPage extends StatelessWidget {
 class CustomTextFormField extends StatelessWidget {
   final String fieldName;
   final TextEditingController textEditingController;
-
   final String? Function(String?)? validation;
 
   const CustomTextFormField(
