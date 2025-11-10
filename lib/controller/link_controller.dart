@@ -9,6 +9,11 @@ class LinkController {
     await linkDao.create(link);
   }
 
+  Future<void> update(Link oldLink, Link newLink) async {
+    LinkDao linkDao = LinkDao();
+    await linkDao.update(oldLink, newLink);
+  }
+
   Future<List<Link>> linksBySong(int songId) async {
     LinkDao linkDao = LinkDao();
     return await linkDao.linksBySong(songId);

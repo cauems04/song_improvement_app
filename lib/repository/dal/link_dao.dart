@@ -11,6 +11,20 @@ class LinkDao {
     await database.insert(DatabaseManager.linkTableName, link.toMap());
   }
 
+  Future<void> update(Link oldLink, Link newLink) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    await database.update(
+      DatabaseManager.linkTableName,
+      {
+        DatabaseManager.linkNameLabel: newLink.title,
+        DatabaseManager.linkUrlLabel: newLink.url,
+      },
+      where: "id = ?",
+      whereArgs: [oldLink.id],
+    );
+  }
+
   Future<List<Link>> linksBySong(int songId) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;

@@ -123,7 +123,7 @@ class SaveLinkPage extends StatelessWidget {
                                 }
                               }
                             } else {
-                              // await linkController.update(link); ADD HERE TOOOOOOO!!!!!!!!!!
+                              await linkController.update(link!, newLink);
                             }
 
                             if (context.mounted) {

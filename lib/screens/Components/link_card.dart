@@ -17,10 +17,17 @@ class LinkCard extends StatelessWidget {
         Spacing.xs,
         Spacing.xs,
       ),
-      child: BoxForm(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [Text(link.title), Text(link.url)],
+      child: Material(
+        child: InkWell(
+          child: BoxForm(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [Text(link.title), Text(link.url)],
+            ),
+          ),
+          onTap: () {
+            // Navigator.of(context).push(MaterialPageRoute(builder: () =>))
+          },
         ),
       ),
     );

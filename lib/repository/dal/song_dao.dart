@@ -35,11 +35,9 @@ class SongDao {
       DatabaseManager.songTableName,
       where:
           """
-            ${DatabaseManager.songNameLabel} = ? AND
-            ${DatabaseManager.songAlbumLabel} = ? AND
-            ${DatabaseManager.songArtistLabel} = ?                              
+            ${DatabaseManager.songIdLabel} = ?
           """,
-      whereArgs: [song.name, song.album, song.artist],
+      whereArgs: [song.id],
     );
   }
 
@@ -129,8 +127,8 @@ class SongDao {
     Database database = await databaseManager.database;
 
     final List<Map<String, Object?>> result = await database.rawQuery(
-      "SELECT EXISTS(SELECT 1 FROM ${DatabaseManager.songTableName} WHERE ${DatabaseManager.songNameLabel} = ? AND ${DatabaseManager.songAlbumLabel} = ? AND ${DatabaseManager.songArtistLabel} = ?) AS result;",
-      [song.name, song.album, song.artist],
+      "SELECT EXISTS(SELECT 1 FROM ${DatabaseManager.songTableName} WHERE ${DatabaseManager.songIdLabel} = ?) AS result;",
+      [song.id],
     );
 
     return result.first["result"] == 1;

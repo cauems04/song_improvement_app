@@ -25,7 +25,7 @@ class SongController {
     await songDao.create(songFixed);
   }
 
-  Future<void> update(Song oldSong, Song newSong) async {
+  Future<Song> update(Song oldSong, Song newSong) async {
     final Song newSongFixed = Song(
       name: newSong.name,
       album: (newSong.album.isEmpty) ? "Other" : newSong.album,
@@ -34,12 +34,18 @@ class SongController {
 
     SongDao songDao = SongDao();
 
-    if (await songDao.exists(oldSong))
-      await songDao.update(oldSong, newSongFixed);
+    bool exists = await songDao.exists(oldSong);
+    print(
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    );
+    print("Song exists: $exists");
+    await songDao.update(oldSong, newSongFixed);
+    return newSongFixed;
   }
 
   Future<void> delete(Song song) async {
     final Song songFixed = Song(
+      id: song.id,
       name: song.name,
       album: (song.album.isEmpty) ? "Other" : song.album,
       artist: (song.artist.isEmpty) ? "Unkown" : song.artist,
