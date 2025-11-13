@@ -5,6 +5,7 @@ import 'package:guitar_song_improvement/controller/song_controller.dart';
 import 'package:guitar_song_improvement/model/album.dart';
 import 'package:guitar_song_improvement/model/artist.dart';
 import 'package:guitar_song_improvement/model/music_provider.dart';
+import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
@@ -136,10 +137,15 @@ class SaveSongPage extends StatelessWidget {
                                 }
                               }
                             } else {
+                              if (!context.mounted) return;
+
                               await albumController.create(newAlbum);
                               await artistController.create(newArtist);
 
-                              await songController.update(song!, newSong);
+                              await Provider.of<SelectedSongProvider>(
+                                context,
+                                listen: false,
+                              ).updateSong(newSong);
 
                               await albumController.delete(
                                 Album(name: song!.album),
@@ -156,17 +162,7 @@ class SaveSongPage extends StatelessWidget {
                                 listen: false,
                               ).getData();
 
-                              final Song newSongFixed = Song(
-                                name: newSong.name,
-                                album: (newSong.album.isEmpty)
-                                    ? "Other"
-                                    : newSong.album,
-                                artist: (newSong.artist.isEmpty)
-                                    ? "Unkown"
-                                    : newSong.artist,
-                              );
-
-                              Navigator.of(context).pop(newSongFixed);
+                              Navigator.of(context).pop();
                             }
                           }
                         },

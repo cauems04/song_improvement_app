@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/screens/save_song_page.dart';
 import 'package:guitar_song_improvement/screens/song_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:provider/provider.dart';
 
 class SongCard extends StatelessWidget {
   final Song song;
@@ -21,7 +23,12 @@ class SongCard extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SongPage(song)),
+              MaterialPageRoute(
+                builder: (context) => ChangeNotifierProvider(
+                  create: (context) => SelectedSongProvider(song),
+                  child: SongPage(),
+                ),
+              ),
             );
           },
           child: Padding(

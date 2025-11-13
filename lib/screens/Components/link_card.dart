@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/link.dart';
 import 'package:guitar_song_improvement/screens/components/box_form.dart';
+import 'package:guitar_song_improvement/screens/save_link_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class LinkCard extends StatelessWidget {
@@ -26,7 +27,11 @@ class LinkCard extends StatelessWidget {
             ),
           ),
           onTap: () {
-            // Navigator.of(context).push(MaterialPageRoute(builder: () =>))
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => SaveLinkPage(link: link, isEditing: true),
+              ),
+            );
           },
         ),
       ),

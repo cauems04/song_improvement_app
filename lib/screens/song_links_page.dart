@@ -1,65 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/link.dart';
+import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/screens/components/link_card.dart';
+import 'package:provider/provider.dart';
 
 class SongLinksPage extends StatelessWidget {
   //Turn into a statefulidget
-  final Future<List<Link>> links;
 
-  const SongLinksPage(this.links, {super.key});
+  const SongLinksPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
-      child: FutureBuilder(
-        future: links,
-        builder: (context, snapshot) {
-          Widget child;
+      child: Consumer<SelectedSongProvider>(
+        builder: (context, data, child) {
+          if (!data.isLoaded) return CircularProgressIndicator();
 
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                "An error has shown up, try again later - ${snapshot.error}",
-              ),
-            );
+          if (data.links!.isEmpty) return Text("No links found. Add one!");
+
+          List<LinkCard> linkWidgets = [];
+
+          for (Link link in data.links!) {
+            linkWidgets.add(LinkCard(link));
           }
 
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-              child = Center(child: CircularProgressIndicator());
-              break;
-            case ConnectionState.none:
-              child = Center(child: Text("No links found. Add one"));
-              break;
-            case ConnectionState.done:
-              List<LinkCard> linkWidgets = [];
-
-              if (snapshot.data == null || snapshot.data!.isEmpty) {
-                print(
-                  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHH",
-                );
-                child = Center(child: Text("No link found. Add one"));
-                break;
-              }
-
-              for (Link link in snapshot.data!) {
-                linkWidgets.add(LinkCard(link));
-              }
-
-              child = ListView.builder(
-                shrinkWrap: true,
-                itemCount: linkWidgets.length,
-                itemBuilder: (context, index) {
-                  return linkWidgets[index];
-                },
-              );
-              break;
-            default:
-              child = Center(child: Text("******Standard Response******"));
-              break;
-          }
-          return child;
+          return ListView.builder(
+            shrinkWrap: true,
+            itemCount: linkWidgets.length,
+            itemBuilder: (context, index) => linkWidgets[index],
+          );
         },
       ),
     );

@@ -3,11 +3,12 @@ import 'package:guitar_song_improvement/controller/link_controller.dart';
 import 'package:guitar_song_improvement/model/album.dart';
 import 'package:guitar_song_improvement/model/artist.dart';
 import 'package:guitar_song_improvement/model/link.dart';
+import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/model/song.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:provider/provider.dart';
 
 class SaveLinkPage extends StatelessWidget {
-  final Song song;
   final Link? link;
 
   final bool isEditing;
@@ -17,12 +18,7 @@ class SaveLinkPage extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  SaveLinkPage({
-    required this.song,
-    this.link,
-    super.key,
-    this.isEditing = false,
-  }) {
+  SaveLinkPage({this.link, super.key, this.isEditing = false}) {
     titleEditingController = TextEditingController();
     urlEditingController = TextEditingController();
 
@@ -105,7 +101,10 @@ class SaveLinkPage extends StatelessWidget {
                             Link newLink = Link(
                               title: titleEditingController.text,
                               url: urlEditingController.text,
-                              songId: song.id!,
+                              songId: Provider.of<SelectedSongProvider>(
+                                context,
+                                listen: false,
+                              ).currentSong.id!,
                             );
 
                             if (!isEditing) {
@@ -127,7 +126,12 @@ class SaveLinkPage extends StatelessWidget {
                             }
 
                             if (context.mounted) {
-                              Navigator.of(context).pop(true);
+                              Provider.of<SelectedSongProvider>(
+                                context,
+                                listen: false,
+                              ).getLinks();
+
+                              Navigator.of(context).pop();
                             }
                           }
                         },
