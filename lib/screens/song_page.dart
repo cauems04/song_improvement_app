@@ -27,7 +27,6 @@ class _SongPageState extends State<SongPage> {
   @override
   void initState() {
     Provider.of<SelectedSongProvider>(context, listen: false).setup();
-
     super.initState();
   }
 
@@ -41,19 +40,20 @@ class _SongPageState extends State<SongPage> {
               onPressed: () {
                 switch (currentPage) {
                   case 0:
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SaveLinkPage()),
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (newContext) => ChangeNotifierProvider.value(
+                          value: Provider.of<SelectedSongProvider>(context),
+                          child: SaveLinkPage(),
+                        ),
+                      ),
                     );
 
                     break;
                   case 1:
                     Navigator.push(
                       context, // Implement for recording audio!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! instead of saving link
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            SaveLinkPage(), // What did I do here?
-                      ),
+                      MaterialPageRoute(builder: (context) => SaveLinkPage()),
                     );
                     break;
                 }

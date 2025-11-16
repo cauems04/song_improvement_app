@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/link.dart';
+import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/screens/components/box_form.dart';
 import 'package:guitar_song_improvement/screens/save_link_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:provider/provider.dart';
 
 class LinkCard extends StatelessWidget {
   final Link link;
@@ -29,7 +31,10 @@ class LinkCard extends StatelessWidget {
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => SaveLinkPage(link: link, isEditing: true),
+                builder: (newContext) => ChangeNotifierProvider.value(
+                  value: Provider.of<SelectedSongProvider>(context),
+                  child: SaveLinkPage(link: link, isEditing: true),
+                ),
               ),
             );
           },

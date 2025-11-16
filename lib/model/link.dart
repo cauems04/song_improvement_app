@@ -21,11 +21,11 @@ class Link {
       url = json[DatabaseManager.linkUrlLabel].toString(),
       songId = json[DatabaseManager.linkSongLabel];
 
-  Map<String, String> toMap() {
+  Map<String, Object> toMap() {
     return {
       DatabaseManager.linkNameLabel: title,
       DatabaseManager.linkUrlLabel: url,
-      DatabaseManager.linkSongLabel: songId.toString(),
+      DatabaseManager.linkSongLabel: songId,
     };
   }
 }

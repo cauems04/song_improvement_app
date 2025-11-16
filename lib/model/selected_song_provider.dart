@@ -9,11 +9,15 @@ class SelectedSongProvider extends ChangeNotifier {
   List<Link>? links;
   List<Record>? records;
 
+  bool isInitialized = false;
+
   bool get isLoaded => (links != null && records != null);
 
   SelectedSongProvider(this.currentSong);
 
   Future<void> setup() async {
+    isInitialized = true;
+
     LinkController linkController = LinkController();
     links = await linkController.linksBySong(currentSong.id!);
 
