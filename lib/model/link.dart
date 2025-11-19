@@ -3,7 +3,7 @@ import 'package:guitar_song_improvement/repository/database_manager.dart';
 class Link {
   final int? id;
   final String title;
-  final String url;
+  final Uri url;
   final int songId;
 
   const Link({
@@ -18,13 +18,13 @@ class Link {
   ) // Tentar mudar de dynamic pra object para melhor performance
   : id = json[DatabaseManager.linkIdLabel],
       title = json[DatabaseManager.linkNameLabel].toString(),
-      url = json[DatabaseManager.linkUrlLabel].toString(),
+      url = Uri.parse(json[DatabaseManager.linkUrlLabel].toString()),
       songId = json[DatabaseManager.linkSongLabel];
 
   Map<String, Object> toMap() {
     return {
       DatabaseManager.linkNameLabel: title,
-      DatabaseManager.linkUrlLabel: url,
+      DatabaseManager.linkUrlLabel: url.toString(),
       DatabaseManager.linkSongLabel: songId,
     };
   }

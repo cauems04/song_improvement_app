@@ -28,7 +28,7 @@ class SaveLinkPage extends StatelessWidget {
   void initFields() {
     if (link != null) {
       titleEditingController.text = link!.title;
-      urlEditingController.text = link!.url;
+      urlEditingController.text = link!.url.toString();
     }
   }
 
@@ -100,7 +100,7 @@ class SaveLinkPage extends StatelessWidget {
 
                             Link newLink = Link(
                               title: titleEditingController.text,
-                              url: urlEditingController.text,
+                              url: Uri.parse(urlEditingController.text),
                               songId: Provider.of<SelectedSongProvider>(
                                 context,
                                 listen: false,

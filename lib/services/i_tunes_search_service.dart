@@ -7,14 +7,14 @@ class ITunesSearchService {
 
   static Future<List<Map<String, dynamic>>> search(String parameter) async {
     // Tentar mudar de dynamic pra object para melhor performance
-    Map<String, String> query = {
+    final Map<String, String> query = {
       "term": parameter,
       "media": "music",
       "entity": "musicTrack",
       "limit": "15",
     };
 
-    Uri uri = Uri.https(_baseUrl, "search", query);
+    final Uri uri = Uri.https(_baseUrl, "search", query);
 
     final http.Response response = await http.get(uri);
 

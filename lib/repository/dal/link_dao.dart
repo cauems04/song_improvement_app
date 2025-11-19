@@ -18,7 +18,7 @@ class LinkDao {
       DatabaseManager.linkTableName,
       {
         DatabaseManager.linkNameLabel: newLink.title,
-        DatabaseManager.linkUrlLabel: newLink.url,
+        DatabaseManager.linkUrlLabel: newLink.url.toString(),
       },
       where: "id = ?",
       whereArgs: [oldLink.id],
