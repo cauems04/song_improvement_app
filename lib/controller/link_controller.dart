@@ -18,4 +18,9 @@ class LinkController {
     LinkDao linkDao = LinkDao();
     return await linkDao.linksBySong(songId);
   }
+
+  Future<void> delete(int linkId) async {
+    LinkDao linkDao = LinkDao();
+    return await linkDao.delete(linkId);
+  }
 }

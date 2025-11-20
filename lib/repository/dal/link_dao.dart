@@ -20,7 +20,7 @@ class LinkDao {
         DatabaseManager.linkNameLabel: newLink.title,
         DatabaseManager.linkUrlLabel: newLink.url.toString(),
       },
-      where: "id = ?",
+      where: "${DatabaseManager.linkIdLabel} = ?",
       whereArgs: [oldLink.id],
     );
   }
@@ -39,5 +39,15 @@ class LinkDao {
 
     List<Link> links = linksFound.map((link) => Link.fromDbJson(link)).toList();
     return links;
+  }
+
+  Future<void> delete(int linkId) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    await database.delete(
+      DatabaseManager.linkTableName,
+      where: "${DatabaseManager.linkIdLabel} = ?",
+      whereArgs: [linkId],
+    );
   }
 }

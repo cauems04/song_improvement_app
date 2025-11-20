@@ -2,6 +2,7 @@ import 'dart:io' as ExternalLink;
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/controller/link_controller.dart';
 import 'package:guitar_song_improvement/model/link.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/screens/components/box_form.dart';
@@ -13,8 +14,15 @@ import 'package:url_launcher/url_launcher.dart';
 
 class LinkCard extends StatelessWidget {
   final Link link;
+  final int listIndex;
+  final Animation<double> removeAnimation;
 
-  const LinkCard(this.link, {super.key});
+  const LinkCard(
+    this.link, {
+    super.key,
+    required this.listIndex,
+    required this.removeAnimation,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +80,33 @@ class LinkCard extends StatelessWidget {
                     },
                     icon: Icon(Icons.edit),
                   ),
+                  IconButton(
+                    onPressed: () async {
+                      Provider.of<SelectedSongProvider>(
+                        context,
+                        listen: false,
+                      ).deleteLink(link.id!);
+
+                      AnimatedList.of(context).removeItem(
+                        listIndex,
+                        (context, animation) => SizeTransition(
+                          sizeFactor: animation,
+                          child: LinkCard(
+                            link,
+                            listIndex: listIndex,
+                            removeAnimation: animation,
+                          ),
+                        ),
+                        duration: const Duration(milliseconds: 300),
+                      );
+
+                      // await Provider.of<SelectedSongProvider>(
+                      //   context,
+                      //   listen: false,
+                      // ).getLinks();
+                    },
+                    icon: Icon(Icons.delete),
+                  ),
                 ],
               ),
             ),
@@ -85,8 +120,9 @@ class LinkCard extends StatelessWidget {
   }
 
   Future<void> _onLaunchUrl() async {
-    if (!await launchUrl(link.url, mode: LaunchMode.externalApplication))
+    if (!await launchUrl(link.url, mode: LaunchMode.externalApplication)) {
       throw Error(); // Implement custom error!!!!!!!!!!!!!!!
+    }
   }
 }
 

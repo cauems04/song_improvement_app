@@ -54,6 +54,15 @@ class SelectedSongProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> deleteLink(int id) async {
+    LinkController linkController = LinkController();
+    await linkController.delete(id);
+
+    int linkIndex = links!.indexWhere((link) => link.id == id);
+    links!.removeAt(linkIndex);
+  }
+
   // Future<void> getRecords() async {
   //   RecordController recordController = RecordController();
   //   records = await recordController.recordsBySong(currentSong.id!);
