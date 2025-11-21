@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
 
 class SongOverviewPage extends StatelessWidget {
@@ -37,9 +40,10 @@ class SongOverviewPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
-                      top: 200,
-                    ), // TESTESTESTESTESTESTESTESTESTE
-                    child: SizedBox(),
+                      top: Spacing.xl,
+                      bottom: Spacing.lg,
+                    ),
+                    child: SizedBox(height: 80, child: ProgressGraphic(0.8)),
                   ),
                 ],
               );
@@ -49,4 +53,102 @@ class SongOverviewPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class ProgressGraphic extends StatefulWidget {
+  final double progressValue;
+  const ProgressGraphic(this.progressValue, {super.key});
+
+  @override
+  State<ProgressGraphic> createState() => _ProgressGraphicState();
+}
+
+class _ProgressGraphicState extends State<ProgressGraphic>
+    with SingleTickerProviderStateMixin {
+  late AnimationController progressController;
+  late Animation<double> curvedProgressController;
+
+  @override
+  void initState() {
+    progressController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 4),
+      lowerBound: 0,
+      upperBound: 1,
+    );
+
+    curvedProgressController = CurvedAnimation(
+      parent: progressController,
+      curve: Curves.easeOut,
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      progressController.animateTo(widget.progressValue);
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: curvedProgressController,
+      builder: (context, widget) => CustomPaint(
+        painter: ProgressGraphicPainter(
+          curvedProgressController.value,
+          context,
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    progressController.dispose();
+    super.dispose();
+  }
+}
+
+class ProgressGraphicPainter extends CustomPainter {
+  final double progress;
+  final BuildContext context;
+
+  const ProgressGraphicPainter(this.progress, this.context);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint painter = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.height / 6
+      ..color = Colors.greenAccent;
+
+    final Paint basePainter = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.height / 6
+      ..color = Theme.of(context).colorScheme.surfaceContainerLowest;
+
+    canvas.drawCircle(
+      Offset(size.width / 2, size.height / 2),
+      size.height / 2,
+      basePainter,
+    );
+
+    canvas.drawArc(
+      Rect.fromCircle(
+        center: Offset(size.width / 2, size.height / 2),
+        radius: size.height / 2,
+      ),
+      (-pi / 2),
+      (2 * pi * progress),
+      false,
+      painter,
+    );
+  }
+
+  @override
+  bool shouldRepaint(ProgressGraphicPainter oldDelegate) =>
+      oldDelegate.progress != progress;
+
+  @override
+  bool shouldRebuildSemantics(ProgressGraphicPainter oldDelegate) => false;
 }
