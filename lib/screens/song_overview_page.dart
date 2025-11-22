@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/screens/play_options_screen.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
 
@@ -93,11 +93,27 @@ class _ProgressGraphicState extends State<ProgressGraphic>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: curvedProgressController,
-      builder: (context, widget) => CustomPaint(
-        painter: ProgressGraphicPainter(
-          curvedProgressController.value,
-          context,
-        ),
+      builder: (context, widget) => Stack(
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: ProgressGraphicPainter(
+                curvedProgressController.value,
+                context,
+              ),
+            ),
+          ),
+          Center(
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => PlayOptionsScreen()),
+                );
+              },
+              icon: Icon(Icons.play_arrow, size: 50),
+            ),
+          ),
+        ],
       ),
     );
   }
