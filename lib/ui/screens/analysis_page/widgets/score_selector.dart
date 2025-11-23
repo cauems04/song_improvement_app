@@ -3,10 +3,15 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class ScoreSelector extends StatefulWidget {
   final String label;
-
+  final int initialPosition;
   final Function(int highestScore) onTap;
 
-  const ScoreSelector(this.label, {super.key, required this.onTap});
+  const ScoreSelector(
+    this.label, {
+    super.key,
+    required this.onTap,
+    this.initialPosition = 0,
+  });
 
   @override
   State<ScoreSelector> createState() => ScoreSelectorState();
@@ -17,7 +22,7 @@ class ScoreSelectorState extends State<ScoreSelector> {
 
   @override
   void initState() {
-    selectedIndex = 0;
+    selectedIndex = widget.initialPosition;
     super.initState();
   }
 

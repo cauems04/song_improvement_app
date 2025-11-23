@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis_page/content/score_info_text.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis_page/content/score_type.dart';
 
 class ScoreBottomSheet extends StatelessWidget {
-  const ScoreBottomSheet({super.key});
+  final ScoreType currentScoreType;
+  const ScoreBottomSheet(this.currentScoreType, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,7 @@ class ScoreBottomSheet extends StatelessWidget {
                   right: Spacing.lg,
                 ),
                 child: Text(
-                  "Texto explicativo aqui... \npaksfb div bdahib ad bdas xbas ocbac oacba db joB Dsbd SBDI ",
+                  scoreInfoText[currentScoreType]!,
                   textAlign: TextAlign.justify,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
