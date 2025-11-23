@@ -9,12 +9,12 @@ import 'package:guitar_song_improvement/model/music_provider.dart';
 import 'package:guitar_song_improvement/repository/dal/album_dao.dart';
 import 'package:guitar_song_improvement/repository/dal/artist_dao.dart';
 import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
-import 'package:guitar_song_improvement/screens/components/box_form.dart';
-import 'package:guitar_song_improvement/screens/components/add_new_song_button.dart';
-import 'package:guitar_song_improvement/screens/components/search_song.dart';
-import 'package:guitar_song_improvement/screens/components/song_card.dart';
-import 'package:guitar_song_improvement/screens/save_song_page.dart';
-import 'package:guitar_song_improvement/screens/search_page.dart';
+import 'package:guitar_song_improvement/ui/components/box_form.dart';
+import 'package:guitar_song_improvement/ui/components/add_new_song_button.dart';
+import 'package:guitar_song_improvement/ui/components/search_song.dart';
+import 'package:guitar_song_improvement/ui/components/song_card.dart';
+import 'package:guitar_song_improvement/ui/save_song_page.dart';
+import 'package:guitar_song_improvement/ui/search_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/music_provider.dart';
-import 'package:guitar_song_improvement/screens/home_page.dart';
+import 'package:guitar_song_improvement/ui/home_page.dart';
 import 'package:provider/provider.dart';
 
 class SplashPage extends StatelessWidget {

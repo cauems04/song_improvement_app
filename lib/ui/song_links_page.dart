@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/link.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/screens/components/link_card.dart';
+import 'package:guitar_song_improvement/ui/components/link_card.dart';
 import 'package:provider/provider.dart';
 
 class SongLinksPage extends StatelessWidget {

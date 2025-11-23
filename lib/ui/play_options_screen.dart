@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/screens/analysis_page.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis_page/analysis_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class PlayOptionsScreen extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/music_provider.dart';
-import 'package:guitar_song_improvement/screens/splash/splash_page.dart';
+import 'package:guitar_song_improvement/ui/splash/splash_page.dart';
 import 'package:guitar_song_improvement/themes/dark_theme.dart';
 import 'package:provider/provider.dart';
 

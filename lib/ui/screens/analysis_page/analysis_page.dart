@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis_page/content/score_type.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/score_bottom_sheet.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/score_selector.dart';
 
 // class AnalysisPage extends StatefulWidget {
 //   const AnalysisPage({super.key});
@@ -99,7 +102,7 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 //                   style: Theme.of(context).textTheme.headlineLarge,
 //                 ),
 //               ),
-//               _ScoreSelector(
+//               ScoreSelector(
 //                 "Pitch",
 //                 pitchValue,
 //                 onTap: (value) {
@@ -108,7 +111,7 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 //                   });
 //                 },
 //               ),
-//               _ScoreSelector(
+//               ScoreSelector(
 //                 "Rhythm",
 //                 rhytmValue,
 //                 onTap: (value) {
@@ -117,7 +120,7 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 //                   });
 //                 },
 //               ),
-//               _ScoreSelector(
+//               ScoreSelector(
 //                 "Dynamics",
 //                 dynamicsValue,
 //                 onTap: (value) {
@@ -126,7 +129,7 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 //                   });
 //                 },
 //               ),
-//               _ScoreSelector(
+//               ScoreSelector(
 //                 "Technique",
 //                 techniqueValue,
 //                 onTap: (value) {
@@ -135,7 +138,7 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 //                   });
 //                 },
 //               ),
-//               _ScoreSelector(
+//               ScoreSelector(
 //                 "Notation",
 //                 notationValue,
 //                 onTap: (value) {
@@ -154,8 +157,6 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 //       ),
 //     );
 //   }
-
-//   void updateValue() {}
 // }
 
 class AnalysisPage extends StatefulWidget {
@@ -239,103 +240,67 @@ class _AnalysisPageState extends State<AnalysisPage> {
           ],
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.fromLTRB(
           Spacing.lg,
           Spacing.none,
-          Spacing.md,
+          Spacing.lg,
           Spacing.none,
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(
+            Padding(
+              padding: const EdgeInsets.only(bottom: 100),
               child: Text(
                 "How well did you do?",
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
             ),
-            Expanded(
+            SizedBox(
+              height: 350,
+              width: 600,
               child: PageView(
                 controller: PageController(),
                 children: [
-                  AnalysisSection("Dynamics", selectedIndex: 1, onTap: () {}),
+                  ScoreSelector(
+                    ScoreType.pitch.name,
+                    onTap: (value) {
+                      pitchValue = value;
+                    },
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
 
-  void updateValue() {}
-}
-
-class _ScoreSelector extends StatefulWidget {
-  final String label;
-  final int selectedIndex;
-
-  final Function(int highestScore) onTap;
-
-  const _ScoreSelector(
-    this.label,
-    this.selectedIndex, {
-    super.key,
-    required this.onTap,
-  });
-
-  @override
-  State<_ScoreSelector> createState() => _ScoreSelectorState();
-}
-
-class _ScoreSelectorState extends State<_ScoreSelector> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: Spacing.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.md),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: Spacing.xs),
-                  child: Text(
-                    widget.label,
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
+      bottomSheet: Material(
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+        child: InkWell(
+          child: Container(
+            height: 120,
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.only(top: Spacing.md),
+              child: Text(
+                "What does it mean?",
+                style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                  fontWeight: FontWeight.w600,
                 ),
-                Icon(Icons.info, size: 20),
-              ],
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(5, (n) {
-              bool isFilled = false;
-
-              if (widget.selectedIndex >= n) isFilled = true;
-
-              return GestureDetector(
-                child: AnimatedContainer(
-                  duration: Duration(milliseconds: 120),
-                  width: 28,
-                  height: 28,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: (isFilled)
-                        ? Theme.of(context).colorScheme.onPrimary
-                        : Colors.grey[850],
-                  ),
-                ),
-                onTap: () => widget.onTap(n),
-              );
-            }),
+          onTap: () => showModalBottomSheet(
+            context: context,
+            builder: (context) => ScoreBottomSheet(),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -365,83 +330,6 @@ class _ConfirmButtom extends StatelessWidget {
         ),
         onTap: () {},
       ),
-    );
-  }
-}
-
-class AnalysisSection extends StatelessWidget {
-  final String label;
-  final int selectedIndex;
-  final Function() onTap;
-
-  const AnalysisSection(
-    this.label, {
-    super.key,
-    required this.selectedIndex,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _ScoreSelector(label, selectedIndex, onTap: (value) => onTap()),
-        Expanded(
-          child: DraggableScrollableSheet(
-            initialChildSize: 0.1,
-            minChildSize: 0.1,
-            maxChildSize: 0.8,
-            builder: (context, scrollController) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                  gradient: LinearGradient(
-                    begin: AlignmentGeometry.topCenter,
-                    end: AlignmentGeometry.bottomCenter,
-                    colors: [
-                      Theme.of(context).colorScheme.surfaceContainerLow,
-                      Theme.of(context).colorScheme.surfaceContainerLowest,
-                    ],
-                  ),
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(20),
-                  ),
-                ),
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.all(20),
-                  children: [
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: Spacing.sm,
-                          bottom: 20,
-                        ),
-                        child: Text(
-                          "What does it mean?",
-                          style: Theme.of(context).textTheme.headlineLarge!
-                              .copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 300, // <-- define a área onde o texto centraliza
-                      child: Center(
-                        child: Text(
-                          "Texto explicativo aqui... paksfbdivbdahibadbdasxbasocbacoacba db joB Dsbd SBDI ",
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ],
     );
   }
 }
