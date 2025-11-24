@@ -3,6 +3,7 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/content/score_type.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/score_bottom_sheet.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/score_selector.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/section_indicator.dart';
 
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({super.key});
@@ -15,10 +16,16 @@ class _AnalysisPageState extends State<AnalysisPage> {
   late ScoreType currentScoreType;
   late Map<ScoreType, int> scoreValues;
 
+  late bool isLastPage;
+
+  final PageController pageController = PageController();
+
   @override
   void initState() {
     currentScoreType = ScoreType.pitch;
     scoreValues = {for (ScoreType type in ScoreType.values) type: 0};
+    isLastPage = false;
+
     super.initState();
   }
 
@@ -107,23 +114,71 @@ class _AnalysisPageState extends State<AnalysisPage> {
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
             ),
-            SizedBox(
-              height: 350,
-              width: 600,
-              child: PageView(
-                controller: PageController(),
-                children: [
-                  for (ScoreType type in ScoreType.values)
-                    ScoreSelector(
-                      type.name,
-                      initialPosition: scoreValues[type]!,
-                      onTap: (value) => setState(() {
-                        scoreValues[type] = value;
-                      }),
-                    ),
-                ],
-                onPageChanged: (value) =>
-                    currentScoreType = ScoreType.values[value],
+            Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.xxl),
+              child: SizedBox(
+                height: 80,
+                width: 600,
+                child: PageView(
+                  controller: pageController,
+                  children: [
+                    for (ScoreType type in ScoreType.values)
+                      ScoreSelector(
+                        type.name,
+                        initialPosition: scoreValues[type]!,
+                        onTap: (value) => setState(() {
+                          scoreValues[type] = value;
+                        }),
+                      ),
+                  ],
+                  onPageChanged: (value) {
+                    setState(() {
+                      currentScoreType = ScoreType.values[value];
+                      isLastPage = (value == ScoreType.values.length - 1)
+                          ? true
+                          : false;
+                    });
+                  },
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _PassPageButton(
+                  Icon(Icons.arrow_back, color: Colors.white),
+                  () => pageController.previousPage(
+                    duration: Duration(milliseconds: 600),
+                    curve: Curves.ease,
+                  ),
+                ),
+                _PassPageButton(
+                  (isLastPage)
+                      ? Icon((Icons.check), color: Colors.green)
+                      : Icon((Icons.arrow_forward), color: Colors.white),
+                  () {
+                    pageController.nextPage(
+                      duration: Duration(milliseconds: 600),
+                      curve: Curves.ease,
+                    );
+                  },
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 50, bottom: 120),
+              child: SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    for (ScoreType type in ScoreType.values)
+                      SectionIndicator(scoreValues[type]!),
+                  ],
+                ),
               ),
             ),
           ],
@@ -134,7 +189,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
         color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
         child: InkWell(
-          child: Container(
+          child: SizedBox(
             height: 120,
             width: double.infinity,
             child: Padding(
@@ -181,6 +236,32 @@ class _ConfirmButtom extends StatelessWidget {
           ),
         ),
         onTap: () {},
+      ),
+    );
+  }
+}
+
+class _PassPageButton extends StatelessWidget {
+  final Icon icon;
+  final Function() onTap;
+  const _PassPageButton(this.icon, this.onTap, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        child: Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white),
+          ),
+          child: icon,
+        ),
+        onTap: () => onTap(),
       ),
     );
   }
