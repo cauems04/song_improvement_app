@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/services/score_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/content/score_type.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/score_bottom_sheet.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/score_selector.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/section_indicator.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis_result_page.dart/analysis_result_page.dart';
 
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({super.key});
@@ -27,6 +29,19 @@ class _AnalysisPageState extends State<AnalysisPage> {
     isLastPage = false;
 
     super.initState();
+  }
+
+  void submitScore() {
+    ScoreService scoreService = ScoreService(scoreValues);
+
+    scoreService.calculateScore();
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) =>
+            AnalysisResultPage(scoreService.normalizedFinalScore),
+      ),
+    );
   }
 
   @override
@@ -147,22 +162,30 @@ class _AnalysisPageState extends State<AnalysisPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _PassPageButton(
-                  Icon(Icons.arrow_back, color: Colors.white),
-                  () => pageController.previousPage(
-                    duration: Duration(milliseconds: 600),
-                    curve: Curves.ease,
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    color: Colors.white,
+                    onPressed: () => pageController.previousPage(
+                      duration: Duration(milliseconds: 600),
+                      curve: Curves.ease,
+                    ),
                   ),
                 ),
                 _PassPageButton(
                   (isLastPage)
-                      ? Icon((Icons.check), color: Colors.green)
-                      : Icon((Icons.arrow_forward), color: Colors.white),
-                  () {
-                    pageController.nextPage(
-                      duration: Duration(milliseconds: 600),
-                      curve: Curves.ease,
-                    );
-                  },
+                      ? IconButton(
+                          icon: Icon(Icons.check),
+                          color: Colors.green,
+                          onPressed: () => submitScore(),
+                        )
+                      : IconButton(
+                          icon: Icon(Icons.arrow_forward),
+                          color: Colors.white,
+                          onPressed: () => pageController.nextPage(
+                            duration: Duration(milliseconds: 600),
+                            curve: Curves.ease,
+                          ),
+                        ),
                 ),
               ],
             ),
@@ -242,27 +265,19 @@ class _ConfirmButtom extends StatelessWidget {
 }
 
 class _PassPageButton extends StatelessWidget {
-  final Icon icon;
-  final Function() onTap;
-  const _PassPageButton(this.icon, this.onTap, {super.key});
+  final IconButton icon;
+  const _PassPageButton(this.icon, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      shape: const CircleBorder(),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        child: Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white),
-          ),
-          child: icon,
-        ),
-        onTap: () => onTap(),
+    return Container(
+      height: 50,
+      width: 50,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white),
       ),
+      child: icon,
     );
   }
 }

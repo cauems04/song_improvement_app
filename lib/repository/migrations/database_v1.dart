@@ -9,7 +9,8 @@ class DatabaseV1 implements IMigration {
   Future<void> execute(Database db) async {
     await db.execute("""CREATE TABLE ${DatabaseManager.songTableName}(
                             ${DatabaseManager.songIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT, 
-                            ${DatabaseManager.songNameLabel} TEXT, 
+                            ${DatabaseManager.songNameLabel} TEXT,
+                            ${DatabaseManager.songScoreLabel} INTEGER DEFAULT 0,
                             ${DatabaseManager.songAlbumLabel} TEXT,
                             ${DatabaseManager.songArtistLabel} TEXT,
 

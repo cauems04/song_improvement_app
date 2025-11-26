@@ -43,6 +43,13 @@ class SongController {
     return newSongFixed;
   }
 
+  Future<void> updateScore(Song song, int newScore) async {
+    SongDao songDao = SongDao();
+
+    //Create logic to check if the old song's score is higher or not (because of it i'm using Song as a parameter)
+    await songDao.updateScore(song.id!, newScore);
+  }
+
   Future<void> delete(Song song) async {
     final Song songFixed = Song(
       id: song.id,

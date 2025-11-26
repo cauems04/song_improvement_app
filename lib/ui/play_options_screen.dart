@@ -185,7 +185,7 @@ class _ConfirmButtom extends StatelessWidget {
             return;
           }
 
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => AnalysisPage()),
           );
