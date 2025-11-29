@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/services/score_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/content/score_type.dart';
@@ -6,6 +7,7 @@ import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/score_b
 import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/score_selector.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/widgets/section_indicator.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_result_page.dart/analysis_result_page.dart';
+import 'package:provider/provider.dart';
 
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({super.key});
@@ -24,17 +26,22 @@ class _AnalysisPageState extends State<AnalysisPage> {
 
   @override
   void initState() {
-    currentScoreType = ScoreType.pitch;
+    currentScoreType = ScoreType.values[0];
     scoreValues = {for (ScoreType type in ScoreType.values) type: 0};
     isLastPage = false;
 
     super.initState();
   }
 
-  void submitScore() {
+  void submitScore() async {
     ScoreService scoreService = ScoreService(scoreValues);
 
     scoreService.calculateScore();
+
+    await Provider.of<SelectedSongProvider>(
+      context,
+      listen: false,
+    ).updateScore(scoreService.normalizedFinalScore);
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -157,51 +164,33 @@ class _AnalysisPageState extends State<AnalysisPage> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _PassPageButton(
-                  IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    color: Colors.white,
-                    onPressed: () => pageController.previousPage(
-                      duration: Duration(milliseconds: 600),
-                      curve: Curves.ease,
-                    ),
-                  ),
-                ),
-                _PassPageButton(
-                  (isLastPage)
-                      ? IconButton(
-                          icon: Icon(Icons.check),
-                          color: Colors.green,
-                          onPressed: () => submitScore(),
-                        )
-                      : IconButton(
-                          icon: Icon(Icons.arrow_forward),
-                          color: Colors.white,
-                          onPressed: () => pageController.nextPage(
-                            duration: Duration(milliseconds: 600),
-                            curve: Curves.ease,
-                          ),
-                        ),
-                ),
-              ],
-            ),
             Padding(
-              padding: const EdgeInsets.only(top: 50, bottom: 120),
+              padding: const EdgeInsets.only(top: 20, bottom: Spacing.xxl),
               child: SizedBox(
-                height: 60,
+                height: 100,
                 width: double.infinity,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    for (ScoreType type in ScoreType.values)
-                      SectionIndicator(scoreValues[type]!),
+                    for (int i = 0; i < ScoreType.values.length; i++)
+                      SectionIndicator(
+                        scoreValues[ScoreType.values[i]]!,
+                        isSelected: currentScoreType == ScoreType.values[i],
+                        onTap: () {
+                          pageController.jumpToPage(i);
+                        },
+                      ),
                   ],
                 ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(bottom: 140),
+              child: AnimatedOpacity(
+                opacity: isLastPage ? 1 : 0,
+                duration: Duration(milliseconds: 200),
+                child: _SendButtom(() => submitScore()),
               ),
             ),
           ],
@@ -236,8 +225,10 @@ class _AnalysisPageState extends State<AnalysisPage> {
   }
 }
 
-class _ConfirmButtom extends StatelessWidget {
-  const _ConfirmButtom({super.key});
+class _SendButtom extends StatelessWidget {
+  final Function() onTap;
+
+  const _SendButtom(this.onTap);
 
   @override
   Widget build(BuildContext context) {
@@ -248,17 +239,17 @@ class _ConfirmButtom extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: SizedBox(
           height: 50,
-          width: 300,
+          width: 150,
           child: Center(
             child: Text(
-              "Confirm",
+              "Send",
               style: Theme.of(
                 context,
               ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
         ),
-        onTap: () {},
+        onTap: () => onTap(),
       ),
     );
   }

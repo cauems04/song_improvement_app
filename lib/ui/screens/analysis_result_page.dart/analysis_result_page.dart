@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/controller/song_controller.dart';
+import 'package:guitar_song_improvement/model/selected_song_provider.dart';
+import 'package:provider/provider.dart';
 
 class AnalysisResultPage extends StatefulWidget {
   final int score;
@@ -109,7 +112,7 @@ class _AnalysisResultPageState extends State<AnalysisResultPage>
                   context,
                 ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w600),
               ),
-              _ConfirmButtom(),
+              _ConfirmButtom(widget.score),
             ],
           ),
         ),
@@ -128,7 +131,9 @@ class _AnalysisResultPageState extends State<AnalysisResultPage>
 }
 
 class _ConfirmButtom extends StatelessWidget {
-  const _ConfirmButtom();
+  final int score;
+
+  const _ConfirmButtom(this.score);
 
   @override
   Widget build(BuildContext context) {

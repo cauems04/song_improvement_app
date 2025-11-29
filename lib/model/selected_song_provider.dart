@@ -41,6 +41,16 @@ class SelectedSongProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateScore(int newScore) async {
+    SongController songController = SongController();
+
+    await songController.updateScore(currentSong, newScore);
+
+    currentSong = await songController.read(currentSong.id!);
+
+    notifyListeners();
+  }
+
   Future<void> getLinks() async {
     LinkController linkController = LinkController();
     links = await linkController.linksBySong(currentSong.id!);

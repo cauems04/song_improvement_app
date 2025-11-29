@@ -43,7 +43,10 @@ class SongOverviewPage extends StatelessWidget {
                       top: Spacing.xl,
                       bottom: Spacing.lg,
                     ),
-                    child: SizedBox(height: 80, child: ProgressGraphic(0.8)),
+                    child: SizedBox(
+                      height: 80,
+                      child: ProgressGraphic(data.currentSong.reducedScore),
+                    ),
                   ),
                 ],
               );
@@ -107,7 +110,12 @@ class _ProgressGraphicState extends State<ProgressGraphic>
             child: IconButton(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => PlayOptionsScreen()),
+                  MaterialPageRoute(
+                    builder: (newContext) => ChangeNotifierProvider.value(
+                      value: Provider.of<SelectedSongProvider>(context),
+                      child: PlayOptionsScreen(),
+                    ),
+                  ),
                 );
               },
               icon: Icon(Icons.play_arrow, size: 50),

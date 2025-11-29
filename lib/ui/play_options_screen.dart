@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/analysis_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:provider/provider.dart';
 
 class PlayOptionsScreen extends StatefulWidget {
   const PlayOptionsScreen({super.key});
@@ -187,7 +189,12 @@ class _ConfirmButtom extends StatelessWidget {
 
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => AnalysisPage()),
+            MaterialPageRoute(
+              builder: (newContext) => ChangeNotifierProvider.value(
+                value: Provider.of<SelectedSongProvider>(context),
+                child: AnalysisPage(),
+              ),
+            ),
           );
         },
       ),

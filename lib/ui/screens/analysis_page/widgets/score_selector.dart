@@ -64,8 +64,8 @@ class ScoreSelectorState extends State<ScoreSelector> {
             return GestureDetector(
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 120),
-                width: 28,
-                height: 28,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: (isFilled) ? color : Colors.grey[850],

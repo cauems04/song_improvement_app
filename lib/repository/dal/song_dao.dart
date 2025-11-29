@@ -41,7 +41,7 @@ class SongDao {
     );
   }
 
-  Future<Song> read(Song song) async {
+  Future<Song> read(int songId) async {
     // This is gonna be implemented for the search feature
     // Review and apply it correctly later
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
@@ -51,14 +51,12 @@ class SongDao {
       DatabaseManager.songTableName,
       where:
           """
-            ${DatabaseManager.songNameLabel} = ? AND
-            ${DatabaseManager.songAlbumLabel} = ? AND
-            ${DatabaseManager.songArtistLabel} = ?                              
+            ${DatabaseManager.songIdLabel} = ?                              
           """,
-      whereArgs: [song.name, song.album, song.artist],
+      whereArgs: [songId],
     );
 
-    Song songFound = Song.fromJson(result[0]);
+    Song songFound = Song.fromDbJson(result[0]);
 
     return songFound;
   }
