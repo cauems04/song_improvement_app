@@ -93,6 +93,15 @@ class _ProgressGraphicState extends State<ProgressGraphic>
   }
 
   @override
+  void didUpdateWidget(covariant ProgressGraphic oldWidget) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      progressController.reset();
+      progressController.animateTo(widget.progressValue);
+    });
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: curvedProgressController,
@@ -174,5 +183,5 @@ class ProgressGraphicPainter extends CustomPainter {
       oldDelegate.progress != progress;
 
   @override
-  bool shouldRebuildSemantics(ProgressGraphicPainter oldDelegate) => false;
+  bool shouldRebuildSemantics(ProgressGraphicPainter oldDelegate) => true;
 }

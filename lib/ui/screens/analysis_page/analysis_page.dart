@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/model/music_provider.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/services/score_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
@@ -33,15 +34,19 @@ class _AnalysisPageState extends State<AnalysisPage> {
     super.initState();
   }
 
-  void submitScore() async {
+  Future<void> submitScore() async {
     ScoreService scoreService = ScoreService(scoreValues);
 
     scoreService.calculateScore();
+
+    if (!context.mounted) return;
 
     await Provider.of<SelectedSongProvider>(
       context,
       listen: false,
     ).updateScore(scoreService.normalizedFinalScore);
+
+    await Provider.of<MusicProvider>(context, listen: false).getData();
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -150,15 +155,19 @@ class _AnalysisPageState extends State<AnalysisPage> {
                         initialPosition: scoreValues[type]!,
                         onTap: (value) => setState(() {
                           scoreValues[type] = value;
+                          if (!isLastPage) {
+                            pageController.nextPage(
+                              duration: Duration(milliseconds: 400),
+                              curve: Curves.ease,
+                            );
+                          }
                         }),
                       ),
                   ],
                   onPageChanged: (value) {
                     setState(() {
                       currentScoreType = ScoreType.values[value];
-                      isLastPage = (value == ScoreType.values.length - 1)
-                          ? true
-                          : false;
+                      isLastPage = value == (ScoreType.values.length - 1);
                     });
                   },
                 ),
@@ -190,7 +199,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
               child: AnimatedOpacity(
                 opacity: isLastPage ? 1 : 0,
                 duration: Duration(milliseconds: 200),
-                child: _SendButtom(() => submitScore()),
+                child: _SendButtom(() async => await submitScore()),
               ),
             ),
           ],
@@ -251,24 +260,6 @@ class _SendButtom extends StatelessWidget {
         ),
         onTap: () => onTap(),
       ),
-    );
-  }
-}
-
-class _PassPageButton extends StatelessWidget {
-  final IconButton icon;
-  const _PassPageButton(this.icon, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: 50,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white),
-      ),
-      child: icon,
     );
   }
 }
