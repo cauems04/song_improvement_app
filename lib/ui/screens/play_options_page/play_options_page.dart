@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/analysis_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/play_options_page/widgets/denied_permission_model.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class PlayOptionsScreen extends StatefulWidget {
@@ -182,8 +184,27 @@ class _ConfirmButtom extends StatelessWidget {
             ),
           ),
         ),
-        onTap: () {
+        onTap: () async {
           if (isPlayselected) {
+            final PermissionStatus micPermissionStatus =
+                await Permission.microphone.status;
+
+            if (!context.mounted) return;
+
+            if (micPermissionStatus.isDenied) {
+              showDialog(
+                context: context,
+                builder: (context) => Center(child: DeniedPermissionModel()),
+              );
+            } else if (micPermissionStatus.isPermanentlyDenied) {
+              showDialog(
+                context: context,
+                builder: (context) => Center(
+                  child: DeniedPermissionModel(isPermanentlyDenied: true),
+                ),
+              );
+            }
+
             return;
           }
 

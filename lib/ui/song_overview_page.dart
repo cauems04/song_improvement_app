@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/ui/play_options_screen.dart';
+import 'package:guitar_song_improvement/ui/screens/play_options_page/play_options_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
 
