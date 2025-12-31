@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/model/song.dart';
-import 'package:guitar_song_improvement/ui/save_song_page.dart';
-import 'package:guitar_song_improvement/ui/song_page.dart';
+import 'package:guitar_song_improvement/ui/screens/save_song_page/save_song_page.dart';
+import 'package:guitar_song_improvement/ui/screens/song_page/song_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
 

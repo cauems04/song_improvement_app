@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class DeniedPermissionModel extends StatelessWidget {
+class DeniedPermissionModal extends StatelessWidget {
   final bool isPermanentlyDenied;
 
-  const DeniedPermissionModel({super.key, this.isPermanentlyDenied = false});
+  const DeniedPermissionModal({super.key, this.isPermanentlyDenied = false});
 
   @override
   Widget build(BuildContext context) {

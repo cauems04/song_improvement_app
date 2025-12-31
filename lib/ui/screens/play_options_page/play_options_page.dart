@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/analysis_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
-import 'package:guitar_song_improvement/ui/screens/play_options_page/widgets/denied_permission_model.dart';
+import 'package:guitar_song_improvement/ui/screens/play_options_page/widgets/denied_permission_modal.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -194,13 +194,13 @@ class _ConfirmButtom extends StatelessWidget {
             if (micPermissionStatus.isDenied) {
               showDialog(
                 context: context,
-                builder: (context) => Center(child: DeniedPermissionModel()),
+                builder: (context) => Center(child: DeniedPermissionModal()),
               );
             } else if (micPermissionStatus.isPermanentlyDenied) {
               showDialog(
                 context: context,
                 builder: (context) => Center(
-                  child: DeniedPermissionModel(isPermanentlyDenied: true),
+                  child: DeniedPermissionModal(isPermanentlyDenied: true),
                 ),
               );
             }

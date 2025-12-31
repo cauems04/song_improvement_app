@@ -6,7 +6,7 @@ import 'package:guitar_song_improvement/controller/link_controller.dart';
 import 'package:guitar_song_improvement/model/link.dart';
 import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/ui/components/box_form.dart';
-import 'package:guitar_song_improvement/ui/save_link_page.dart';
+import 'package:guitar_song_improvement/ui/screens/save_link_page/save_link_page.dart';
 import 'package:guitar_song_improvement/services/google_favicon_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
@@ -120,6 +120,7 @@ class LinkCard extends StatelessWidget {
   }
 
   Future<void> _onLaunchUrl() async {
+    // Threat for when it's not a link, cause it can throw an error
     if (!await launchUrl(link.url, mode: LaunchMode.externalApplication)) {
       throw Error(); // Implement custom error!!!!!!!!!!!!!!!
     }
