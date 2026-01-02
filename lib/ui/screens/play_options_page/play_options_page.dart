@@ -3,6 +3,7 @@ import 'package:guitar_song_improvement/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis_page/analysis_page.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/play_options_page/widgets/denied_permission_modal.dart';
+import 'package:guitar_song_improvement/ui/screens/record_audio_page/record_audio_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -186,7 +187,7 @@ class _ConfirmButtom extends StatelessWidget {
         ),
         onTap: () async {
           if (isPlayselected) {
-            final PermissionStatus micPermissionStatus =
+            PermissionStatus micPermissionStatus =
                 await Permission.microphone.status;
 
             if (!context.mounted) return;
@@ -205,6 +206,13 @@ class _ConfirmButtom extends StatelessWidget {
               );
             }
 
+            micPermissionStatus = await Permission.microphone.status;
+
+            if (micPermissionStatus.isGranted) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => RecordAudioPage()),
+              );
+            }
             return;
           }
 

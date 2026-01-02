@@ -45,6 +45,15 @@ class DeniedPermissionModal extends StatelessWidget {
             ),
           ),
           _ConfirmButtom(isPermanentlyDenied),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              "Go back",
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge!.copyWith(color: Colors.white70),
+            ),
+          ),
         ],
       ),
     );
