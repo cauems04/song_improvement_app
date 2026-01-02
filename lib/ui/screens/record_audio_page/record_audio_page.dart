@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/play_options_page/widgets/denied_permission_modal.dart';
+import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/wait_time_picker.dart';
 
 class RecordAudioPage extends StatefulWidget {
   const RecordAudioPage({super.key});
@@ -10,10 +12,12 @@ class RecordAudioPage extends StatefulWidget {
 
 class _RecordAudioPageState extends State<RecordAudioPage> {
   late bool isActive;
+  late int secondsToStart;
 
   @override
   void initState() {
     isActive = false;
+    secondsToStart = 0; // Implement with caching later
     super.initState();
   }
 
@@ -50,9 +54,10 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
                   height: 250,
                   decoration: BoxDecoration(
                     color: (isActive)
-                        ? Theme.of(context).colorScheme.surfaceContainerLowest
-                        : Theme.of(context).colorScheme.primary,
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.surfaceContainerLowest,
                     shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 3),
                   ),
                   child: Icon(Icons.mic, size: 80),
                 ),
@@ -61,12 +66,31 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
             SafeArea(
               child: Row(
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerLow,
-                      shape: BoxShape.circle,
+                  InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Center(child: WaitTimePicker());
+                        },
+                      );
+                    },
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerLow,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          "${secondsToStart}s",
+                          style: Theme.of(context).textTheme.bodyLarge!
+                              .copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ),
                     ),
                   ),
                 ],
