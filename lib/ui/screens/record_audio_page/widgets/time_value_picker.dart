@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
-class WaitTimePicker extends StatelessWidget {
-  const WaitTimePicker({super.key});
+class TimerValuePicker extends StatelessWidget {
+  const TimerValuePicker({super.key});
 
   @override
   Widget build(BuildContext context) {
