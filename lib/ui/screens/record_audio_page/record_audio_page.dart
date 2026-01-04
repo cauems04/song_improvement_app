@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/initial_timer.dart';
+import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/play_button.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/time_value_picker.dart';
 
 class RecordAudioPage extends StatefulWidget {
@@ -17,7 +18,6 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
 
   @override
   void initState() {
-    isActive = false;
     secondsToStart = 2; // Implement with caching later
     super.initState();
   }
@@ -43,30 +43,7 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isActive = !isActive;
-                  });
-                },
-                child: Container(
-                  alignment: Alignment.center,
-                  width: 250,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    color: (isActive)
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.surfaceContainerLowest,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 3),
-                  ),
-                  child: (isActive)
-                      ? InitialTimer(secondsToStart)
-                      : Icon(Icons.mic, size: 80),
-                ),
-              ),
-            ),
+            Expanded(child: PlayButton(secondsToStart)),
             SafeArea(
               child: Row(
                 children: [

@@ -15,8 +15,8 @@ class _InitialTimerState extends State<InitialTimer> {
   late int countdownNumber;
 
   void startTimer() {
-    timer = Timer.periodic(Duration(seconds: countdownNumber), (Timer timer) {
-      if (countdownNumber < 1) timer.cancel();
+    timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      if (countdownNumber < 1) return timer.cancel();
 
       setState(() => countdownNumber--);
     });
