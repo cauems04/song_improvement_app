@@ -27,7 +27,8 @@ class _PlayButtonState extends State<PlayButton> {
           isActive = !isActive;
         });
       },
-      child: Container(
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 400),
         alignment: Alignment.center,
         width: 250,
         height: 250,

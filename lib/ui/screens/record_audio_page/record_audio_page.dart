@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:guitar_song_improvement/themes/spacing.dart';
-import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/initial_timer.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/play_button.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/time_value_picker.dart';
 
