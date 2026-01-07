@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:record/record.dart';
 
 class InitialTimer extends StatefulWidget {
   final int secondsToStart;
-  const InitialTimer(this.secondsToStart, {super.key});
+  final VoidCallback onFinished;
+
+  const InitialTimer(this.secondsToStart, this.onFinished, {super.key});
 
   @override
   State<InitialTimer> createState() => _InitialTimerState();
@@ -19,27 +17,14 @@ class _InitialTimerState extends State<InitialTimer> {
 
   void startTimer() {
     timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-      if (countdownNumber < 1) return timer.cancel();
+      if (countdownNumber < 1) {
+        timer.cancel();
+        widget.onFinished();
+        return;
+      }
 
       setState(() => countdownNumber--);
     });
-  }
-
-  void startRecording() async {
-    final AudioRecorder recorder = AudioRecorder();
-
-    final Directory tempAudioDir = Directory(
-      "${getTemporaryDirectory()}/tempAudioDir",
-    );
-
-    if (!await tempAudioDir.exists()) {
-      await tempAudioDir.create(recursive: true);
-    }
-
-    final String fileName = "rec_${DateTime.now()}.m4a";
-    final String tempPath = "${tempAudioDir.path}";
-    recorder.start(const RecordConfig(), path: tempPath);
-    // recorder.start(RecordConfig(), path: path)
   }
 
   @override
@@ -52,14 +37,32 @@ class _InitialTimerState extends State<InitialTimer> {
 
   @override
   Widget build(BuildContext context) {
-    return (countdownNumber > 0)
-        ? Text(
-            countdownNumber.toString(),
-            style: Theme.of(
-              context,
-            ).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
-          )
-        : Text("...");
+    return Stack(
+      children: [
+        (countdownNumber > 0)
+            ? Text(
+                countdownNumber.toString(),
+                style: Theme.of(
+                  context,
+                ).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
+              )
+            : Text("..."),
+        Material(
+          // Adjust button, it's not realiable as a stack in here, and I want it outside the button circle, so need to find a way to get this outside (at least visually)
+          color: Colors.white24,
+          shape: CircleBorder(),
+          child: InkWell(
+            customBorder: CircleBorder(),
+            onTap: () {},
+            child: Container(
+              height: 30,
+              width: 30,
+              decoration: BoxDecoration(shape: BoxShape.circle),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
