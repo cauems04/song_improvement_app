@@ -37,32 +37,14 @@ class _InitialTimerState extends State<InitialTimer> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        (countdownNumber > 0)
-            ? Text(
-                countdownNumber.toString(),
-                style: Theme.of(
-                  context,
-                ).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
-              )
-            : Text("..."),
-        Material(
-          // Adjust button, it's not realiable as a stack in here, and I want it outside the button circle, so need to find a way to get this outside (at least visually)
-          color: Colors.white24,
-          shape: CircleBorder(),
-          child: InkWell(
-            customBorder: CircleBorder(),
-            onTap: () {},
-            child: Container(
-              height: 30,
-              width: 30,
-              decoration: BoxDecoration(shape: BoxShape.circle),
-            ),
-          ),
-        ),
-      ],
-    );
+    return (countdownNumber > 0)
+        ? Text(
+            countdownNumber.toString(),
+            style: Theme.of(
+              context,
+            ).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
+          )
+        : Text("...");
   }
 
   @override

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/play_button.dart';
+import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/record_management_button.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/time_value_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
@@ -130,11 +131,34 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: PlayButton(
-                recordState: recordState,
-                secondsToStart: secondsToStart,
-                onPressed: handlePlayButtonAction,
-                onInitialCountFinished: startRecording,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  PlayButton(
+                    recordState: recordState,
+                    secondsToStart: secondsToStart,
+                    onPressed: handlePlayButtonAction,
+                    onInitialCountFinished: startRecording,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: Spacing.xxl),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: Spacing.lg),
+                          child: RecordManagementButton(Icon(Icons.pause)),
+                        ),
+                        RecordManagementButton(
+                          Icon(
+                            Icons.stop,
+                            color: Theme.of(context).colorScheme.onError,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
             SafeArea(
@@ -174,5 +198,12 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() async {
+    super.dispose();
+
+    await stopRecording();
   }
 }

@@ -19,20 +19,23 @@ class PlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onPressed(),
+      onTap: () {
+        onPressed();
+        print(recordState);
+      },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 400),
         alignment: Alignment.center,
         width: 250,
         height: 250,
         decoration: BoxDecoration(
-          color: (recordState == RecordState.recording)
+          color: (recordState == RecordState.countdown)
               ? Theme.of(context).colorScheme.primary
               : Theme.of(context).colorScheme.surfaceContainerLowest,
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 3),
         ),
-        child: (recordState == RecordState.recording)
+        child: (recordState == RecordState.countdown)
             ? InitialTimer(secondsToStart, onInitialCountFinished)
             : Icon(Icons.mic, size: 80),
       ),
