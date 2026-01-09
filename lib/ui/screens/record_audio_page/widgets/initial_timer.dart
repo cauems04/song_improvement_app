@@ -37,14 +37,12 @@ class _InitialTimerState extends State<InitialTimer> {
 
   @override
   Widget build(BuildContext context) {
-    return (countdownNumber > 0)
-        ? Text(
-            countdownNumber.toString(),
-            style: Theme.of(
-              context,
-            ).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
-          )
-        : Text("...");
+    return Text(
+      countdownNumber.toString(),
+      style: Theme.of(
+        context,
+      ).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
+    );
   }
 
   @override

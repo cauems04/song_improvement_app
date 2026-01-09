@@ -21,7 +21,6 @@ class PlayButton extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         onPressed();
-        print(recordState);
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 400),

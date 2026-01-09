@@ -28,43 +28,34 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
     super.initState();
 
     recordState = RecordState.idle;
-    secondsToStart = 2; // Implement with caching later
+    secondsToStart = 0; // Implement with caching later
     recorder = AudioRecorder();
   }
 
   void startCountdown() {
     setState(() {
+      print(".\n.\n.\n.\ncounting....\n.\n.\n.\n");
       recordState = RecordState.countdown;
     });
   }
 
   Future<void> startRecording() async {
-    final Directory tempAudioDir = Directory(
-      "${getTemporaryDirectory()}/tempAudioDir",
-    );
+    Directory tempAudioDir = await getTemporaryDirectory();
+
+    tempAudioDir = Directory("${tempAudioDir.path}/tempAudioDir");
 
     if (!await tempAudioDir.exists()) {
       await tempAudioDir.create(recursive: true);
     }
 
     final String fileName = "rec_${DateTime.now()}.m4a";
-    final String tempPath = "${tempAudioDir.path}";
+    final String filePath = '${tempAudioDir.path}/$fileName';
 
-    recorder.start(const RecordConfig(), path: tempPath);
+    recorder.start(const RecordConfig(), path: filePath);
 
     setState(() {
+      print(".\n.\n.\n.\nrecording....\n.\n.\n.\n");
       recordState = RecordState.recording;
-    });
-  }
-
-  // Probably using it outside the PlayButton, with another button, no need to pass via parameter
-  Future<void> stopRecording() async {
-    await recorder.stop();
-
-    // Creating model to check whether to save it or discard , and create the remaining code based on it,
-    // setting it to idle or saved
-    setState(() {
-      recordState = RecordState.idle;
     });
   }
 
@@ -87,6 +78,18 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
       recordState = (recordState == RecordState.paused)
           ? RecordState.recording
           : RecordState.paused;
+    });
+  }
+
+  // Probably using it outside the PlayButton, with another button, no need to pass via parameter
+  Future<void> stopRecording() async {
+    await recorder.stop();
+
+    // Creating model to check whether to save it or discard , and create the remaining code based on it,
+    // setting it to idle or saved
+    setState(() {
+      print(".\n.\n.\n.\nstoping....\n.\n.\n.\n");
+      recordState = RecordState.idle;
     });
   }
 
@@ -134,29 +137,39 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  PlayButton(
-                    recordState: recordState,
-                    secondsToStart: secondsToStart,
-                    onPressed: handlePlayButtonAction,
-                    onInitialCountFinished: startRecording,
+                  Visibility(
+                    visible: (recordState == RecordState.recording),
+                    child: Text(
+                      "Tap to restart",
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: Spacing.xxl),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: Spacing.lg),
-                          child: RecordManagementButton(Icon(Icons.pause)),
-                        ),
-                        RecordManagementButton(
-                          Icon(
-                            Icons.stop,
-                            color: Theme.of(context).colorScheme.onError,
-                          ),
-                        ),
-                      ],
+                    padding: const EdgeInsets.only(
+                      top: Spacing.md,
+                      bottom: Spacing.xxl,
                     ),
+                    child: PlayButton(
+                      recordState: recordState,
+                      secondsToStart: secondsToStart,
+                      onPressed: handlePlayButtonAction,
+                      onInitialCountFinished: startRecording,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: Spacing.lg),
+                        child: RecordManagementButton(Icon(Icons.pause)),
+                      ),
+                      RecordManagementButton(
+                        Icon(
+                          Icons.stop,
+                          color: Theme.of(context).colorScheme.onError,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -204,6 +217,6 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
   void dispose() async {
     super.dispose();
 
-    await stopRecording();
+    await recorder.cancel();
   }
 }
