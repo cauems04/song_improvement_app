@@ -28,9 +28,16 @@ class PlayButton extends StatelessWidget {
         width: 250,
         height: 250,
         decoration: BoxDecoration(
-          color: (recordState == RecordState.countdown)
-              ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.surfaceContainerLowest,
+          gradient: RadialGradient(
+            center: Alignment.center,
+            colors: [
+              Theme.of(context).colorScheme.surfaceContainerLow,
+              Theme.of(context).colorScheme.surfaceContainerLowest,
+            ],
+          ),
+          // color: (recordState == RecordState.countdown)
+          //     ? Theme.of(context).colorScheme.primary
+          //     : Theme.of(context).colorScheme.surfaceContainerLowest,
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 3),
         ),

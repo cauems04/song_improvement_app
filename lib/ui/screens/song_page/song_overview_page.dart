@@ -68,6 +68,7 @@ class ProgressGraphic extends StatefulWidget {
 
 class _ProgressGraphicState extends State<ProgressGraphic>
     with SingleTickerProviderStateMixin {
+  // change to not single ticker provider
   late AnimationController progressController;
   late Animation<double> curvedProgressController;
 

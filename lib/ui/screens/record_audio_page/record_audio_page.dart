@@ -5,6 +5,7 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/play_button.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/record_management_button.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/time_value_picker.dart';
+import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/wave_animation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 
@@ -28,7 +29,7 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
     super.initState();
 
     recordState = RecordState.idle;
-    secondsToStart = 0; // Implement with caching later
+    secondsToStart = 2; // Implement with caching later
     recorder = AudioRecorder();
   }
 
@@ -156,18 +157,25 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
                       onInitialCountFinished: startRecording,
                     ),
                   ),
+                  SizedBox(height: 100, child: WaveAnimation()),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: Spacing.lg),
-                        child: RecordManagementButton(Icon(Icons.pause)),
+                        child: RecordManagementButton(
+                          Icon(Icons.pause),
+                          pauseResumeRecording,
+                          disabled: (recordState == RecordState.idle),
+                        ),
                       ),
                       RecordManagementButton(
                         Icon(
                           Icons.stop,
                           color: Theme.of(context).colorScheme.onError,
                         ),
+                        stopRecording,
+                        disabled: (recordState == RecordState.idle),
                       ),
                     ],
                   ),
