@@ -21,10 +21,10 @@ class _WaveAnimationState extends State<WaveAnimation>
       vsync: this,
       duration: Duration(seconds: 1),
       lowerBound: 0,
-      upperBound: 1,
+      upperBound: 2 * pi,
     );
 
-    waveControler.repeat(reverse: true);
+    waveControler.repeat();
   }
 
   @override
@@ -32,9 +32,18 @@ class _WaveAnimationState extends State<WaveAnimation>
     return AnimatedBuilder(
       animation: waveControler,
       builder: (context, child) {
-        return CustomPaint(painter: WavePainter(context, waveControler.value));
+        return CustomPaint(
+          painter: WavePainter(context, waveControler.value),
+          size: Size.infinite,
+        );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    waveControler.dispose();
+    super.dispose();
   }
 }
 
@@ -46,22 +55,24 @@ class WavePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint painter = Paint()
+    final paint = Paint()
       ..style = PaintingStyle.stroke
+      ..strokeWidth = 4
       ..color = Theme.of(context).colorScheme.onPrimary;
 
-    Path path = Path()..moveTo(0, size.height / 2);
+    final midY = size.height / 2;
+    const amplitude = 20.0;
+    const frequency = pi / 15;
+
+    final path = Path()..moveTo(0, midY + sin(animationValue) * amplitude);
 
     for (int i = 1; i <= 30; i++) {
-      path.lineTo(
-        i * size.width / 30,
-        size.height / 2 + sin(animationValue + 1 * pi / 15) * 20,
-      );
+      final x = i * size.width / 30;
+      final y = midY + sin(animationValue + i * frequency) * amplitude;
+      path.lineTo(x, y);
     }
 
-    path.lineTo(size.width, size.height / 2);
-
-    canvas.drawPath(path, painter);
+    canvas.drawPath(path, paint);
   }
 
   @override

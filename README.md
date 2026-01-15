@@ -2,7 +2,7 @@
 
 ## Objective and Problem
 
-The idea of this project was first thought to solve a personal problem.
+The idea of this project was first thought of as a solution to a personal problem.
 
 I've always been willing to learn songs I like without knowing much of music theory, so I had to learn them by searching for youtube tutorials and online tablatures. Unfortunately, I always struggle to learn how to play the whole songs (stop learning on the middle or just learn the very beggining), and I usually forget them with time. Those are the main problems I'm trying to solve.
 
@@ -11,7 +11,7 @@ As a solution, I've thought of an app that must have the following core features
 - Save the songs you want to learn;
 - Play, listen to your recording, and make an auto-analysis;
 - Keep track of your learning progress on each song;
-- Organize the songs along with their links to external content (e. g: Youtube tutorials) and recording (consequently saving the musician's song portfolio).
+- Organize the songs along with their links to external content (e.g., Youtube tutorials) and recording (consequently saving the user's song portfolio).
 
 
 Due to my personal problem experience, this project targets rokkies up to mid-level players who want to learn songs they like, follow  their progress and organize its data on an organized and pretty enviroment. 

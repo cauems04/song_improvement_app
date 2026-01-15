@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/confirm_send_modal.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/play_button.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/record_management_button.dart';
 import 'package:guitar_song_improvement/ui/screens/record_audio_page/widgets/time_value_picker.dart';
@@ -86,6 +87,11 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
   Future<void> stopRecording() async {
     await recorder.stop();
 
+    showDialog(
+      context: context,
+      builder: (context) => Center(child: ConfirmSendModal()),
+    );
+
     // Creating model to check whether to save it or discard , and create the remaining code based on it,
     // setting it to idle or saved
     setState(() {
@@ -129,7 +135,7 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(Spacing.md),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.md),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -183,36 +189,39 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
               ),
             ),
             SafeArea(
-              child: Row(
-                children: [
-                  InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Center(child: TimerValuePicker());
-                        },
-                      );
-                    },
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.surfaceContainerLow,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          "${secondsToStart}s",
-                          style: Theme.of(context).textTheme.bodyLarge!
-                              .copyWith(fontWeight: FontWeight.w600),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.md),
+                child: Row(
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Center(child: TimerValuePicker());
+                          },
+                        );
+                      },
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerLow,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            "${secondsToStart}s",
+                            style: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -223,8 +232,7 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
 
   @override
   void dispose() async {
-    super.dispose();
-
     await recorder.cancel();
+    super.dispose();
   }
 }
