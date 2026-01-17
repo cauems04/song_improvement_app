@@ -122,6 +122,7 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: InkWell(
           customBorder: CircleBorder(),
@@ -135,7 +136,7 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: Spacing.md),
+        padding: const EdgeInsets.only(top: 100, bottom: Spacing.md),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -163,7 +164,15 @@ class _RecordAudioPageState extends State<RecordAudioPage> {
                       onInitialCountFinished: startRecording,
                     ),
                   ),
-                  SizedBox(height: 100, child: WaveAnimation()),
+                  AnimatedSize(
+                    duration: Duration(milliseconds: 400),
+                    child: SizedBox(
+                      height: (recordState == RecordState.recording) ? 200 : 0,
+                      child: (recordState == RecordState.recording)
+                          ? WaveAnimation()
+                          : null,
+                    ),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
