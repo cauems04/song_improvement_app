@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/listen_recording_page.dart/listen_recording_page.dart';
 
 class ConfirmSendModal extends StatelessWidget {
   const ConfirmSendModal({super.key});
@@ -50,7 +51,11 @@ class ConfirmSendModal extends StatelessWidget {
               _ConfirmButtom(
                 "Confirm",
                 Colors.green[600]!,
-                action: () => Navigator.of(context).pop(),
+                action: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ListenRecordingPage(),
+                  ),
+                ),
               ),
             ],
           ),
