@@ -1,4 +1,4 @@
-import 'package:guitar_song_improvement/ui/screens/analysis_page/content/score_type.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
 
 class ScoreService {
   final Map<ScoreType, int> scores;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/model/music_provider.dart';
-import 'package:guitar_song_improvement/ui/splash/splash_page.dart';
+import 'package:guitar_song_improvement/ui/screens/splash/splash_screen.dart';
 import 'package:guitar_song_improvement/themes/dark_theme.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Guitar Improving',
       theme: appTheme,
       themeMode: ThemeMode.dark,
-      home: const SplashPage(),
+      home: const SplashScreen(),
     );
   }
 }
