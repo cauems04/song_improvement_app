@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/model/link.dart';
-import 'package:guitar_song_improvement/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/ui/screens/save_link/save_link_screen.dart';
-import 'package:guitar_song_improvement/services/google_favicon_service.dart';
+import 'package:guitar_song_improvement/data/model/link.dart';
+import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
+import 'package:guitar_song_improvement/ui/screens/form/save_link/save_link_screen.dart';
+import 'package:guitar_song_improvement/data/services/google_favicon_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/widgets/box_form.dart';
 import 'package:provider/provider.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/controller/song_controller.dart';
-import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/widgets/song_card.dart';
 

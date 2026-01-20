@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/model/album.dart';
-import 'package:guitar_song_improvement/model/artist.dart';
-import 'package:guitar_song_improvement/model/music_provider.dart';
-import 'package:guitar_song_improvement/model/song.dart';
-import 'package:guitar_song_improvement/services/filter_service.dart';
+import 'package:guitar_song_improvement/data/model/album.dart';
+import 'package:guitar_song_improvement/data/model/artist.dart';
+import 'package:guitar_song_improvement/data/model/music_provider.dart';
+import 'package:guitar_song_improvement/data/model/song.dart';
+import 'package:guitar_song_improvement/data/services/filter_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/widgets/album_card.dart';
 import 'package:guitar_song_improvement/ui/widgets/artist_card.dart';

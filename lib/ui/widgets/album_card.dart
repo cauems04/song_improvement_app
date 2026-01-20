@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/model/album.dart';
+import 'package:guitar_song_improvement/data/model/album.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 
 class AlbumCard extends StatelessWidget {

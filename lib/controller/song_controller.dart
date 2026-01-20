@@ -1,8 +1,8 @@
-import 'package:guitar_song_improvement/model/album.dart';
-import 'package:guitar_song_improvement/model/artist.dart';
-import 'package:guitar_song_improvement/model/song.dart';
-import 'package:guitar_song_improvement/repository/dal/song_dao.dart';
-import 'package:guitar_song_improvement/services/i_tunes_search_service.dart';
+import 'package:guitar_song_improvement/data/model/album.dart';
+import 'package:guitar_song_improvement/data/model/artist.dart';
+import 'package:guitar_song_improvement/data/model/song.dart';
+import 'package:guitar_song_improvement/data/local/database/dao/song_dao.dart';
+import 'package:guitar_song_improvement/data/services/i_tunes_search_service.dart';
 
 class SongController {
   const SongController();

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/model/song.dart';
+import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/ui/widgets/box_form.dart';
 import 'package:guitar_song_improvement/ui/widgets/song_card.dart';
 

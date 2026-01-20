@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/model/music_provider.dart';
+import 'package:guitar_song_improvement/data/model/music_provider.dart';
 import 'package:guitar_song_improvement/ui/screens/home/home_screen.dart';
 import 'package:provider/provider.dart';
 

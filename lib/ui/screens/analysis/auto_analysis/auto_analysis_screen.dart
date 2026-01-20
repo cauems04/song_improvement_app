@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/model/music_provider.dart';
-import 'package:guitar_song_improvement/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/services/score_service.dart';
+import 'package:guitar_song_improvement/data/model/music_provider.dart';
+import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
+import 'package:guitar_song_improvement/data/services/score_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_bottom_sheet.dart';

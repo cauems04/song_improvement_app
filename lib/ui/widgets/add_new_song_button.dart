@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/ui/screens/save_song/save_song_screen.dart';
+import 'package:guitar_song_improvement/ui/screens/form/save_song/save_song_screen.dart';
 
 class AddNewSongButton extends StatelessWidget {
   const AddNewSongButton({super.key});

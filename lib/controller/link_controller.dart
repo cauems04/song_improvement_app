@@ -1,5 +1,5 @@
-import 'package:guitar_song_improvement/model/link.dart';
-import 'package:guitar_song_improvement/repository/dal/link_dao.dart';
+import 'package:guitar_song_improvement/data/model/link.dart';
+import 'package:guitar_song_improvement/data/local/database/dao/link_dao.dart';
 
 class LinkController {
   LinkController();

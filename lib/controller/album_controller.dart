@@ -1,5 +1,5 @@
-import 'package:guitar_song_improvement/model/album.dart';
-import 'package:guitar_song_improvement/repository/dal/album_dao.dart';
+import 'package:guitar_song_improvement/data/model/album.dart';
+import 'package:guitar_song_improvement/data/local/database/dao/album_dao.dart';
 
 class AlbumController {
   const AlbumController();
