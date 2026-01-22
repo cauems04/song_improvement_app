@@ -1,36 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/controller/link_controller.dart';
-import 'package:guitar_song_improvement/data/model/album.dart';
-import 'package:guitar_song_improvement/data/model/artist.dart';
 import 'package:guitar_song_improvement/data/model/link.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/form/save_link/view_models/results/form_results.dart';
+import 'package:guitar_song_improvement/ui/screens/form/save_link/view_models/save_link_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/form/save_link/widgets/link_custom_text_form_field.dart';
 import 'package:provider/provider.dart';
 
 class SaveLinkScreen extends StatelessWidget {
-  final Link? link;
+  final SaveLinkViewmodel saveLinkVM = SaveLinkViewmodel(LinkController());
 
-  final bool isEditing;
-
-  late TextEditingController titleEditingController;
-  late TextEditingController urlEditingController;
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  SaveLinkScreen({this.link, super.key, this.isEditing = false}) {
-    titleEditingController = TextEditingController();
-    urlEditingController = TextEditingController();
-
-    initFields();
-  }
-
-  void initFields() {
-    if (link != null) {
-      titleEditingController.text = link!.title;
-      urlEditingController.text = link!.url.toString();
-    }
+  SaveLinkScreen({super.key, Link? link, bool isEditing = false}) {
+    saveLinkVM.init(link, isEditing);
   }
 
   @override
@@ -56,7 +38,7 @@ class SaveLinkScreen extends StatelessWidget {
               left: Spacing.xl,
             ),
             child: Form(
-              key: _formKey,
+              key: saveLinkVM.formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -66,22 +48,16 @@ class SaveLinkScreen extends StatelessWidget {
                   ),
                   LinkCustomTextFormField(
                     "Title",
-                    titleEditingController,
+                    saveLinkVM.titleEditingController,
                     validation: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Fill the field";
-                      }
-                      return null;
+                      return saveLinkVM.validateField(value);
                     },
                   ),
                   LinkCustomTextFormField(
                     "External link",
-                    urlEditingController,
+                    saveLinkVM.urlEditingController,
                     validation: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Fill the field";
-                      }
-                      return null;
+                      return saveLinkVM.validateField(value);
                     },
                   ),
                   SizedBox(
@@ -96,44 +72,25 @@ class SaveLinkScreen extends StatelessWidget {
                           children: [Text("Save")],
                         ),
                         onTap: () async {
-                          if (_formKey.currentState!.validate()) {
-                            LinkController linkController = LinkController();
+                          final FormResult result = await saveLinkVM.submitForm(
+                            currentSongId: Provider.of<SelectedSongProvider>(
+                              context,
+                              listen: false,
+                            ).currentSong.id,
+                          );
 
-                            Link newLink = Link(
-                              title: titleEditingController.text,
-                              url: Uri.parse(urlEditingController.text),
-                              songId: Provider.of<SelectedSongProvider>(
-                                context,
-                                listen: false,
-                              ).currentSong.id!,
-                            );
+                          if (!context.mounted) return;
 
-                            if (!isEditing) {
-                              try {
-                                await linkController.create(newLink);
-                              } catch (e) {
-                                // linkController.delete(link); Add this delete right here AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(result.message)),
+                          );
 
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('Erro ao salvar link: $e'),
-                                    ),
-                                  );
-                                }
-                              }
-                            } else {
-                              await linkController.update(link!, newLink);
-                            }
-
-                            if (context.mounted) {
-                              Provider.of<SelectedSongProvider>(
-                                context,
-                                listen: false,
-                              ).getLinks();
-
-                              Navigator.of(context).pop();
-                            }
+                          if (result is SuccessResult) {
+                            Provider.of<SelectedSongProvider>(
+                              context,
+                              listen: false,
+                            ).getLinks();
+                            Navigator.of(context).pop();
                           }
                         },
                       ),
@@ -147,6 +104,4 @@ class SaveLinkScreen extends StatelessWidget {
       ),
     );
   }
-
-  void saveSong(Song song, Album album, Artist artist) async {}
 }

@@ -26,17 +26,11 @@ class SelectedSongProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateSong(Song newSong) async {
+  Future<void> updateSong() async {
     SongController songController = SongController();
-    await songController.update(currentSong, newSong);
+    final Song song = await songController.read(currentSong.id!);
 
-    currentSong = Song(
-      // Check this later
-      id: currentSong.id,
-      name: newSong.name,
-      artist: newSong.artist,
-      album: newSong.album,
-    );
+    currentSong = song;
 
     notifyListeners();
   }

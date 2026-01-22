@@ -85,11 +85,14 @@ class _SongScreenState extends State<SongScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SaveSongScreen(
-                      song: Provider.of<SelectedSongProvider>(
-                        context,
-                      ).currentSong,
-                      isEditing: true,
+                    builder: (newContext) => ChangeNotifierProvider.value(
+                      value: context.read<SelectedSongProvider>(),
+                      child: SaveSongScreen(
+                        song: Provider.of<SelectedSongProvider>(
+                          context,
+                        ).currentSong,
+                        isEditing: true,
+                      ),
                     ),
                   ),
                 );
