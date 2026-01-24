@@ -21,4 +21,6 @@ class ChooseModeViewmodel {
   void toggleRememberChoice() {
     rememberChoice.value = !rememberChoice.value;
   }
+
+  void onConfirmPressed() async {}
 }

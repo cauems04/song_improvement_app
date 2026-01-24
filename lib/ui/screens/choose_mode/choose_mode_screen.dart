@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/auto_analysis_screen.dart';
-import 'package:guitar_song_improvement/ui/screens/choose_mode/view_model/choose_mode_viewmodel.dart';
-import 'package:guitar_song_improvement/ui/screens/choose_mode/widgets/option_card.dart';
-import 'package:guitar_song_improvement/ui/screens/choose_mode/widgets/denied_permission_modal.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/record_audio_screen.dart';
+import 'package:guitar_song_improvement/ui/screens/choose_mode/view_model/choose_mode_viewmodel.dart';
+import 'package:guitar_song_improvement/ui/screens/choose_mode/widgets/denied_permission_modal.dart';
+import 'package:guitar_song_improvement/ui/screens/choose_mode/widgets/option_card.dart';
 import 'package:guitar_song_improvement/ui/screens/choose_mode/widgets/remember_choice_check_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -109,8 +109,8 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
 }
 
 class _ConfirmButtom extends StatelessWidget {
-  final bool isPlayselected;
-  const _ConfirmButtom(this.isPlayselected);
+  final ChooseModeViewmodel chooseModeVM;
+  const _ConfirmButtom(this.chooseModeVM);
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,7 @@ class _ConfirmButtom extends StatelessWidget {
           ),
         ),
         onTap: () async {
-          if (isPlayselected) {
+          if (chooseModeVM.isPlaySelected.value) {
             PermissionStatus micPermissionStatus =
                 await Permission.microphone.status;
 

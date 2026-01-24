@@ -10,6 +10,7 @@ import 'package:guitar_song_improvement/data/local/database/dao/album_dao.dart';
 import 'package:guitar_song_improvement/data/local/database/dao/artist_dao.dart';
 import 'package:guitar_song_improvement/data/local/database/dao/song_dao.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/home/view_models/home_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/home/widgets/home_section.dart';
 import 'package:guitar_song_improvement/ui/screens/form/save_song/save_song_screen.dart';
 import 'package:guitar_song_improvement/ui/screens/search/search_screen.dart';
@@ -22,25 +23,29 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final HomeViewmodel homeVM = HomeViewmodel(
+      songController: SongController(),
+      albumController: AlbumController(),
+      artistController: ArtistController(),
+    );
+
     return Consumer<MusicProvider>(
       builder: (context, data, child) {
-        if (!data.isLoaded) {
-          // data.getData(); // Initialize on splash screen when created / When changing the song list, can create a method with notifylistener instead of putting the value of database in here (because notifylisteners make the widgets that use consumer reload)
-          return const Center(child: CircularProgressIndicator());
-        }
+        // data.getData(); // Initialize on splash screen when created / When changing the song list, can create a method with notifylistener instead of putting the value of database in here (because notifylisteners make the widgets that use consumer reload)
 
         if (data.songs == null || data.songs!.isEmpty) {
-          return const NoSongsHomeScreen();
+          return NoSongsHomeScreen(homeVM: homeVM);
         }
 
-        return StandardHomeScreen(data.songs!);
+        return StandardHomeScreen(data.songs!, homeVM: homeVM);
       },
     );
   }
 }
 
 class NoSongsHomeScreen extends StatelessWidget {
-  const NoSongsHomeScreen({super.key});
+  final HomeViewmodel homeVM;
+  const NoSongsHomeScreen({super.key, required this.homeVM});
 
   @override
   Widget build(BuildContext context) {
@@ -51,9 +56,7 @@ class NoSongsHomeScreen extends StatelessWidget {
           icon: Icon(Icons.settings),
           color: Colors.white,
           onPressed: () async {
-            SongDao songDao = SongDao();
-
-            List<Song> songs = await songDao.readAll();
+            List<Song> songs = await homeVM.getAllSongs;
 
             for (Song song in songs) {
               print("${song.name} - ${song.album} - ${song.artist}\n");
@@ -91,9 +94,10 @@ class NoSongsHomeScreen extends StatelessWidget {
 }
 
 class StandardHomeScreen extends StatelessWidget {
+  final HomeViewmodel homeVM;
   final List<Song> songs;
 
-  const StandardHomeScreen(this.songs, {super.key});
+  const StandardHomeScreen(this.songs, {super.key, required this.homeVM});
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +109,9 @@ class StandardHomeScreen extends StatelessWidget {
           customBorder: CircleBorder(),
           child: Icon(Icons.settings, color: Colors.white),
           onTap: () {
+            // Just testing!!! Take it off later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             SongDao songDao = SongDao();
-            songDao
-                .deleteAll(); // Just testing!!! Take it off later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            songDao.deleteAll();
 
             AlbumDao albumDao = AlbumDao();
             ArtistDao artistDao = ArtistDao();
@@ -116,6 +120,7 @@ class StandardHomeScreen extends StatelessWidget {
             artistDao.deleteAll();
 
             Provider.of<MusicProvider>(context, listen: false).getData();
+            // 'til here
           },
         ),
         actions: [
