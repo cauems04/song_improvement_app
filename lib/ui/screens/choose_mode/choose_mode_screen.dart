@@ -96,7 +96,7 @@ class _ChooseModeScreenState extends State<ChooseModeScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 80),
-                    child: _ConfirmButtom(value),
+                    child: _ConfirmButtom(chooseModeVM),
                   ),
                 ],
               );

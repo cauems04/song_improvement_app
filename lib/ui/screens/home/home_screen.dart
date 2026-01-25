@@ -120,7 +120,7 @@ class StandardHomeScreen extends StatelessWidget {
             artistDao.deleteAll();
 
             Provider.of<MusicProvider>(context, listen: false).getData();
-            // 'til here
+            // til here
           },
         ),
         actions: [

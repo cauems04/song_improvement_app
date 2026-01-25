@@ -1,20 +1,16 @@
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
 
 class ScoreService {
-  final Map<ScoreType, int> scores;
-
   static const int minFinalValue = 5;
   static const int maxFinalValue = 25;
 
-  late double finalScore;
+  double finalScore = 0;
 
   int get normalizedFinalScore {
     return (finalScore * 100).toInt();
   }
 
-  ScoreService(this.scores);
-
-  void calculateScore() {
+  void calculateScore(Map<ScoreType, int> scores) {
     int sum = 0;
     for (ScoreType scoreType in scores.keys) {
       sum += (scores[scoreType]! + 1);

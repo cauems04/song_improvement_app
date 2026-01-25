@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/music_provider.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/data/services/score_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/view_models/auto_analysis_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_bottom_sheet.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_selector.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/section_indicator.dart';
@@ -18,40 +18,30 @@ class AutoAnalysisScreen extends StatefulWidget {
 }
 
 class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
-  late ScoreType currentScoreType;
-  late Map<ScoreType, int> scoreValues;
-
-  late bool isLastPage;
-
-  final PageController pageController = PageController();
+  late final AutoAnalysisViewModel autoAnalysisVM;
 
   @override
   void initState() {
-    currentScoreType = ScoreType.values[0];
-    scoreValues = {for (ScoreType type in ScoreType.values) type: 0};
-    isLastPage = false;
-
     super.initState();
+    autoAnalysisVM = AutoAnalysisViewModel();
+    autoAnalysisVM.initValues();
   }
 
   Future<void> submitScore() async {
-    ScoreService scoreService = ScoreService(scoreValues);
-
-    scoreService.calculateScore();
+    autoAnalysisVM.calculateScore();
 
     if (!context.mounted) return;
 
     await Provider.of<SelectedSongProvider>(
       context,
       listen: false,
-    ).updateScore(scoreService.normalizedFinalScore);
+    ).updateScore(autoAnalysisVM.finalScore);
 
     await Provider.of<MusicProvider>(context, listen: false).getData();
 
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) =>
-            AnalysisResultScreen(scoreService.normalizedFinalScore),
+        builder: (context) => AnalysisResultScreen(autoAnalysisVM.finalScore),
       ),
     );
   }
@@ -130,79 +120,75 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
           Spacing.lg,
           Spacing.none,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 100),
-              child: Text(
-                "How well did you do?",
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.xxl),
-              child: SizedBox(
-                height: 80,
-                width: 600,
-                child: PageView(
-                  controller: pageController,
-                  children: [
-                    for (ScoreType type in ScoreType.values)
-                      ScoreSelector(
-                        type.name,
-                        initialPosition: scoreValues[type]!,
-                        onTap: (value) => setState(() {
-                          scoreValues[type] = value;
-                          if (!isLastPage) {
-                            pageController.nextPage(
-                              duration: Duration(milliseconds: 400),
-                              curve: Curves.ease,
-                            );
-                          }
-                        }),
-                      ),
-                  ],
-                  onPageChanged: (value) {
-                    setState(() {
-                      currentScoreType = ScoreType.values[value];
-                      isLastPage = value == (ScoreType.values.length - 1);
-                    });
-                  },
+        child: ListenableBuilder(
+          listenable: autoAnalysisVM,
+          builder: (context, child) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 100),
+                  child: Text(
+                    "How well did you do?",
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20, bottom: Spacing.xxl),
-              child: SizedBox(
-                height: 100,
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    for (int i = 0; i < ScoreType.values.length; i++)
-                      SectionIndicator(
-                        scoreValues[ScoreType.values[i]]!,
-                        isSelected: currentScoreType == ScoreType.values[i],
-                        onTap: () {
-                          pageController.jumpToPage(i);
-                        },
-                      ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.only(bottom: Spacing.xxl),
+                  child: SizedBox(
+                    height: 80,
+                    width: 600,
+                    child: PageView(
+                      controller: autoAnalysisVM.pageController,
+                      children: [
+                        for (ScoreType type in ScoreType.values)
+                          ScoreSelector(
+                            type.name,
+                            initialPosition: autoAnalysisVM.scoreValues[type]!,
+                            onTap: (value) =>
+                                autoAnalysisVM.selectScore(value, type),
+                          ),
+                      ],
+                      onPageChanged: (value) =>
+                          autoAnalysisVM.changePage(value),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: 140),
-              child: AnimatedOpacity(
-                opacity: isLastPage ? 1 : 0,
-                duration: Duration(milliseconds: 200),
-                child: _SendButtom(() async => await submitScore()),
-              ),
-            ),
-          ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, bottom: Spacing.xxl),
+                  child: SizedBox(
+                    height: 100,
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        for (int i = 0; i < ScoreType.values.length; i++)
+                          SectionIndicator(
+                            autoAnalysisVM.scoreValues[ScoreType.values[i]]!,
+                            isSelected:
+                                autoAnalysisVM.currentScoreType ==
+                                ScoreType.values[i],
+                            onTap: () {
+                              autoAnalysisVM.pageController.jumpToPage(i);
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 140),
+                  child: AnimatedOpacity(
+                    opacity: autoAnalysisVM.isLastPage ? 1 : 0,
+                    duration: Duration(milliseconds: 200),
+                    child: _SendButtom(() async => await submitScore()),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
 
@@ -226,7 +212,8 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
           ),
           onTap: () => showModalBottomSheet(
             context: context,
-            builder: (context) => ScoreBottomSheet(currentScoreType),
+            builder: (context) =>
+                ScoreBottomSheet(autoAnalysisVM.currentScoreType),
           ),
         ),
       ),
