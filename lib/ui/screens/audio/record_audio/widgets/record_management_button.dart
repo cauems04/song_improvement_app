@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class RecordManagementButton extends StatelessWidget {
   final Icon icon;
   final VoidCallback action;
-  final disabled;
+  final bool disabled;
 
   const RecordManagementButton(
     this.icon,
