@@ -13,7 +13,7 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/home/view_models/home_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/home/widgets/home_section.dart';
 import 'package:guitar_song_improvement/ui/screens/form/save_song/save_song_screen.dart';
-import 'package:guitar_song_improvement/ui/screens/search/search_screen.dart';
+import 'package:guitar_song_improvement/ui/screens/search/base_searh/search_screen.dart';
 import 'package:guitar_song_improvement/ui/widgets/add_new_song_button.dart';
 import 'package:guitar_song_improvement/ui/widgets/search_song.dart';
 import 'package:provider/provider.dart';

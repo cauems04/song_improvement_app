@@ -4,11 +4,11 @@ import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/widgets/song_card.dart';
 
-class OnlineSearch extends StatelessWidget {
+class OnlineSearchScreen extends StatelessWidget {
   final SongController songController;
   final String search;
 
-  const OnlineSearch(this.songController, {this.search = ""});
+  const OnlineSearchScreen(this.songController, {super.key, this.search = ""});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class OnlineSearch extends StatelessWidget {
               child = ListView(children: songWidgets);
               break;
             default:
-              child = Center(child: Text("Resposta padrão"));
+              child = Center(child: Text("Standard outcome"));
               break;
           }
           return child;
