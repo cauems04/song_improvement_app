@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/ui/screens/form/save_song/save_song_screen.dart';
-import 'package:guitar_song_improvement/ui/screens/song/song_base/song_screen.dart';
+import 'package:guitar_song_improvement/ui/screens/song/base_song/song_screen.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:provider/provider.dart';
 

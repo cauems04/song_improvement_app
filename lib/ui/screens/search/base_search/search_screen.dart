@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/controller/song_controller.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
-import 'package:guitar_song_improvement/ui/screens/search/base_searh/view_models/search_screen_viewmodel.dart';
+import 'package:guitar_song_improvement/ui/screens/search/base_search/view_models/search_screen_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/search/local_search/local_search_screen.dart';
 import 'package:guitar_song_improvement/ui/screens/search/online_search/online_search_screen.dart';
 import 'package:guitar_song_improvement/ui/widgets/search_song.dart';
