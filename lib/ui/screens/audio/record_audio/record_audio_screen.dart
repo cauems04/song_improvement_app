@@ -103,11 +103,16 @@ class _RecordAudioScreenState extends State<RecordAudioScreen> {
                               Icons.stop,
                               color: Theme.of(context).colorScheme.onError,
                             ),
-                            () => recordAudioVM.stopRecording(() {
+                            () => recordAudioVM.stopRecording((
+                              String audioFilePath,
+                            ) {
                               return showDialog(
                                 context: context,
-                                builder: (context) =>
-                                    Center(child: ConfirmSendModal()),
+                                builder: (context) => Center(
+                                  child: ConfirmSendModal(
+                                    audioFilePath: audioFilePath,
+                                  ),
+                                ),
                               );
                             }),
                             disabled:

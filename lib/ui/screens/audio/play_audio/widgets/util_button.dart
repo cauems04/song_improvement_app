@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 class UtilButton extends StatelessWidget {
   final Icon icon;
   final bool isPlay;
+  final VoidCallback onPressed;
 
-  const UtilButton({super.key, required this.icon, this.isPlay = false});
+  const UtilButton({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+    this.isPlay = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +23,7 @@ class UtilButton extends StatelessWidget {
             : Theme.of(context).colorScheme.surfaceContainer,
       ),
       child: IconButton(
-        onPressed: () => null,
+        onPressed: () => onPressed(),
         icon: icon,
         highlightColor: Colors.white,
       ),

@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/audio/play_audio/view_models/play_audio_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/choose_button.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/song_line.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/util_button.dart';
 
 class PlayAudioScreen extends StatefulWidget {
-  const PlayAudioScreen({super.key});
+  final String audioFilePath;
+
+  const PlayAudioScreen({super.key, required this.audioFilePath});
 
   @override
   State<PlayAudioScreen> createState() => _PlayAudioScreenscreeSState();
 }
 
 class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
+  late final PlayAudioViewmodel playAudioVM;
+
+  @override
+  void initState() {
+    super.initState();
+    playAudioVM = PlayAudioViewmodel();
+    playAudioVM.initValues(widget.audioFilePath);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +50,7 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 60),
-                  child: OptionsSection(),
+                  child: OptionsSection(onPlayPressed: playAudioVM.playAudio),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 40),
@@ -78,7 +90,8 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
 }
 
 class OptionsSection extends StatelessWidget {
-  const OptionsSection({super.key});
+  final VoidCallback onPlayPressed;
+  const OptionsSection({super.key, required this.onPlayPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +102,11 @@ class OptionsSection extends StatelessWidget {
           onPressed: () => null,
           icon: Icon(Icons.replay_10, size: 40),
         ),
-        UtilButton(icon: Icon(Icons.play_arrow, size: 40), isPlay: true),
+        UtilButton(
+          icon: Icon(Icons.play_arrow, size: 40),
+          isPlay: true,
+          onPressed: () => onPlayPressed,
+        ),
         IconButton(
           onPressed: () => null,
           icon: Icon(Icons.forward_10, size: 40),

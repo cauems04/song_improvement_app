@@ -15,6 +15,8 @@ class RecordAudioViewmodel extends ChangeNotifier {
   late Timer timer;
   late ValueNotifier<int> countdownNumber;
 
+  String? _audioFilePath;
+
   late final AudioRecorder _recorder;
 
   void initValues() {
@@ -34,22 +36,21 @@ class RecordAudioViewmodel extends ChangeNotifier {
   }
 
   Future<void> startRecording() async {
-    Directory tempAudioDir = await getTemporaryDirectory();
+    Directory tempAudioDirectory = await getTemporaryDirectory();
 
-    tempAudioDir = Directory("${tempAudioDir.path}/tempAudioDir");
+    tempAudioDirectory = Directory("${tempAudioDirectory.path}/tempAudioDir");
 
-    if (!await tempAudioDir.exists()) {
-      await tempAudioDir.create(recursive: true);
+    if (!await tempAudioDirectory.exists()) {
+      await tempAudioDirectory.create(recursive: true);
     }
 
     final String fileName = "rec_${DateTime.now()}.m4a";
-    final String filePath = '${tempAudioDir.path}/$fileName';
+    final String filePath = '${tempAudioDirectory.path}/$fileName';
 
     _recorder.start(const RecordConfig(), path: filePath);
 
-    print(".\n.\n.\n.\nrecording....\n.\n.\n.\n");
+    _audioFilePath = filePath;
     recordState.value = RecordState.recording;
-    ;
   }
 
   Future<void> restartRecording() async {
@@ -73,10 +74,12 @@ class RecordAudioViewmodel extends ChangeNotifier {
   }
 
   // Probably using it outside the PlayButton, with another button, no need to pass via parameter
-  Future<void> stopRecording<T>(Future<T?> Function() showDialog) async {
+  Future<void> stopRecording<T>(
+    Future<T?> Function(String filePath) showDialog,
+  ) async {
     await _recorder.stop();
 
-    showDialog();
+    showDialog(_audioFilePath!);
 
     // Creating model to check whether to save it or discard , and create the remaining code based on it,
     // setting it to idle or saved

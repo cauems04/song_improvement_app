@@ -7,9 +7,9 @@ import 'package:guitar_song_improvement/data/model/artist.dart';
 import 'package:guitar_song_improvement/data/model/song.dart';
 
 class SongViewmodel {
-  final SongController songController;
-  final AlbumController albumController;
-  final ArtistController artistController;
+  final SongController _songController;
+  final AlbumController _albumController;
+  final ArtistController _artistController;
 
   final ValueNotifier<int> _currentPage = ValueNotifier(1);
 
@@ -19,14 +19,14 @@ class SongViewmodel {
   }
 
   SongViewmodel(
-    this.songController,
-    this.albumController,
-    this.artistController,
+    this._songController,
+    this._albumController,
+    this._artistController,
   );
 
   void deleteCurrentSong(Song song) async {
-    await songController.delete(song);
-    await albumController.delete(Album(name: song.album));
-    await artistController.delete(Artist(name: song.artist));
+    await _songController.delete(song);
+    await _albumController.delete(Album(name: song.album));
+    await _artistController.delete(Artist(name: song.artist));
   }
 }

@@ -3,7 +3,9 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/play_audio_screen.dart';
 
 class ConfirmSendModal extends StatelessWidget {
-  const ConfirmSendModal({super.key});
+  final String audioFilePath;
+
+  const ConfirmSendModal({super.key, required this.audioFilePath});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,10 @@ class ConfirmSendModal extends StatelessWidget {
                 "Confirm",
                 Colors.green[600]!,
                 action: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => PlayAudioScreen()),
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        PlayAudioScreen(audioFilePath: audioFilePath),
+                  ),
                 ),
               ),
             ],
