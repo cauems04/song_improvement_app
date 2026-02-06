@@ -4,6 +4,7 @@ import 'package:guitar_song_improvement/ui/screens/audio/play_audio/view_models/
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/choose_button.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/song_line.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/util_button.dart';
+import 'package:just_audio/just_audio.dart';
 
 class PlayAudioScreen extends StatefulWidget {
   final String audioFilePath;
@@ -50,7 +51,15 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 60),
-                  child: OptionsSection(onPlayPressed: playAudioVM.playAudio),
+                  child: AnimatedBuilder(
+                    animation: Listenable.merge([
+                      playAudioVM.isPlaying,
+                      playAudioVM.playingState,
+                    ]),
+                    builder: (context, widget) {
+                      return OptionsSection(playAudioVM: playAudioVM);
+                    },
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 40),
@@ -90,8 +99,8 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
 }
 
 class OptionsSection extends StatelessWidget {
-  final VoidCallback onPlayPressed;
-  const OptionsSection({super.key, required this.onPlayPressed});
+  final PlayAudioViewmodel playAudioVM;
+  const OptionsSection({super.key, required this.playAudioVM});
 
   @override
   Widget build(BuildContext context) {
@@ -99,19 +108,38 @@ class OptionsSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         IconButton(
-          onPressed: () => null,
-          icon: Icon(Icons.replay_10, size: 40),
+          onPressed: () => playAudioVM.skipDuration(backwards: true),
+          icon: Icon(Icons.replay_5, size: 44),
         ),
         UtilButton(
-          icon: Icon(Icons.play_arrow, size: 40),
+          icon: showPlayButtonIcon(context),
           isPlay: true,
-          onPressed: () => onPlayPressed,
+          onPressed: playAudioVM.playAudio,
         ),
         IconButton(
-          onPressed: () => null,
-          icon: Icon(Icons.forward_10, size: 40),
+          onPressed: () => playAudioVM.skipDuration(),
+          icon: Icon(Icons.forward_5, size: 44),
         ),
       ],
     );
+  }
+
+  Icon showPlayButtonIcon(BuildContext context) {
+    Icon icon = Icon(Icons.play_arrow, size: 40);
+
+    switch (playAudioVM.playingState.value) {
+      case ProcessingState.ready:
+        if (playAudioVM.isPlaying.value) {
+          icon = Icon(Icons.pause, size: 40);
+        }
+        break;
+      case ProcessingState.completed:
+        icon = Icon(Icons.restart_alt, size: 40);
+        break;
+      default:
+        break;
+    }
+
+    return icon;
   }
 }

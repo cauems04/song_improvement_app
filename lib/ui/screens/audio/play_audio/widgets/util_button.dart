@@ -22,10 +22,14 @@ class UtilButton extends StatelessWidget {
             ? Theme.of(context).colorScheme.primary
             : Theme.of(context).colorScheme.surfaceContainer,
       ),
-      child: IconButton(
-        onPressed: () => onPressed(),
-        icon: icon,
-        highlightColor: Colors.white,
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 200),
+        child: IconButton(
+          key: ValueKey(icon),
+          onPressed: () => onPressed(),
+          icon: icon,
+          highlightColor: Colors.white,
+        ),
       ),
     );
   }
