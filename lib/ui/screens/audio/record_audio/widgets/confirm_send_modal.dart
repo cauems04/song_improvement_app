@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/play_audio_screen.dart';
+import 'package:provider/provider.dart';
 
 class ConfirmSendModal extends StatelessWidget {
+  final SelectedSongProvider selectedSongProvider;
   final String audioFilePath;
 
-  const ConfirmSendModal({super.key, required this.audioFilePath});
+  const ConfirmSendModal({
+    super.key,
+    required this.selectedSongProvider,
+    required this.audioFilePath,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +62,10 @@ class ConfirmSendModal extends StatelessWidget {
                 Colors.green[600]!,
                 action: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) =>
-                        PlayAudioScreen(audioFilePath: audioFilePath),
+                    builder: (newContext) => ChangeNotifierProvider.value(
+                      value: selectedSongProvider,
+                      child: PlayAudioScreen(audioFilePath: audioFilePath),
+                    ),
                   ),
                 ),
               ),

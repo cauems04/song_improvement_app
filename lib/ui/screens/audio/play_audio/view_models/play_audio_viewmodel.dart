@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:just_audio/just_audio.dart';
 
 class PlayAudioViewmodel {
@@ -8,11 +10,26 @@ class PlayAudioViewmodel {
   late ValueNotifier<ProcessingState> playingState;
   late ValueNotifier<bool> isPlaying;
 
-  void initValues(audioFilePath) {
+  late ValueNotifier<Duration> currentDuration;
+  late ValueNotifier<Duration> totalDuration;
+
+  late final TextEditingController nameController;
+  late final String songAlbum;
+  late final String songArtist;
+
+  void initValues(audioFilePath, Song song) {
     _audioFilePath = audioFilePath;
     _audioPlayer.setAudioSource(AudioSource.file(_audioFilePath));
+
     playingState = ValueNotifier(_audioPlayer.processingState);
     isPlaying = ValueNotifier(_audioPlayer.playing);
+
+    totalDuration = ValueNotifier(Duration.zero);
+    currentDuration = ValueNotifier(_audioPlayer.position);
+
+    nameController = TextEditingController(text: song.name);
+    songAlbum = song.album;
+    songArtist = song.artist;
 
     _audioPlayer.processingStateStream.listen((state) {
       playingState.value = state;
@@ -20,6 +37,14 @@ class PlayAudioViewmodel {
 
     _audioPlayer.playingStream.listen((playing) {
       isPlaying.value = playing;
+    });
+
+    _audioPlayer.durationStream.listen((duration) {
+      if (duration != null) totalDuration.value = duration;
+    });
+
+    _audioPlayer.positionStream.listen((position) {
+      currentDuration.value = position;
     });
   }
 
@@ -39,6 +64,10 @@ class PlayAudioViewmodel {
       default:
         break;
     }
+  }
+
+  void seekPosition(double position) {
+    _audioPlayer.seek(Duration(milliseconds: position.toInt()));
   }
 
   Future<void> skipDuration({bool backwards = false}) async {

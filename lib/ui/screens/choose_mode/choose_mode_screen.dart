@@ -133,6 +133,9 @@ class _ConfirmButtom extends StatelessWidget {
         ),
         onTap: () async {
           if (chooseModeVM.isPlaySelected.value) {
+            final SelectedSongProvider selectedSongProvider = context
+                .read<SelectedSongProvider>();
+
             PermissionStatus micPermissionStatus =
                 await Permission.microphone.status;
 
@@ -155,8 +158,14 @@ class _ConfirmButtom extends StatelessWidget {
             micPermissionStatus = await Permission.microphone.status;
 
             if (micPermissionStatus.isGranted) {
+              if (!context.mounted) return;
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => RecordAudioScreen()),
+                MaterialPageRoute(
+                  builder: (newContext) => ChangeNotifierProvider.value(
+                    value: selectedSongProvider,
+                    child: RecordAudioScreen(),
+                  ),
+                ),
               );
             }
             return;

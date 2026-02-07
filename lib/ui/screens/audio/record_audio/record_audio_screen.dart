@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/view_models/record_audio_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/confirm_send_modal.dart';
@@ -6,6 +7,7 @@ import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/pl
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/record_management_button.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/time_value_picker.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/wave_animation.dart';
+import 'package:provider/provider.dart';
 
 class RecordAudioScreen extends StatefulWidget {
   const RecordAudioScreen({super.key});
@@ -106,10 +108,14 @@ class _RecordAudioScreenState extends State<RecordAudioScreen> {
                             () => recordAudioVM.stopRecording((
                               String audioFilePath,
                             ) {
+                              final SelectedSongProvider selectedSongProvider =
+                                  context.read<SelectedSongProvider>();
+
                               return showDialog(
                                 context: context,
                                 builder: (context) => Center(
                                   child: ConfirmSendModal(
+                                    selectedSongProvider: selectedSongProvider,
                                     audioFilePath: audioFilePath,
                                   ),
                                 ),

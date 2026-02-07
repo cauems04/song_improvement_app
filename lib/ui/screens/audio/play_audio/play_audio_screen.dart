@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/view_models/play_audio_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/choose_button.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/song_line.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/util_button.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
 
 class PlayAudioScreen extends StatefulWidget {
   final String audioFilePath;
@@ -22,7 +24,10 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
   void initState() {
     super.initState();
     playAudioVM = PlayAudioViewmodel();
-    playAudioVM.initValues(widget.audioFilePath);
+    playAudioVM.initValues(
+      widget.audioFilePath,
+      Provider.of<SelectedSongProvider>(context, listen: false).currentSong,
+    );
   }
 
   @override
@@ -40,14 +45,65 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.xl),
+          padding: const EdgeInsets.all(Spacing.xl),
           child: SafeArea(
             child: Column(
               children: [
-                Expanded(child: TextField()),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Center(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: IntrinsicWidth(
+                                child: TextField(
+                                  controller: playAudioVM.nameController,
+                                  textAlign: TextAlign.center,
+                                  textAlignVertical: TextAlignVertical.center,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.headlineLarge!,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: Spacing.xs),
+                              child: Icon(Icons.edit),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: Spacing.xs,
+                        ),
+                        child: Text(
+                          Provider.of<SelectedSongProvider>(
+                            context,
+                          ).currentSong.artist,
+                          style: Theme.of(context).textTheme.bodyLarge!
+                              .copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      Text(
+                        Provider.of<SelectedSongProvider>(
+                          context,
+                        ).currentSong.album,
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: Spacing.lg),
-                  child: SongLine(),
+                  child: SongLine(playAudioVM: playAudioVM),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 60),
@@ -61,33 +117,30 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 40),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.red[400],
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.delete, size: 24),
-                        ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.red[400],
+                        shape: BoxShape.circle,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: Spacing.sm),
-                        child: ChooseButton(
-                          color: Theme.of(context).colorScheme.primary,
-                          label: "Save",
-                          action: () {},
-                        ),
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: Icon(Icons.delete, size: 24),
                       ),
-                    ],
-                  ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: Spacing.sm),
+                      child: ChooseButton(
+                        color: Theme.of(context).colorScheme.primary,
+                        label: "Save",
+                        action: () {},
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
