@@ -1,0 +1,52 @@
+import 'package:guitar_song_improvement/data/local/database/database_manager.dart';
+import 'package:guitar_song_improvement/data/model/record.dart';
+import 'package:sqflite/sqflite.dart';
+
+class RecordDao {
+  RecordDao();
+
+  Future<void> create(Record record) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    await database.insert(DatabaseManager.recordTableName, record.toMap());
+  }
+
+  Future<void> update(Record oldRecord, Record newRecord) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    await database.update(
+      DatabaseManager.recordTableName,
+      {DatabaseManager.recordNameLabel: newRecord.name},
+      where: "${DatabaseManager.recordIdLabel} = ?",
+      whereArgs: [oldRecord.id],
+    );
+  }
+
+  Future<List<Record>> recordsBySong(int songId) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+
+    List<Map<String, Object?>> recordsFound = await database.query(
+      DatabaseManager.recordTableName,
+      where: "${DatabaseManager.recordSongLabel} = ?",
+      whereArgs: [songId],
+    );
+
+    if (recordsFound.isEmpty) return [];
+
+    List<Record> records = recordsFound
+        .map((record) => Record.fromDbJson(record))
+        .toList();
+    return records;
+  }
+
+  Future<void> delete(int recordId) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    await database.delete(
+      DatabaseManager.recordTableName,
+      where: "${DatabaseManager.recordIdLabel} = ?",
+      whereArgs: [recordId],
+    );
+  }
+}

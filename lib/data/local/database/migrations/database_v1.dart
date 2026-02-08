@@ -28,11 +28,21 @@ class DatabaseV1 implements IMigration {
 
     await db.execute("""CREATE TABLE ${DatabaseManager.linkTableName}(
                             ${DatabaseManager.linkIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT,
-                            ${DatabaseManager.linkNameLabel} TEXT,
+                            ${DatabaseManager.linkNameLabel} TEXT NOT NULL,
                             ${DatabaseManager.linkUrlLabel} TEXT NOT NULL,
                             ${DatabaseManager.linkSongLabel} INTEGER NOT NULL,
 
                             FOREIGN KEY (${DatabaseManager.linkSongLabel}) REFERENCES ${DatabaseManager.songTableName}(${DatabaseManager.songIdLabel}) ON DELETE CASCADE
+                            );""");
+
+    await db.execute("""CREATE TABLE ${DatabaseManager.recordTableName}(
+                            ${DatabaseManager.recordIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT,
+                            ${DatabaseManager.recordNameLabel} TEXT NOT NULL,
+                            ${DatabaseManager.recordAudioPathLabel} TEXT NOT NULL,
+                            ${DatabaseManager.recordDateCreationLabel} TEXT NOT NULL,
+                            ${DatabaseManager.recordSongLabel} INTEGER NOT NULL,
+
+                            FOREIGN KEY (${DatabaseManager.recordSongLabel}) REFERENCES ${DatabaseManager.songTableName}(${DatabaseManager.songIdLabel}) ON DELETE CASCADE
                             );""");
   }
 }

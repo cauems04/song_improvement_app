@@ -27,6 +27,7 @@ class DatabaseManager {
   static const String songScoreLabel = "score";
   static const String songAlbumLabel = "album_title";
   static const String songArtistLabel = "artist_name";
+  // put last playied date
 
   // Album
   static const String albumTableName = "album";
@@ -42,6 +43,14 @@ class DatabaseManager {
   static const String linkNameLabel = "title";
   static const String linkUrlLabel = "url";
   static const String linkSongLabel = "song_id";
+
+  // Records
+  static const String recordTableName = "record";
+  static const String recordIdLabel = "id";
+  static const String recordNameLabel = "name";
+  static const String recordAudioPathLabel = "audio_path";
+  static const String recordDateCreationLabel = "date_creation";
+  static const String recordSongLabel = "song_id";
 
   void _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
