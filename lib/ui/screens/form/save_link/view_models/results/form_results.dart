@@ -5,7 +5,7 @@ sealed class FormResult {
 }
 
 class SuccessResult extends FormResult {
-  const SuccessResult(super.piriri);
+  const SuccessResult(super.message);
 }
 
 class AlertResult extends FormResult {

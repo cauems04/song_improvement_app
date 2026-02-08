@@ -81,6 +81,7 @@ class SaveLinkScreen extends StatelessWidget {
 
                           if (!context.mounted) return;
 
+                          //Implement personalized SnackBar
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(result.message)),
                           );

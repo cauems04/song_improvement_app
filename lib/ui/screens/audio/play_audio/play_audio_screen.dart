@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/auto_analysis_screen.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/view_models/play_audio_viewmodel.dart';
+import 'package:guitar_song_improvement/ui/screens/audio/play_audio/view_models/results/save_results.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/choose_button.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/song_line.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/util_button.dart';
@@ -128,7 +130,10 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                          playAudioVM.deleteTempFile();
+                        },
                         icon: Icon(Icons.delete, size: 24),
                       ),
                     ),
@@ -137,7 +142,33 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
                       child: ChooseButton(
                         color: Theme.of(context).colorScheme.primary,
                         label: "Save",
-                        action: () {},
+                        action: () async {
+                          final SaveResult result = await playAudioVM
+                              .saveRecord();
+
+                          if (!context.mounted) return;
+
+                          //Implement personalized SnackBar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(result.message)),
+                          );
+
+                          if (result is ErrorResult) {
+                            Navigator.of(context).pop();
+                            return;
+                          }
+
+                          Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).getRecords();
+
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => AutoAnalysisScreen(),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

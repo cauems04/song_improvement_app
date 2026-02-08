@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 class ChooseButton extends StatelessWidget {
   final String? label;
@@ -15,19 +14,23 @@ class ChooseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      width: 100,
-      decoration: BoxDecoration(
-        color: color,
+    return Material(
+      color: color,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
         borderRadius: BorderRadius.circular(20),
-      ),
-      child: Center(
-        child: Text(
-          label!,
-          style: Theme.of(
-            context,
-          ).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
+        onTap: () => action(),
+        child: SizedBox(
+          height: 50,
+          width: 100,
+          child: Center(
+            child: Text(
+              label!,
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
         ),
       ),
     );

@@ -38,7 +38,8 @@ class DatabaseV1 implements IMigration {
     await db.execute("""CREATE TABLE ${DatabaseManager.recordTableName}(
                             ${DatabaseManager.recordIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT,
                             ${DatabaseManager.recordNameLabel} TEXT NOT NULL,
-                            ${DatabaseManager.recordAudioPathLabel} TEXT NOT NULL,
+                            ${DatabaseManager.recordScoreLabel} INTEGER,
+                            ${DatabaseManager.recordAudioFilePathLabel} TEXT NOT NULL,
                             ${DatabaseManager.recordDateCreationLabel} TEXT NOT NULL,
                             ${DatabaseManager.recordSongLabel} INTEGER NOT NULL,
 

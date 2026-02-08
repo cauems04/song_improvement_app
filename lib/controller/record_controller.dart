@@ -15,7 +15,7 @@ class RecordController {
     await recordDao.update(oldRecord, newRecord);
   }
 
-  Future<List<Record>> linksBySong(int songId) async {
+  Future<List<Record>> recordsBySong(int songId) async {
     RecordDao recordDao = RecordDao();
     return await recordDao.recordsBySong(songId);
   }

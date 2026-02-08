@@ -1,7 +1,11 @@
-import 'package:flutter/foundation.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/data/model/record.dart';
+import 'package:guitar_song_improvement/controller/record_controller.dart';
 import 'package:guitar_song_improvement/data/model/song.dart';
+import 'package:guitar_song_improvement/ui/screens/audio/play_audio/view_models/results/save_results.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PlayAudioViewmodel {
   late final AudioPlayer _audioPlayer = AudioPlayer();
@@ -14,6 +18,7 @@ class PlayAudioViewmodel {
   late ValueNotifier<Duration> totalDuration;
 
   late final TextEditingController nameController;
+  late final int songId;
   late final String songAlbum;
   late final String songArtist;
 
@@ -28,6 +33,7 @@ class PlayAudioViewmodel {
     currentDuration = ValueNotifier(_audioPlayer.position);
 
     nameController = TextEditingController(text: song.name);
+    songId = song.id!;
     songAlbum = song.album;
     songArtist = song.artist;
 
@@ -74,5 +80,41 @@ class PlayAudioViewmodel {
     (backwards)
         ? _audioPlayer.seek(_audioPlayer.position - Duration(seconds: 5))
         : _audioPlayer.seek(_audioPlayer.position + Duration(seconds: 5));
+  }
+
+  void deleteTempFile() async {
+    final file = File(_audioFilePath);
+    if (await file.exists()) {
+      file.delete();
+    }
+  }
+
+  Future<SaveResult> saveRecord() async {
+    final Directory appDocDirectory = await getApplicationDocumentsDirectory();
+
+    final DateTime dateCreation = DateTime.now();
+    final String fileName = "rec_${dateCreation.microsecond}";
+
+    final finalPath = '${appDocDirectory.path}/$fileName';
+
+    final tempFile = File(_audioFilePath);
+    if (!await tempFile.exists()) {
+      return ErrorResult("Audio file no longer exists");
+    }
+
+    await tempFile.copy(finalPath);
+    tempFile.delete();
+
+    final Record record = Record(
+      name: nameController.text,
+      audioPath: finalPath,
+      dateCreation: dateCreation.toString(),
+      songId: songId,
+    );
+
+    RecordController recordController = RecordController();
+    recordController.create(record);
+
+    return SuccessResult("Record saved");
   }
 }

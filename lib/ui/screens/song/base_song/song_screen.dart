@@ -12,6 +12,7 @@ import 'package:guitar_song_improvement/ui/screens/song/base_song/view_models/so
 import 'package:guitar_song_improvement/ui/screens/song/base_song/widgets/top_navigation_bar.dart';
 import 'package:guitar_song_improvement/ui/screens/song/links/song_links_screen.dart';
 import 'package:guitar_song_improvement/ui/screens/song/overview/song_overview_screen.dart';
+import 'package:guitar_song_improvement/ui/screens/song/records/song_records_screen.dart';
 import 'package:provider/provider.dart';
 
 class SongScreen extends StatefulWidget {
@@ -154,6 +155,7 @@ class _SongScreenState extends State<SongScreen> {
               ),
               if (songVM.currentPage.value == 0) SongLinksScreen(),
               if (songVM.currentPage.value == 1) SongOverviewScreen(),
+              if (songVM.currentPage.value == 2) SongRecordsScreen(),
             ],
           ),
         );

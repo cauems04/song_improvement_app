@@ -48,7 +48,8 @@ class DatabaseManager {
   static const String recordTableName = "record";
   static const String recordIdLabel = "id";
   static const String recordNameLabel = "name";
-  static const String recordAudioPathLabel = "audio_path";
+  static const String recordScoreLabel = "score";
+  static const String recordAudioFilePathLabel = "audio_file_path";
   static const String recordDateCreationLabel = "date_creation";
   static const String recordSongLabel = "song_id";
 
