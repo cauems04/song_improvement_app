@@ -7,16 +7,18 @@ class AutoAnalysisViewModel extends ChangeNotifier {
   late Map<ScoreType, int> scoreValues;
 
   late bool isLastPage;
+  late int? recordLinked;
 
   final PageController pageController = PageController();
 
   final ScoreService _scoreService = ScoreService();
   int get finalScore => _scoreService.normalizedFinalScore;
 
-  void initValues() {
+  void initValues({int? recordLinked}) {
     currentScoreType = ScoreType.values[0];
     scoreValues = {for (ScoreType type in ScoreType.values) type: 0};
     isLastPage = false;
+    recordLinked = recordLinked;
   }
 
   void changePage(int value) {

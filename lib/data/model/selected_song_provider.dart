@@ -38,10 +38,18 @@ class SelectedSongProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateScore(int newScore) async {
+  Future<void> updateScore(int newScore, int? recordId) async {
     SongController songController = SongController();
+    RecordController recordController = RecordController();
 
     await songController.updateScore(currentSong, newScore);
+    if (recordId != null) {
+      final Record recordFound = records!.firstWhere(
+        (record) => record.id == recordId,
+      );
+      recordFound.score = newScore;
+      await recordController.update(recordId, recordFound);
+    }
 
     currentSong = await songController.read(currentSong.id!);
 
@@ -69,6 +77,14 @@ class SelectedSongProvider extends ChangeNotifier {
 
     int linkIndex = links!.indexWhere((link) => link.id == id);
     links!.removeAt(linkIndex);
+  }
+
+  Future<void> deleteRecord(int id) async {
+    RecordController recordController = RecordController();
+    await recordController.delete(id);
+
+    int recordIndex = records!.indexWhere((record) => record.id == id);
+    records!.removeAt(recordIndex);
   }
 
   // Future<void> getRecords() async {

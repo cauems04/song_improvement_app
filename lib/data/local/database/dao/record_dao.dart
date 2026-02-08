@@ -5,20 +5,26 @@ import 'package:sqflite/sqflite.dart';
 class RecordDao {
   RecordDao();
 
-  Future<void> create(Record record) async {
+  Future<int> create(Record record) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
-    await database.insert(DatabaseManager.recordTableName, record.toMap());
+    return await database.insert(
+      DatabaseManager.recordTableName,
+      record.toMap(),
+    );
   }
 
-  Future<void> update(Record oldRecord, Record newRecord) async {
+  Future<void> update(int oldRecordId, Record newRecord) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
     await database.update(
       DatabaseManager.recordTableName,
-      {DatabaseManager.recordNameLabel: newRecord.name},
+      {
+        DatabaseManager.recordNameLabel: newRecord.name,
+        DatabaseManager.recordScoreLabel: newRecord.score,
+      },
       where: "${DatabaseManager.recordIdLabel} = ?",
-      whereArgs: [oldRecord.id],
+      whereArgs: [oldRecordId],
     );
   }
 

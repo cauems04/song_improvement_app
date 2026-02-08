@@ -5,7 +5,9 @@ sealed class SaveResult {
 }
 
 class SuccessResult extends SaveResult {
-  const SuccessResult(super.message);
+  final int recordId;
+
+  const SuccessResult(super.message, this.recordId);
 }
 
 class ErrorResult extends SaveResult {

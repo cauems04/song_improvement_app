@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/ui/widgets/link_card.dart';
+import 'package:guitar_song_improvement/ui/screens/song/records/widgets/record_card.dart';
 import 'package:provider/provider.dart';
 
 class SongRecordsScreen extends StatelessWidget {
@@ -22,11 +22,11 @@ class SongRecordsScreen extends StatelessWidget {
               return Text("No records found. Add one!");
             }
 
-            return Column(
-              children: data.records!
-                  .map((record) => Text(record.name))
-                  .toList(),
-            );
+            final List<RecordCard> recordCards = data.records!
+                .map((record) => RecordCard(record))
+                .toList();
+
+            return Column(children: recordCards);
           },
         ),
       ),

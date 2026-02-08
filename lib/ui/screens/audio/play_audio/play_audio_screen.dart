@@ -87,6 +87,7 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
                         child: Text(
                           Provider.of<SelectedSongProvider>(
                             context,
+                            listen: false,
                           ).currentSong.artist,
                           style: Theme.of(context).textTheme.bodyLarge!
                               .copyWith(fontWeight: FontWeight.w600),
@@ -95,6 +96,7 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
                       Text(
                         Provider.of<SelectedSongProvider>(
                           context,
+                          listen: false,
                         ).currentSong.album,
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           fontWeight: FontWeight.w600,
@@ -165,7 +167,17 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
 
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
-                              builder: (context) => AutoAnalysisScreen(),
+                              builder: (newContext) =>
+                                  ChangeNotifierProvider.value(
+                                    value: Provider.of<SelectedSongProvider>(
+                                      context,
+                                      listen: false,
+                                    ),
+                                    child: AutoAnalysisScreen(
+                                      recordLinkedId:
+                                          (result as SuccessResult).recordId,
+                                    ),
+                                  ),
                             ),
                           );
                         },

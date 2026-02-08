@@ -5,14 +5,14 @@ import 'package:guitar_song_improvement/data/local/database/dao/record_dao.dart'
 class RecordController {
   RecordController();
 
-  Future<void> create(Record record) async {
+  Future<int> create(Record record) async {
     RecordDao recordDao = RecordDao();
-    await recordDao.create(record);
+    return await recordDao.create(record);
   }
 
-  Future<void> update(Record oldRecord, Record newRecord) async {
+  Future<void> update(int oldRecordId, Record newRecord) async {
     RecordDao recordDao = RecordDao();
-    await recordDao.update(oldRecord, newRecord);
+    await recordDao.update(oldRecordId, newRecord);
   }
 
   Future<List<Record>> recordsBySong(int songId) async {

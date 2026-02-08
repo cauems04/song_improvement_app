@@ -11,7 +11,8 @@ import 'package:guitar_song_improvement/ui/screens/analysis/result/analysis_resu
 import 'package:provider/provider.dart';
 
 class AutoAnalysisScreen extends StatefulWidget {
-  const AutoAnalysisScreen({super.key});
+  final int? recordLinkedId;
+  const AutoAnalysisScreen({super.key, this.recordLinkedId});
 
   @override
   State<AutoAnalysisScreen> createState() => _AutoAnalysisScreenState();
@@ -30,16 +31,24 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
   Future<void> submitScore() async {
     autoAnalysisVM.calculateScore();
 
-    if (!context.mounted) return;
+    final SelectedSongProvider selectedSongProvider =
+        Provider.of<SelectedSongProvider>(context, listen: false);
 
-    await Provider.of<SelectedSongProvider>(
+    final MusicProvider musicProvider = Provider.of<MusicProvider>(
       context,
       listen: false,
-    ).updateScore(autoAnalysisVM.finalScore);
+    );
 
-    await Provider.of<MusicProvider>(context, listen: false).getData();
+    final navigator = Navigator.of(context);
 
-    Navigator.of(context).pushReplacement(
+    await selectedSongProvider.updateScore(
+      autoAnalysisVM.finalScore,
+      widget.recordLinkedId,
+    );
+
+    await musicProvider.getData();
+
+    navigator.pushReplacement(
       MaterialPageRoute(
         builder: (context) => AnalysisResultScreen(autoAnalysisVM.finalScore),
       ),

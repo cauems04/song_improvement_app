@@ -113,8 +113,8 @@ class PlayAudioViewmodel {
     );
 
     RecordController recordController = RecordController();
-    recordController.create(record);
+    final int createdRecordId = await recordController.create(record);
 
-    return SuccessResult("Record saved");
+    return SuccessResult("Record saved", createdRecordId);
   }
 }

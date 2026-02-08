@@ -3,12 +3,12 @@ import 'package:guitar_song_improvement/data/local/database/database_manager.dar
 class Record {
   final int? id;
   final String name;
-  final int? score;
+  int? score;
   final String audioPath;
   final String dateCreation;
   final int songId;
 
-  const Record({
+  Record({
     required this.name,
     required this.audioPath,
     required this.dateCreation,
