@@ -100,12 +100,13 @@ class ProgressGraphPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Paint painter = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.height / 6
-      ..color = Colors.greenAccent;
+      ..strokeWidth = size.height / 7
+      ..strokeCap = StrokeCap.round
+      ..color = Theme.of(context).colorScheme.onPrimary;
 
     final Paint basePainter = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = size.height / 6
+      ..strokeWidth = size.height / 7
       ..color = Theme.of(context).colorScheme.surfaceContainerLowest;
 
     canvas.drawCircle(

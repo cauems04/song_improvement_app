@@ -25,6 +25,7 @@ class DatabaseManager {
   static const String songIdLabel = "id";
   static const String songNameLabel = "title";
   static const String songScoreLabel = "score";
+  static const String songTimesPlayedLabel = "times_played";
   static const String songAlbumLabel = "album_title";
   static const String songArtistLabel = "artist_name";
   // put last playied date

@@ -1,4 +1,5 @@
 class Spacing {
+  static const double xxxl = 60;
   static const double xxl = 40;
   static const double xl = 32;
   static const double lg = 24;

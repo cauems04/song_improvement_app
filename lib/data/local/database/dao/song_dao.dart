@@ -142,4 +142,13 @@ class SongDao {
       whereArgs: [songId],
     );
   }
+
+  Future<void> incrementTimesPlayed(int songId) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    await database.rawUpdate(
+      "UPDATE ${DatabaseManager.songTableName} SET ${DatabaseManager.songTimesPlayedLabel} = ${DatabaseManager.songTimesPlayedLabel} + 1 WHERE ${DatabaseManager.songIdLabel} = ?",
+      [songId],
+    );
+  }
 }

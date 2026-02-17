@@ -7,13 +7,19 @@ import 'package:guitar_song_improvement/ui/screens/audio/play_audio/view_models/
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/choose_button.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/song_line.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/util_button.dart';
+import 'package:guitar_song_improvement/ui/widgets/progress_graph.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 class PlayAudioScreen extends StatefulWidget {
   final String audioFilePath;
+  final bool isAudioSaved;
 
-  const PlayAudioScreen({super.key, required this.audioFilePath});
+  const PlayAudioScreen({
+    super.key,
+    required this.audioFilePath,
+    this.isAudioSaved = false,
+  });
 
   @override
   State<PlayAudioScreen> createState() => _PlayAudioScreenscreeSState();
@@ -53,60 +59,64 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
               children: [
                 Expanded(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Flexible(
-                              child: IntrinsicWidth(
-                                child: TextField(
-                                  controller: playAudioVM.nameController,
-                                  textAlign: TextAlign.center,
-                                  textAlignVertical: TextAlignVertical.center,
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.headlineLarge!,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
+                      Column(
+                        children: [
+                          Center(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: IntrinsicWidth(
+                                    child: TextField(
+                                      controller: playAudioVM.nameController,
+                                      textAlign: TextAlign.center,
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.headlineLarge!,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: Spacing.xs,
+                                  ),
+                                  child: Icon(Icons.edit),
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: Spacing.xs),
-                              child: Icon(Icons.edit),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Spacing.xs,
                             ),
-                          ],
-                        ),
+                            child: Text(
+                              playAudioVM.songArtist,
+                              style: Theme.of(context).textTheme.bodyLarge!
+                                  .copyWith(fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          Text(
+                            playAudioVM.songAlbum,
+                            style: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(fontWeight: FontWeight.w600),
+                          ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: Spacing.xs,
-                        ),
-                        child: Text(
-                          Provider.of<SelectedSongProvider>(
-                            context,
-                            listen: false,
-                          ).currentSong.artist,
-                          style: Theme.of(context).textTheme.bodyLarge!
-                              .copyWith(fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      Text(
-                        Provider.of<SelectedSongProvider>(
-                          context,
-                          listen: false,
-                        ).currentSong.album,
-                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                      (widget.isAudioSaved == true)
+                          ? Center(child: ProgressGraph(0.8))
+                          : Text(""),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.lg),
+                  padding: const EdgeInsets.only(bottom: Spacing.lg, top: 140),
                   child: SongLine(playAudioVM: playAudioVM),
                 ),
                 Padding(
@@ -121,69 +131,72 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
                     },
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.red[400],
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                          playAudioVM.deleteTempFile();
-                        },
-                        icon: Icon(Icons.delete, size: 24),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: Spacing.sm),
-                      child: ChooseButton(
-                        color: Theme.of(context).colorScheme.primary,
-                        label: "Save",
-                        action: () async {
-                          final SaveResult result = await playAudioVM
-                              .saveRecord();
-
-                          if (!context.mounted) return;
-
-                          //Implement personalized SnackBar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(result.message)),
-                          );
-
-                          if (result is ErrorResult) {
+                Visibility(
+                  visible: !widget.isAudioSaved,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.red[400],
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          onPressed: () async {
                             Navigator.of(context).pop();
-                            return;
-                          }
-
-                          Provider.of<SelectedSongProvider>(
-                            context,
-                            listen: false,
-                          ).getRecords();
-
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (newContext) =>
-                                  ChangeNotifierProvider.value(
-                                    value: Provider.of<SelectedSongProvider>(
-                                      context,
-                                      listen: false,
-                                    ),
-                                    child: AutoAnalysisScreen(
-                                      recordLinkedId:
-                                          (result as SuccessResult).recordId,
-                                    ),
-                                  ),
-                            ),
-                          );
-                        },
+                            playAudioVM.deleteTempFile();
+                          },
+                          icon: Icon(Icons.delete, size: 24),
+                        ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: Spacing.sm),
+                        child: ChooseButton(
+                          color: Theme.of(context).colorScheme.primary,
+                          label: "Save",
+                          action: () async {
+                            final SaveResult result = await playAudioVM
+                                .saveRecord();
+
+                            if (!context.mounted) return;
+
+                            //Implement personalized SnackBar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result.message)),
+                            );
+
+                            if (result is ErrorResult) {
+                              Navigator.of(context).pop();
+                              return;
+                            }
+
+                            Provider.of<SelectedSongProvider>(
+                              context,
+                              listen: false,
+                            ).getRecords();
+
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (newContext) =>
+                                    ChangeNotifierProvider.value(
+                                      value: Provider.of<SelectedSongProvider>(
+                                        context,
+                                        listen: false,
+                                      ),
+                                      child: AutoAnalysisScreen(
+                                        recordLinkedId:
+                                            (result as SuccessResult).recordId,
+                                      ),
+                                    ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

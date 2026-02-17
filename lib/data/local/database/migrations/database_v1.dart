@@ -11,6 +11,7 @@ class DatabaseV1 implements IMigration {
                             ${DatabaseManager.songIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT, 
                             ${DatabaseManager.songNameLabel} TEXT,
                             ${DatabaseManager.songScoreLabel} INTEGER DEFAULT 0,
+                            ${DatabaseManager.songTimesPlayedLabel} INTEGER DEFAULT 0,
                             ${DatabaseManager.songAlbumLabel} TEXT,
                             ${DatabaseManager.songArtistLabel} TEXT,
 
