@@ -43,8 +43,7 @@ class _ProgressGraphState extends State<ProgressGraph>
   @override
   void didUpdateWidget(covariant ProgressGraph oldWidget) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      progressController.reset();
-      progressController.animateTo(widget.progressValue);
+      progressController.forward();
     });
     super.didUpdateWidget(oldWidget);
   }
@@ -58,7 +57,7 @@ class _ProgressGraphState extends State<ProgressGraph>
           Positioned.fill(
             child: CustomPaint(
               painter: ProgressGraphPainter(
-                curvedProgressController.value,
+                curvedProgressController.value * this.widget.progressValue,
                 context,
               ),
             ),
@@ -108,6 +107,19 @@ class ProgressGraphPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.height / 7
       ..color = Theme.of(context).colorScheme.surfaceContainerLowest;
+
+    final Paint borderPainter = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth =
+          (size.height / 7) +
+          4 // 2px de cada lado
+      ..color = Theme.of(context).colorScheme.surfaceContainerLow;
+
+    canvas.drawCircle(
+      Offset(size.width / 2, size.height / 2),
+      size.height / 2,
+      borderPainter,
+    );
 
     canvas.drawCircle(
       Offset(size.width / 2, size.height / 2),

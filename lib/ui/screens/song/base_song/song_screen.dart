@@ -77,6 +77,7 @@ class _SongScreenState extends State<SongScreen> {
                 )
               : null,
           appBar: AppBar(
+            backgroundColor: Colors.black45,
             leading: InkWell(
               customBorder: CircleBorder(),
               child: Padding(
@@ -138,20 +139,33 @@ class _SongScreenState extends State<SongScreen> {
                   },
                 ),
             ],
-            backgroundColor: Theme.of(context).colorScheme.surface,
           ),
           body: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  Spacing.sm,
-                  Spacing.sm,
-                  Spacing.sm,
-                  Spacing.none,
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.black45,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerLowest,
+                      width: 1,
+                    ),
+                  ),
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(20),
+                  ),
                 ),
-                child: TopNavigationBar(songVM.currentPage.value, (page) {
-                  songVM.currentPage.value = page;
-                }),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: Spacing.xs,
+                    bottom: Spacing.md,
+                  ),
+                  child: TopNavigationBar(songVM.currentPage.value, (page) {
+                    songVM.currentPage.value = page;
+                  }),
+                ),
               ),
               if (songVM.currentPage.value == 0) SongLinksScreen(),
               if (songVM.currentPage.value == 1) SongOverviewScreen(),

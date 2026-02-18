@@ -101,85 +101,97 @@ class StandardHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        leading: InkWell(
-          customBorder: CircleBorder(),
-          child: Icon(Icons.settings, color: Colors.white),
-          onTap: () {
-            // Just testing!!! Take it off later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            SongDao songDao = SongDao();
-            songDao.deleteAll();
-
-            AlbumDao albumDao = AlbumDao();
-            ArtistDao artistDao = ArtistDao();
-
-            albumDao.deleteAll();
-            artistDao.deleteAll();
-
-            Provider.of<MusicProvider>(context, listen: false).getData();
-            // til here
-          },
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Theme.of(context).colorScheme.surface, Colors.black87],
+          begin: AlignmentGeometry.topLeft,
+          end: AlignmentGeometry.bottomRight,
         ),
-        actions: [
-          InkWell(
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leading: InkWell(
             customBorder: CircleBorder(),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Icon(Icons.dark_mode, color: Colors.white),
-            ),
-            onTap: () {},
+            child: Icon(Icons.settings, color: Colors.white),
+            onTap: () {
+              // Just testing!!! Take it off later !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+              SongDao songDao = SongDao();
+              songDao.deleteAll();
+
+              AlbumDao albumDao = AlbumDao();
+              ArtistDao artistDao = ArtistDao();
+
+              albumDao.deleteAll();
+              artistDao.deleteAll();
+
+              Provider.of<MusicProvider>(context, listen: false).getData();
+              // til here
+            },
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: Spacing.xs, right: Spacing.sm),
-            child: InkWell(
+          actions: [
+            InkWell(
               customBorder: CircleBorder(),
               child: Padding(
                 padding: const EdgeInsets.all(10),
-                child: Icon(
-                  Icons.add_box,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
+                child: Icon(Icons.dark_mode, color: Colors.white),
               ),
-              onTap: () async {
-                printData();
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SaveSongScreen()),
-                );
-              },
+              onTap: () {},
             ),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          Spacing.lg,
-          Spacing.sm,
-          Spacing.lg,
-          Spacing.sm,
-        ),
-        child: Column(
-          children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.sm),
-              child: SearchSong(
-                hint: "Search a song",
-                onSearch: (value) => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SearchScreen(search: value),
+              padding: const EdgeInsets.only(
+                left: Spacing.xs,
+                right: Spacing.sm,
+              ),
+              child: InkWell(
+                customBorder: CircleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Icon(
+                    Icons.add_box,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+                onTap: () async {
+                  printData();
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SaveSongScreen()),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            Spacing.lg,
+            Spacing.sm,
+            Spacing.lg,
+            Spacing.sm,
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: Spacing.sm),
+                child: SearchSong(
+                  hint: "Search a song",
+                  onSearch: (value) => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SearchScreen(search: value),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: Spacing.xs),
-              child: HomeSection("Last added", songs),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.xs),
+                child: HomeSection("Last added", songs),
+              ),
+            ],
+          ),
         ),
       ),
     );

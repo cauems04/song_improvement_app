@@ -17,31 +17,34 @@ class NavElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onTap(pageNumber),
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.xs),
-        child: Column(
-          children: [
-            Text(
-              label,
-              style: (currentPage == pageNumber)
-                  ? Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    )
-                  : Theme.of(context).textTheme.titleLarge,
-            ),
-            AnimatedContainer(
-              duration: Duration(milliseconds: 200),
-              curve: Curves.easeInOut,
-              height: 3,
-              width: (currentPage == pageNumber) ? 20 : 0,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onPrimary,
-                borderRadius: BorderRadius.circular(10),
+    return SizedBox(
+      width: 90,
+      child: GestureDetector(
+        onTap: () => onTap(pageNumber),
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.xs),
+          child: Column(
+            children: [
+              Text(
+                label,
+                style: (currentPage == pageNumber)
+                    ? Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      )
+                    : Theme.of(context).textTheme.titleLarge,
               ),
-            ),
-          ],
+              AnimatedContainer(
+                duration: Duration(milliseconds: 200),
+                curve: Curves.easeInOut,
+                height: 3,
+                width: (currentPage == pageNumber) ? 20 : 0,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

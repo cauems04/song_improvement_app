@@ -8,8 +8,9 @@ ThemeData appTheme = ThemeData(
     primaryContainer: Color.fromRGBO(14, 0, 47, 1),
 
     surface: Color.fromRGBO(15, 23, 43, 1),
-    surfaceContainerLowest: Color.fromRGBO(31, 31, 36, 1),
-    surfaceContainerLow: Color.fromRGBO(109, 111, 118, 1),
+
+    surfaceContainerLowest: Color.fromRGBO(19, 23, 34, 1),
+    surfaceContainerLow: Color.fromRGBO(39, 39, 42, 1),
     surfaceContainer: Color.fromRGBO(152, 153, 158, 1),
     surfaceContainerHigh: Color.fromRGBO(197, 197, 199, 1),
     surfaceContainerHighest: Color.fromRGBO(240, 240, 240, 1),
