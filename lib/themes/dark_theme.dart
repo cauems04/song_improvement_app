@@ -5,10 +5,11 @@ ThemeData appTheme = ThemeData(
   colorScheme: const ColorScheme.dark(
     primary: Color.fromRGBO(112, 82, 183, 1),
     onPrimary: Color.fromRGBO(194, 170, 251, 1),
-    primaryContainer: Color.fromRGBO(14, 0, 47, 1),
 
-    surface: Color.fromRGBO(15, 23, 43, 1),
+    surface: Color.fromRGBO(16, 25, 50, 1),
+    onSurface: Color.fromRGBO(22, 36, 83, 1),
 
+    // surface: Color.fromRGBO(17, 26, 53, 1),
     surfaceContainerLowest: Color.fromRGBO(19, 23, 34, 1),
     surfaceContainerLow: Color.fromRGBO(39, 39, 42, 1),
     surfaceContainer: Color.fromRGBO(152, 153, 158, 1),

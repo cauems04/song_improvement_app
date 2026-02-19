@@ -74,7 +74,7 @@ class _ProgressGraphState extends State<ProgressGraph>
                   ),
                 );
               },
-              icon: Icon(Icons.play_arrow, size: 50),
+              icon: Icon(Icons.play_arrow, color: Colors.white70, size: 50),
             ),
           ),
         ],

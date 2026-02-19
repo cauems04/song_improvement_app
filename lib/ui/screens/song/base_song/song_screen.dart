@@ -41,136 +41,145 @@ class _SongScreenState extends State<SongScreen> {
     return ValueListenableBuilder(
       valueListenable: songVM.currentPage,
       builder: (context, value, child) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          floatingActionButton: (songVM.currentPage.value != 1)
-              ? FloatingActionButton(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  onPressed: () {
-                    switch (songVM.currentPage.value) {
-                      case 0:
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (newContext) =>
-                                ChangeNotifierProvider.value(
-                                  value: Provider.of<SelectedSongProvider>(
-                                    context,
-                                  ),
-                                  child: SaveLinkScreen(),
-                                ),
-                          ),
-                        );
-
-                        break;
-                      case 1:
-                        Navigator.push(
-                          context, // Implement for recording audio!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! instead of saving link
-                          MaterialPageRoute(
-                            builder: (context) => SaveLinkScreen(),
-                          ),
-                        );
-                        break;
-                    }
-                    return;
-                  },
-                  child: Icon(Icons.add_link),
-                )
-              : null,
-          appBar: AppBar(
-            backgroundColor: Colors.black45,
-            leading: InkWell(
-              customBorder: CircleBorder(),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Icon(Icons.close),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-              },
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).colorScheme.surface,
+                Theme.of(context).colorScheme.onSurface,
+              ],
+              begin: AlignmentGeometry.topLeft,
+              end: AlignmentGeometry.topRight,
             ),
-            actions: [
-              if (songVM.currentPage.value == 1)
-                InkWell(
-                  customBorder: CircleBorder(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Icon(Icons.edit, color: Colors.white),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (newContext) => ChangeNotifierProvider.value(
-                          value: context.read<SelectedSongProvider>(),
-                          child: SaveSongScreen(
-                            song: Provider.of<SelectedSongProvider>(
-                              context,
-                            ).currentSong,
-                            isEditing: true,
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            floatingActionButton: (songVM.currentPage.value != 1)
+                ? FloatingActionButton(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    onPressed: () {
+                      switch (songVM.currentPage.value) {
+                        case 0:
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (newContext) =>
+                                  ChangeNotifierProvider.value(
+                                    value: Provider.of<SelectedSongProvider>(
+                                      context,
+                                    ),
+                                    child: SaveLinkScreen(),
+                                  ),
+                            ),
+                          );
+
+                          break;
+                        case 1:
+                          Navigator.push(
+                            context, // Implement for recording audio!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! instead of saving link
+                            MaterialPageRoute(
+                              builder: (context) => SaveLinkScreen(),
+                            ),
+                          );
+                          break;
+                      }
+                      return;
+                    },
+                    child: Icon(Icons.add_link),
+                  )
+                : null,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              leading: InkWell(
+                customBorder: CircleBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Icon(Icons.close, color: Colors.white30),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              actions: [
+                if (songVM.currentPage.value == 1)
+                  InkWell(
+                    customBorder: CircleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Icon(Icons.edit, color: Colors.white),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (newContext) => ChangeNotifierProvider.value(
+                            value: context.read<SelectedSongProvider>(),
+                            child: SaveSongScreen(
+                              song: Provider.of<SelectedSongProvider>(
+                                context,
+                              ).currentSong,
+                              isEditing: true,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              if (songVM.currentPage.value == 1)
-                InkWell(
-                  customBorder: CircleBorder(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Icon(Icons.delete, color: Colors.redAccent),
+                      );
+                    },
                   ),
-                  onTap: () async {
-                    Song song = Provider.of<SelectedSongProvider>(
-                      context,
-                      listen: false,
-                    ).currentSong;
-
-                    songVM.deleteCurrentSong(song);
-
-                    if (context.mounted) {
-                      Provider.of<MusicProvider>(
+                if (songVM.currentPage.value == 1)
+                  InkWell(
+                    customBorder: CircleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Icon(Icons.delete, color: Colors.redAccent),
+                    ),
+                    onTap: () async {
+                      Song song = Provider.of<SelectedSongProvider>(
                         context,
                         listen: false,
-                      ).getData();
+                      ).currentSong;
 
-                      Navigator.of(context).pop();
-                    }
-                  },
-                ),
-            ],
-          ),
-          body: Column(
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.black45,
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.surfaceContainerLowest,
-                      width: 1,
+                      songVM.deleteCurrentSong(song);
+
+                      if (context.mounted) {
+                        Provider.of<MusicProvider>(
+                          context,
+                          listen: false,
+                        ).getData();
+
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
+              ],
+            ),
+            body: Column(
+              children: [
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    // color: Theme.of(context).colorScheme.surface,
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerLowest,
+                        width: 1.5,
+                      ),
                     ),
                   ),
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: Spacing.xs,
+                      bottom: Spacing.md,
+                    ),
+                    child: TopNavigationBar(songVM.currentPage.value, (page) {
+                      songVM.currentPage.value = page;
+                    }),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: Spacing.xs,
-                    bottom: Spacing.md,
-                  ),
-                  child: TopNavigationBar(songVM.currentPage.value, (page) {
-                    songVM.currentPage.value = page;
-                  }),
-                ),
-              ),
-              if (songVM.currentPage.value == 0) SongLinksScreen(),
-              if (songVM.currentPage.value == 1) SongOverviewScreen(),
-              if (songVM.currentPage.value == 2) SongRecordsScreen(),
-            ],
+                if (songVM.currentPage.value == 0) SongLinksScreen(),
+                if (songVM.currentPage.value == 1) SongOverviewScreen(),
+                if (songVM.currentPage.value == 2) SongRecordsScreen(),
+              ],
+            ),
           ),
         );
       },

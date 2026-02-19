@@ -5,8 +5,11 @@ class Record {
   final String name;
   int? score;
   final String audioPath;
-  final String dateCreation;
+  final DateTime dateCreation;
   final int songId;
+
+  String get formatedDate =>
+      "${dateCreation.year}/${dateCreation.month.toString().padLeft(2, '0')}/${dateCreation.day.toString().padLeft(2, '0')}";
 
   Record({
     required this.name,
@@ -24,7 +27,9 @@ class Record {
       name = json[DatabaseManager.recordNameLabel].toString(),
       score = json[DatabaseManager.recordScoreLabel],
       audioPath = json[DatabaseManager.recordAudioFilePathLabel].toString(),
-      dateCreation = json[DatabaseManager.recordDateCreationLabel].toString(),
+      dateCreation = DateTime.parse(
+        json[DatabaseManager.recordDateCreationLabel],
+      ),
       songId = json[DatabaseManager.recordSongLabel];
 
   Map<String, Object> toMap() {

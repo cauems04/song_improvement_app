@@ -9,7 +9,9 @@ class InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerLowest.withAlpha(100),
         border: Border.all(
           color: Theme.of(context).colorScheme.surfaceContainerLow,
         ),

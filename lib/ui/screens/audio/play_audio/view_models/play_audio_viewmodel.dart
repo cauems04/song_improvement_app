@@ -108,7 +108,7 @@ class PlayAudioViewmodel {
     final Record record = Record(
       name: nameController.text,
       audioPath: finalPath,
-      dateCreation: dateCreation.toString(),
+      dateCreation: dateCreation,
       songId: songId,
     );
 

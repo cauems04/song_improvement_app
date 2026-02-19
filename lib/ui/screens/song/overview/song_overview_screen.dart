@@ -16,10 +16,11 @@ class SongOverviewScreen extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.surfaceContainerLowest,
+              Theme.of(context).colorScheme.onSurface,
+              Theme.of(context).colorScheme.surface,
             ],
-            begin: AlignmentGeometry.topCenter,
-            end: AlignmentGeometry.bottomCenter,
+            begin: AlignmentGeometry.topLeft,
+            end: AlignmentGeometry.bottomRight,
           ),
         ),
         child: Padding(

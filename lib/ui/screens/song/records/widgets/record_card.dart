@@ -3,7 +3,6 @@ import 'package:guitar_song_improvement/data/model/record.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/play_audio_screen.dart';
-import 'package:guitar_song_improvement/ui/widgets/box_form.dart';
 import 'package:provider/provider.dart';
 
 class RecordCard extends StatelessWidget {
@@ -12,72 +11,193 @@ class RecordCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 80,
-      child: Padding(
-        padding: const EdgeInsetsGeometry.fromLTRB(
-          Spacing.md,
-          Spacing.xs,
-          Spacing.xs,
-          Spacing.xs,
+    return Container(
+      height: 180,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
         ),
-        child: Material(
-          child: InkWell(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (newContext) => ChangeNotifierProvider.value(
-                  value: Provider.of<SelectedSongProvider>(
-                    context,
-                    listen: false,
-                  ),
-                  child: PlayAudioScreen(
-                    audioFilePath: record.audioPath,
-                    isAudioSaved: true,
-                  ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Material(
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerLowest.withAlpha(100),
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (newContext) => ChangeNotifierProvider.value(
+                value: Provider.of<SelectedSongProvider>(
+                  context,
+                  listen: false,
+                ),
+                child: PlayAudioScreen(
+                  audioFilePath: record.audioPath,
+                  isAudioSaved: true,
                 ),
               ),
             ),
-            child: BoxForm(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        record.name,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.w600,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.md),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          record.name,
+                          style: Theme.of(context).textTheme.headlineSmall!
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          children: [
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  WidgetSpan(
+                                    child: Icon(
+                                      Icons.date_range,
+                                      color: Colors.white70,
+                                      size: 14,
+                                    ),
+                                  ),
+                                  WidgetSpan(child: SizedBox(width: 2)),
+                                  TextSpan(
+                                    text: record.formatedDate,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: Colors.white70,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: Spacing.sm),
+                              child: Text.rich(
+                                TextSpan(
+                                  children: [
+                                    WidgetSpan(
+                                      child: Icon(
+                                        Icons.access_time_rounded,
+                                        color: Colors.white70,
+                                        size: 14,
+                                      ),
+                                    ),
+                                    WidgetSpan(child: SizedBox(width: 2)),
+                                    TextSpan(
+                                      text: "3:40",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                            color: Colors.white70,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      child: Icon(
+                        Icons.more_vert,
+                        size: 24,
+                        color: Colors.grey[500],
+                      ),
+                      onTap: () => null,
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () => null,
+                      child: Container(
+                        height: 44,
+                        width: 44,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              Theme.of(context).colorScheme.onPrimary,
+                              Colors.purpleAccent[100]!,
+                            ],
+                            begin: AlignmentGeometry.topLeft,
+                            end: AlignmentGeometry.bottomRight,
+                          ),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.play_arrow,
+                            color: Colors.white.withAlpha(180),
+                          ),
                         ),
                       ),
-                      Text(record.dateCreation),
-                    ],
-                  ),
-                  (record.score != null)
-                      ? Padding(
-                          padding: EdgeInsetsGeometry.only(right: Spacing.sm),
-                          child: Text(
-                            "${record.score}%",
-                            style: Theme.of(context).textTheme.labelLarge!
-                                .copyWith(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
-                                ),
-                          ),
-                        )
-                      : Padding(
-                          padding: EdgeInsetsGeometry.only(right: Spacing.xs),
-                          child: Icon(
-                            Icons.bar_chart_rounded,
-                            size: 40,
-                            color: Colors.grey[700],
-                          ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(6, 2, 6, 2),
+                      decoration: BoxDecoration(
+                        color: (record.score != null)
+                            ? Theme.of(
+                                context,
+                              ).colorScheme.primary.withAlpha(180)
+                            : Colors.grey[800]!.withAlpha(100),
+                        border: Border.all(
+                          color: (record.score != null)
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Colors.grey,
                         ),
-                ],
-              ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: (record.score != null)
+                          ? Text.rich(
+                              TextSpan(
+                                children: [
+                                  WidgetSpan(
+                                    child: Icon(
+                                      Icons.date_range,
+                                      color: Colors.white70,
+                                      size: 14,
+                                    ),
+                                  ),
+                                  WidgetSpan(child: SizedBox(width: 2)),
+                                  TextSpan(
+                                    text: record.score.toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: Colors.white70,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Icon(Icons.remove, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
