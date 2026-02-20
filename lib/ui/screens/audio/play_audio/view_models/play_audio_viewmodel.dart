@@ -90,31 +90,37 @@ class PlayAudioViewmodel {
   }
 
   Future<SaveResult> saveRecord() async {
-    final Directory appDocDirectory = await getApplicationDocumentsDirectory();
+    try {
+      final Directory appDocDirectory =
+          await getApplicationDocumentsDirectory();
 
-    final DateTime dateCreation = DateTime.now();
-    final String fileName = "rec_${dateCreation.microsecond}";
+      final DateTime dateCreation = DateTime.now();
+      final String fileName = "rec_${dateCreation.microsecond}";
 
-    final finalPath = '${appDocDirectory.path}/$fileName';
+      final finalPath = '${appDocDirectory.path}/$fileName';
 
-    final tempFile = File(_audioFilePath);
-    if (!await tempFile.exists()) {
-      return ErrorResult("Audio file no longer exists");
+      final tempFile = File(_audioFilePath);
+      if (!await tempFile.exists()) {
+        return ErrorResult("Audio file no longer exists");
+      }
+
+      await tempFile.copy(finalPath);
+      tempFile.delete();
+
+      final Record record = Record(
+        name: nameController.text,
+        audioPath: finalPath,
+        dateCreation: dateCreation,
+        songId: songId,
+      );
+
+      RecordController recordController = RecordController();
+      final int createdRecordId = await recordController.create(record);
+
+      return SuccessResult("Record saved", createdRecordId);
+    } catch (e) {
+      print("Error saving record: $e"); // Vai mostrar no console
+      return ErrorResult("Error saving: $e");
     }
-
-    await tempFile.copy(finalPath);
-    tempFile.delete();
-
-    final Record record = Record(
-      name: nameController.text,
-      audioPath: finalPath,
-      dateCreation: dateCreation,
-      songId: songId,
-    );
-
-    RecordController recordController = RecordController();
-    final int createdRecordId = await recordController.create(record);
-
-    return SuccessResult("Record saved", createdRecordId);
   }
 }

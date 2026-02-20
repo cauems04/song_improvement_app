@@ -26,10 +26,11 @@ class SongRecordsScreen extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(
-            top: Spacing.lg,
-            right: Spacing.md,
-            left: Spacing.md,
+          padding: const EdgeInsets.fromLTRB(
+            Spacing.md,
+            Spacing.lg,
+            Spacing.md,
+            80,
           ),
           child: Consumer<SelectedSongProvider>(
             builder: (context, data, child) {
@@ -43,7 +44,14 @@ class SongRecordsScreen extends StatelessWidget {
                   .map((record) => RecordCard(record))
                   .toList();
 
-              return Column(children: recordCards);
+              return ListView.separated(
+                separatorBuilder: (context, index) =>
+                    SizedBox(height: Spacing.md),
+                itemCount: recordCards.length,
+                itemBuilder: (context, index) {
+                  return recordCards[index];
+                },
+              );
             },
           ),
         ),
