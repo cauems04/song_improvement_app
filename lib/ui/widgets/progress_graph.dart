@@ -23,7 +23,7 @@ class _ProgressGraphState extends State<ProgressGraph>
   void initState() {
     progressController = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 4),
+      duration: Duration(seconds: 2),
       lowerBound: 0,
       upperBound: 1,
     );

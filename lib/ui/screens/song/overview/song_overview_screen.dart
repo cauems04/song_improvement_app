@@ -44,30 +44,36 @@ class SongOverviewScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                           vertical: Spacing.sm,
                         ),
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              WidgetSpan(
-                                alignment: PlaceholderAlignment.middle,
-                                child: Icon(
-                                  Icons.person,
-                                  size: 18,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.surfaceContainerHigh,
-                                ),
+                        child: Hero(
+                          tag: "song-artist",
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  WidgetSpan(
+                                    alignment: PlaceholderAlignment.middle,
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 18,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.surfaceContainerHigh,
+                                    ),
+                                  ),
+                                  const WidgetSpan(child: SizedBox(width: 4)),
+                                  TextSpan(text: data.currentSong.artist),
+                                ],
                               ),
-                              const WidgetSpan(child: SizedBox(width: 4)),
-                              TextSpan(text: data.currentSong.artist),
-                            ],
+                              style: Theme.of(context).textTheme.titleLarge!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceContainerHigh,
+                                  ),
+                            ),
                           ),
-                          style: Theme.of(context).textTheme.titleLarge!
-                              .copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surfaceContainerHigh,
-                              ),
                         ),
                       ),
                       Text.rich(

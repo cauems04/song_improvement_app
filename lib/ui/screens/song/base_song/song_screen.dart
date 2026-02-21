@@ -89,6 +89,7 @@ class _SongScreenState extends State<SongScreen> {
                 : null,
             appBar: AppBar(
               backgroundColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
               leading: InkWell(
                 customBorder: CircleBorder(),
                 child: Padding(
