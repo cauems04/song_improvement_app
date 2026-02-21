@@ -35,7 +35,9 @@ class _SearchSongState extends State<SearchSong> {
     return Container(
       height: 50,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withAlpha(200),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(

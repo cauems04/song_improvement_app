@@ -15,9 +15,7 @@ class RecordCard extends StatelessWidget {
     return Container(
       height: 180,
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).colorScheme.surfaceContainerLow,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.surface),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Material(
