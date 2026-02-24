@@ -41,9 +41,14 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
 
     final navigator = Navigator.of(context);
 
-    await selectedSongProvider.updateScore(
+    // await selectedSongProvider.updateScore(
+    //   autoAnalysisVM.finalScore,
+    //   widget.recordLinkedId,
+    // );
+
+    await selectedSongProvider.addAnalysis(
+      autoAnalysisVM.scoreValues,
       autoAnalysisVM.finalScore,
-      widget.recordLinkedId,
     );
 
     await musicProvider.getData();

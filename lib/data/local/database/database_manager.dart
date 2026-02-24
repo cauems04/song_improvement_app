@@ -24,7 +24,6 @@ class DatabaseManager {
   static const String songTableName = "song";
   static const String songIdLabel = "id";
   static const String songNameLabel = "title";
-  static const String songScoreLabel = "score";
   static const String songTimesPlayedLabel = "times_played";
   static const String songAlbumLabel = "album_title";
   static const String songArtistLabel = "artist_name";
@@ -56,12 +55,13 @@ class DatabaseManager {
 
   static const String analysisTableName = "analysis";
   static const String analysisIdLabel = "id";
+  static const String analysisScoreLabel = "score";
+  static const String analysisDateCreationLabel = "date_creation";
   static const String analysisPitchScoreLabel = "pitch_score";
   static const String analysisRhytmScoreLabel = "rhytm_score";
   static const String analysisDynamicsScoreLabel = "dynamics_score";
   static const String analysisTechniqueScoreLabel = "technique_score";
   static const String analysisAccuracyScoreLabel = "accuracy_score";
-  static const String analysisDateCreationLabel = "date_creation";
   static const String analysisSongLabel = "song_id";
 
   void _onConfigure(Database db) async {

@@ -103,10 +103,7 @@ class SongOverviewScreen extends StatelessWidget {
                           top: Spacing.xxl,
                           bottom: Spacing.xxxl,
                         ),
-                        child: SizedBox(
-                          height: 90,
-                          child: ProgressGraph(data.currentSong.reducedScore),
-                        ),
+                        child: SizedBox(height: 90, child: ProgressGraph(10)),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

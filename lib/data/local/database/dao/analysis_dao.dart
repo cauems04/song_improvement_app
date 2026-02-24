@@ -28,14 +28,4 @@ class AnalysisDao {
         .toList();
     return analysis;
   }
-
-  Future<void> delete(int linkId) async {
-    DatabaseManager databaseManager = DatabaseManager.databaseManager;
-    Database database = await databaseManager.database;
-    await database.delete(
-      DatabaseManager.linkTableName,
-      where: "${DatabaseManager.linkIdLabel} = ?",
-      whereArgs: [linkId],
-    );
-  }
 }

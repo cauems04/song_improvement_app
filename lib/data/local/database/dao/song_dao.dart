@@ -132,17 +132,6 @@ class SongDao {
     return result.first["result"] == 1;
   }
 
-  Future<void> updateScore(int songId, int newScore) async {
-    DatabaseManager databaseManager = DatabaseManager.databaseManager;
-    Database database = await databaseManager.database;
-    await database.update(
-      DatabaseManager.songTableName,
-      {DatabaseManager.songScoreLabel: newScore},
-      where: "id = ?",
-      whereArgs: [songId],
-    );
-  }
-
   Future<void> incrementTimesPlayed(int songId) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;

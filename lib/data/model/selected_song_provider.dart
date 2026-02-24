@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/controller/link_controller.dart';
 import 'package:guitar_song_improvement/controller/record_controller.dart';
 import 'package:guitar_song_improvement/controller/song_controller.dart';
+import 'package:guitar_song_improvement/data/local/database/dao/analysis_dao.dart';
 import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/data/model/link.dart';
 import 'package:guitar_song_improvement/data/model/record.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
 
 class SelectedSongProvider extends ChangeNotifier {
   Song currentSong;
@@ -28,6 +30,9 @@ class SelectedSongProvider extends ChangeNotifier {
     RecordController recordController = RecordController();
     records = await recordController.recordsBySong(currentSong.id!);
 
+    AnalysisDao analysisDao = AnalysisDao();
+    analysis = await analysisDao.analysisBySong(currentSong.id!);
+
     notifyListeners();
   }
 
@@ -36,24 +41,6 @@ class SelectedSongProvider extends ChangeNotifier {
     final Song song = await songController.read(currentSong.id!);
 
     currentSong = song;
-
-    notifyListeners();
-  }
-
-  Future<void> updateScore(int newScore, int? recordId) async {
-    SongController songController = SongController();
-    RecordController recordController = RecordController();
-
-    await songController.updateScore(currentSong, newScore);
-    if (recordId != null) {
-      final Record recordFound = records!.firstWhere(
-        (record) => record.id == recordId,
-      );
-      recordFound.score = newScore;
-      await recordController.update(recordId, recordFound);
-    }
-
-    currentSong = await songController.read(currentSong.id!);
 
     notifyListeners();
   }
@@ -89,10 +76,19 @@ class SelectedSongProvider extends ChangeNotifier {
     records!.removeAt(recordIndex);
   }
 
-  // Future<void> getRecords() async {
-  //   RecordController recordController = RecordController();
-  //   records = await recordController.recordsBySong(currentSong.id!);
+  Future<void> addAnalysis(Map<ScoreType, int> scores, int finalScore) async {
+    Analysis analysisToCreate = Analysis(
+      dateCreation: DateTime.now(),
+      score: finalScore,
+      pitchScore: scores[ScoreType.pitch]!,
+      rhytmScore: scores[ScoreType.rhytm]!,
+      dynamicsScore: scores[ScoreType.dynamics]!,
+      techniqueScore: scores[ScoreType.technique]!,
+      accuracyScore: scores[ScoreType.notation]!,
+      songId: currentSong.id!,
+    );
+    AnalysisDao().create(analysisToCreate);
 
-  //   notifyListeners();
-  // }
+    notifyListeners();
+  }
 }
