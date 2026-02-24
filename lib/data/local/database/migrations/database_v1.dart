@@ -46,5 +46,18 @@ class DatabaseV1 implements IMigration {
 
                             FOREIGN KEY (${DatabaseManager.recordSongLabel}) REFERENCES ${DatabaseManager.songTableName}(${DatabaseManager.songIdLabel}) ON DELETE CASCADE
                             );""");
+
+    await db.execute("""CREATE TABLE ${DatabaseManager.analysisTableName}(
+                            ${DatabaseManager.analysisIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT,
+                            ${DatabaseManager.analysisDateCreationLabel} TEXT NOT NULL,
+                            ${DatabaseManager.analysisPitchScoreLabel} INTEGER NOT NULL,
+                            ${DatabaseManager.analysisRhytmScoreLabel} INTEGER NOT NULL,
+                            ${DatabaseManager.analysisDynamicsScoreLabel} INTEGER NOT NULL,
+                            ${DatabaseManager.analysisTechniqueScoreLabel} INTEGER NOT NULL,
+                            ${DatabaseManager.analysisAccuracyScoreLabel} INTEGER NOT NULL,
+                            ${DatabaseManager.analysisSongLabel} INTEGER NOT NULL,
+
+                            FOREIGN KEY (${DatabaseManager.analysisSongLabel}) REFERENCES ${DatabaseManager.songTableName}(${DatabaseManager.songIdLabel}) ON DELETE CASCADE
+                            );""");
   }
 }

@@ -176,6 +176,7 @@ class _SongScreenState extends State<SongScreen> {
                     }),
                   ),
                 ),
+                // PageView(children: [ ],),
                 if (songVM.currentPage.value == 0) SongLinksScreen(),
                 if (songVM.currentPage.value == 1) SongOverviewScreen(),
                 if (songVM.currentPage.value == 2) SongRecordsScreen(),

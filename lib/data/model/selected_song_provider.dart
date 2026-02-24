@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/controller/link_controller.dart';
 import 'package:guitar_song_improvement/controller/record_controller.dart';
 import 'package:guitar_song_improvement/controller/song_controller.dart';
+import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/data/model/link.dart';
 import 'package:guitar_song_improvement/data/model/record.dart';
@@ -10,10 +11,11 @@ class SelectedSongProvider extends ChangeNotifier {
   Song currentSong;
   List<Link>? links;
   List<Record>? records;
+  List<Analysis>? analysis;
 
   bool isInitialized = false;
 
-  bool get isLoaded => (links != null && records != null);
+  bool get isLoaded => (links != null && records != null && analysis != null);
 
   SelectedSongProvider(this.currentSong);
 

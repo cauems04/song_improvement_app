@@ -54,6 +54,16 @@ class DatabaseManager {
   static const String recordDateCreationLabel = "date_creation";
   static const String recordSongLabel = "song_id";
 
+  static const String analysisTableName = "analysis";
+  static const String analysisIdLabel = "id";
+  static const String analysisPitchScoreLabel = "pitch_score";
+  static const String analysisRhytmScoreLabel = "rhytm_score";
+  static const String analysisDynamicsScoreLabel = "dynamics_score";
+  static const String analysisTechniqueScoreLabel = "technique_score";
+  static const String analysisAccuracyScoreLabel = "accuracy_score";
+  static const String analysisDateCreationLabel = "date_creation";
+  static const String analysisSongLabel = "song_id";
+
   void _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');
   }

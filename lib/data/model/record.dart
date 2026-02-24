@@ -28,7 +28,7 @@ class Record {
       score = json[DatabaseManager.recordScoreLabel],
       audioPath = json[DatabaseManager.recordAudioFilePathLabel].toString(),
       dateCreation = DateTime.parse(
-        json[DatabaseManager.recordDateCreationLabel],
+        json[DatabaseManager.recordDateCreationLabel].toString(),
       ),
       songId = json[DatabaseManager.recordSongLabel];
 
