@@ -19,6 +19,15 @@ class SelectedSongProvider extends ChangeNotifier {
 
   bool get isLoaded => (links != null && records != null && analysis != null);
 
+  Analysis? get getLastAnalysis {
+    if (analysis == null || analysis!.isEmpty) return null;
+
+    return analysis!.reduce(
+      (current, next) =>
+          current.dateCreation.isAfter(next.dateCreation) ? current : next,
+    );
+  }
+
   SelectedSongProvider(this.currentSong);
 
   Future<void> setup() async {
@@ -60,12 +69,21 @@ class SelectedSongProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> getAnalysis() async {
+    AnalysisDao analysisDao = AnalysisDao();
+    analysis = await analysisDao.analysisBySong(currentSong.id!);
+
+    notifyListeners();
+  }
+
   Future<void> deleteLink(int id) async {
     LinkController linkController = LinkController();
     await linkController.delete(id);
 
     int linkIndex = links!.indexWhere((link) => link.id == id);
     links!.removeAt(linkIndex);
+
+    notifyListeners();
   }
 
   Future<void> deleteRecord(int id) async {
@@ -74,12 +92,14 @@ class SelectedSongProvider extends ChangeNotifier {
 
     int recordIndex = records!.indexWhere((record) => record.id == id);
     records!.removeAt(recordIndex);
+
+    notifyListeners();
   }
 
-  Future<void> addAnalysis(Map<ScoreType, int> scores, int finalScore) async {
+  Future<Analysis> addAnalysis(Map<ScoreType, int> scores) async {
     Analysis analysisToCreate = Analysis(
       dateCreation: DateTime.now(),
-      score: finalScore,
+      // Fix DAOs for record, song, and analysis to guarantee they're passing and retrieving the right values
       pitchScore: scores[ScoreType.pitch]!,
       rhytmScore: scores[ScoreType.rhytm]!,
       dynamicsScore: scores[ScoreType.dynamics]!,
@@ -89,6 +109,10 @@ class SelectedSongProvider extends ChangeNotifier {
     );
     AnalysisDao().create(analysisToCreate);
 
+    await getAnalysis();
+
     notifyListeners();
+
+    return analysisToCreate;
   }
 }

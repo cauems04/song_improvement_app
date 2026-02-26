@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
+import 'package:guitar_song_improvement/data/services/score_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/info_card.dart';
 import 'package:guitar_song_improvement/ui/widgets/progress_graph.dart';
@@ -103,7 +104,17 @@ class SongOverviewScreen extends StatelessWidget {
                           top: Spacing.xxl,
                           bottom: Spacing.xxxl,
                         ),
-                        child: SizedBox(height: 90, child: ProgressGraph(10)),
+                        child: SizedBox(
+                          height: 90,
+                          child: ProgressGraph(
+                            (Provider.of<SelectedSongProvider>(
+                                      context,
+                                      listen: false,
+                                    ).getLastAnalysis?.getFinalScore ??
+                                    0) /
+                                100,
+                          ),
+                        ),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

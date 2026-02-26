@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/data/model/music_provider.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
@@ -29,8 +30,6 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
   }
 
   Future<void> submitScore() async {
-    autoAnalysisVM.calculateScore();
-
     final SelectedSongProvider selectedSongProvider =
         Provider.of<SelectedSongProvider>(context, listen: false);
 
@@ -46,16 +45,16 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
     //   widget.recordLinkedId,
     // );
 
-    await selectedSongProvider.addAnalysis(
+    Analysis analysisCreated = await selectedSongProvider.addAnalysis(
       autoAnalysisVM.scoreValues,
-      autoAnalysisVM.finalScore,
     );
 
     await musicProvider.getData();
 
     navigator.pushReplacement(
       MaterialPageRoute(
-        builder: (context) => AnalysisResultScreen(autoAnalysisVM.finalScore),
+        builder: (context) =>
+            AnalysisResultScreen(analysisCreated.getFinalScore),
       ),
     );
   }

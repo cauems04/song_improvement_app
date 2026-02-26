@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/data/services/score_service.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
 
 class AutoAnalysisViewModel extends ChangeNotifier {
@@ -10,9 +9,6 @@ class AutoAnalysisViewModel extends ChangeNotifier {
   late int? recordLinked;
 
   final PageController pageController = PageController();
-
-  final ScoreService _scoreService = ScoreService();
-  int get finalScore => _scoreService.normalizedFinalScore;
 
   void initValues({int? recordLinked}) {
     currentScoreType = ScoreType.values[0];
@@ -36,9 +32,5 @@ class AutoAnalysisViewModel extends ChangeNotifier {
     }
 
     notifyListeners();
-  }
-
-  void calculateScore() {
-    _scoreService.calculateScore(scoreValues);
   }
 }

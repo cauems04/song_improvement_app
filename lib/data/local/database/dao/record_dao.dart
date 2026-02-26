@@ -21,7 +21,7 @@ class RecordDao {
       DatabaseManager.recordTableName,
       {
         DatabaseManager.recordNameLabel: newRecord.name,
-        DatabaseManager.recordScoreLabel: newRecord.score,
+        // DatabaseManager.recordScoreLabel: newRecord.score,
       },
       where: "${DatabaseManager.recordIdLabel} = ?",
       whereArgs: [oldRecordId],

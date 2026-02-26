@@ -3,7 +3,6 @@ import 'package:guitar_song_improvement/data/local/database/database_manager.dar
 class Record {
   final int? id;
   final String name;
-  int? score;
   final String audioPath;
   final DateTime dateCreation;
   final int songId;
@@ -17,7 +16,6 @@ class Record {
     required this.dateCreation,
     required this.songId,
     this.id,
-    this.score,
   });
 
   Record.fromDbJson(
@@ -25,7 +23,6 @@ class Record {
   ) // Tentar mudar de dynamic pra object para melhor performance
   : id = json[DatabaseManager.recordIdLabel],
       name = json[DatabaseManager.recordNameLabel].toString(),
-      score = json[DatabaseManager.recordScoreLabel],
       audioPath = json[DatabaseManager.recordAudioFilePathLabel].toString(),
       dateCreation = DateTime.parse(
         json[DatabaseManager.recordDateCreationLabel].toString(),

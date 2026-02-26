@@ -1,9 +1,9 @@
 import 'package:guitar_song_improvement/data/local/database/database_manager.dart';
+import 'package:guitar_song_improvement/data/services/score_service.dart';
 
 class Analysis {
   final int? id;
   final DateTime dateCreation;
-  final int score;
   final int pitchScore;
   final int rhytmScore;
   final int dynamicsScore;
@@ -11,9 +11,16 @@ class Analysis {
   final int accuracyScore;
   final int songId;
 
+  int get getFinalScore => ScoreService.calculateScore([
+    pitchScore,
+    rhytmScore,
+    dynamicsScore,
+    techniqueScore,
+    accuracyScore,
+  ]);
+
   const Analysis({
     required this.dateCreation,
-    required this.score,
     required this.pitchScore,
     required this.rhytmScore,
     required this.dynamicsScore,
@@ -30,7 +37,6 @@ class Analysis {
       dateCreation = DateTime.parse(
         json[DatabaseManager.analysisDateCreationLabel].toString(),
       ),
-      score = json[DatabaseManager.analysisScoreLabel],
       pitchScore = json[DatabaseManager.analysisPitchScoreLabel],
       rhytmScore = json[DatabaseManager.analysisRhytmScoreLabel],
       dynamicsScore = json[DatabaseManager.analysisDynamicsScoreLabel],
@@ -41,7 +47,6 @@ class Analysis {
   Map<String, Object> toMap() {
     return {
       DatabaseManager.analysisDateCreationLabel: dateCreation,
-      DatabaseManager.analysisScoreLabel: score,
       DatabaseManager.analysisPitchScoreLabel: pitchScore,
       DatabaseManager.analysisRhytmScoreLabel: rhytmScore,
       DatabaseManager.analysisDynamicsScoreLabel: dynamicsScore,
