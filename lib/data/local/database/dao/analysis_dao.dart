@@ -28,4 +28,41 @@ class AnalysisDao {
         .toList();
     return analysis;
   }
+
+  // Future<Analysis?> analysisBySingleRecord(int recordId) async {
+  //   DatabaseManager databaseManager = DatabaseManager.databaseManager;
+  //   Database database = await databaseManager.database;
+
+  //   List<Map<String, Object?>> analysisFound = await database.query(
+  //     DatabaseManager.analysisTableName,
+  //     where: "${DatabaseManager.analysisRecordLabel} = ?",
+  //     whereArgs: [recordId],);
+
+  //   if (analysisFound.isEmpty) return null;
+
+  //   Analysis analysis = Analysis.fromDbJson(analysisFound.first);
+  //   return analysis;
+  // }
+
+  Future<List<Analysis>> analysesByIds(List<int> analysesIds) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+
+    final String analysesIdsPlaceholders = List.filled(
+      analysesIds.length,
+      "?",
+    ).join(",");
+
+    List<Map<String, Object?>> analysisFound = await database.query(
+      DatabaseManager.analysisTableName,
+      where: "${DatabaseManager.analysisIdLabel} IN ($analysesIdsPlaceholders)",
+      whereArgs: analysesIds,
+    );
+
+    // Put indexes on the database to search faster on big tables - search later
+    // chunkSize = 900; search later
+    return analysisFound
+        .map((analysis) => Analysis.fromDbJson(analysis))
+        .toList();
+  }
 }

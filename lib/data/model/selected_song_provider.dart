@@ -4,15 +4,15 @@ import 'package:guitar_song_improvement/controller/record_controller.dart';
 import 'package:guitar_song_improvement/controller/song_controller.dart';
 import 'package:guitar_song_improvement/data/local/database/dao/analysis_dao.dart';
 import 'package:guitar_song_improvement/data/model/analysis.dart';
+import 'package:guitar_song_improvement/data/model/dtos/record_with_analysis.dart';
 import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/data/model/link.dart';
-import 'package:guitar_song_improvement/data/model/record.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
 
 class SelectedSongProvider extends ChangeNotifier {
   Song currentSong;
   List<Link>? links;
-  List<Record>? records;
+  List<RecordWithAnalysis>? records;
   List<Analysis>? analysis;
 
   bool isInitialized = false;
@@ -90,7 +90,9 @@ class SelectedSongProvider extends ChangeNotifier {
     RecordController recordController = RecordController();
     await recordController.delete(id);
 
-    int recordIndex = records!.indexWhere((record) => record.id == id);
+    int recordIndex = records!.indexWhere(
+      (recordWithAnalysis) => recordWithAnalysis.record.id == id,
+    );
     records!.removeAt(recordIndex);
 
     notifyListeners();

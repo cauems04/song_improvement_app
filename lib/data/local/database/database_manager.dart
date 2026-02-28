@@ -20,6 +20,8 @@ class DatabaseManager {
 
   DatabaseManager._constructor();
 
+  // Put indexes on the database to search faster on big tables - search later
+
   // Song
   static const String songTableName = "song";
   static const String songIdLabel = "id";
@@ -51,6 +53,7 @@ class DatabaseManager {
   static const String recordScoreLabel = "score";
   static const String recordAudioFilePathLabel = "audio_file_path";
   static const String recordDateCreationLabel = "date_creation";
+  static const String recordAnalysisLabel = "analysis_id";
   static const String recordSongLabel = "song_id";
 
   static const String analysisTableName = "analysis";
@@ -62,8 +65,6 @@ class DatabaseManager {
   static const String analysisTechniqueScoreLabel = "technique_score";
   static const String analysisAccuracyScoreLabel = "accuracy_score";
   static const String analysisSongLabel = "song_id";
-  static const String analysisRecordLabel = "record_id";
-
 
   Future<void> _onConfigure(Database db) async {
     await db.execute('PRAGMA foreign_keys = ON');

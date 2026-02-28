@@ -5,6 +5,7 @@ class Record {
   final String name;
   final String audioPath;
   final DateTime dateCreation;
+  final int? analysisId;
   final int songId;
 
   String get formatedDate =>
@@ -16,6 +17,7 @@ class Record {
     required this.dateCreation,
     required this.songId,
     this.id,
+    this.analysisId,
   });
 
   Record.fromDbJson(
@@ -27,6 +29,7 @@ class Record {
       dateCreation = DateTime.parse(
         json[DatabaseManager.recordDateCreationLabel].toString(),
       ),
+      analysisId = json[DatabaseManager.recordAnalysisLabel],
       songId = json[DatabaseManager.recordSongLabel];
 
   Map<String, Object> toMap() {
@@ -34,7 +37,6 @@ class Record {
       DatabaseManager.recordNameLabel: name,
       DatabaseManager.recordAudioFilePathLabel: audioPath,
       DatabaseManager.recordDateCreationLabel: dateCreation.toString(),
-      DatabaseManager.recordSongLabel: songId,
     };
   }
 }

@@ -5,8 +5,11 @@ import 'package:sqflite/sqflite.dart';
 class DatabaseV1 implements IMigration {
   const DatabaseV1();
 
+  // Put indexes on the database to search faster on big tables - search later
+
   @override
   Future<void> execute(Database db) async {
+    // Put indexes on the database to search faster on big tables - search later
     await db.execute("""CREATE TABLE ${DatabaseManager.songTableName}(
                             ${DatabaseManager.songIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT, 
                             ${DatabaseManager.songNameLabel} TEXT,
@@ -18,14 +21,17 @@ class DatabaseV1 implements IMigration {
                             FOREIGN KEY(${DatabaseManager.songArtistLabel}) REFERENCES ${DatabaseManager.artistTableName}(${DatabaseManager.artistNameLabel})
                             );""");
 
+    // Put indexes on the database to search faster on big tables - search later
     await db.execute("""CREATE TABLE ${DatabaseManager.albumTableName}(
                             ${DatabaseManager.albumNameLabel} TEXT PRIMARY KEY UNIQUE NOT NULL 
                             );""");
 
+    // Put indexes on the database to search faster on big tables - search later
     await db.execute("""CREATE TABLE ${DatabaseManager.artistTableName}(
                             ${DatabaseManager.artistNameLabel} TEXT PRIMARY KEY UNIQUE NOT NULL
                             );""");
 
+    // Put indexes on the database to search faster on big tables - search later
     await db.execute("""CREATE TABLE ${DatabaseManager.linkTableName}(
                             ${DatabaseManager.linkIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT,
                             ${DatabaseManager.linkNameLabel} TEXT NOT NULL,
@@ -35,17 +41,21 @@ class DatabaseV1 implements IMigration {
                             FOREIGN KEY (${DatabaseManager.linkSongLabel}) REFERENCES ${DatabaseManager.songTableName}(${DatabaseManager.songIdLabel}) ON DELETE CASCADE
                             );""");
 
+    // Put indexes on the database to search faster on big tables - search later
     await db.execute("""CREATE TABLE ${DatabaseManager.recordTableName}(
                             ${DatabaseManager.recordIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT,
                             ${DatabaseManager.recordNameLabel} TEXT NOT NULL,
                             ${DatabaseManager.recordAudioFilePathLabel} TEXT NOT NULL,
                             ${DatabaseManager.recordDateCreationLabel} TEXT NOT NULL,
+                            ${DatabaseManager.recordAnalysisLabel} INTEGER
                             ${DatabaseManager.recordSongLabel} INTEGER NOT NULL,
 
                             FOREIGN KEY (${DatabaseManager.recordSongLabel}) REFERENCES ${DatabaseManager.songTableName}(${DatabaseManager.songIdLabel}) ON DELETE CASCADE
+                            FOREIGN KEY (${DatabaseManager.recordAnalysisLabel}) REFERENCES ${DatabaseManager.analysisTableName}(${DatabaseManager.analysisIdLabel}) ON DELETE SET NULL
                             );""");
 
-    await db.execute("""CREATE TABLE ${DatabaseManager.analysisTableName}(
+    // Put indexes on the database to search faster on big tables - search later
+    await db.execute("""CREATE TABLE ${DatabaseManager.analysisTableName}( 
                             ${DatabaseManager.analysisIdLabel} INTEGER PRIMARY KEY AUTOINCREMENT,
                             ${DatabaseManager.analysisDateCreationLabel} TEXT NOT NULL,
                             ${DatabaseManager.analysisPitchScoreLabel} INTEGER NOT NULL,
@@ -54,10 +64,8 @@ class DatabaseV1 implements IMigration {
                             ${DatabaseManager.analysisTechniqueScoreLabel} INTEGER NOT NULL,
                             ${DatabaseManager.analysisAccuracyScoreLabel} INTEGER NOT NULL,
                             ${DatabaseManager.analysisSongLabel} INTEGER NOT NULL,
-                            ${DatabaseManager.analysisRecordLabel} INTEGER,
 
                             FOREIGN KEY (${DatabaseManager.analysisSongLabel}) REFERENCES ${DatabaseManager.songTableName}(${DatabaseManager.songIdLabel}) ON DELETE CASCADE,
-                            FOREIGN KEY (${DatabaseManager.analysisRecordLabel}) REFERENCES ${DatabaseManager.recordTableName}(${DatabaseManager.recordIdLabel}) ON DELETE SET NULL
                             );""");
   }
 }

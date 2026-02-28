@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/data/model/record.dart';
+import 'package:guitar_song_improvement/data/model/dtos/record_with_analysis.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/play_audio_screen.dart';
@@ -7,8 +7,8 @@ import 'package:guitar_song_improvement/ui/screens/song/records/widgets/progress
 import 'package:provider/provider.dart';
 
 class RecordCard extends StatelessWidget {
-  final Record record;
-  const RecordCard(this.record, {super.key});
+  final RecordWithAnalysis recordWithAnalysis;
+  const RecordCard(this.recordWithAnalysis, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class RecordCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        record.name,
+                        recordWithAnalysis.record.name,
                         style: Theme.of(context).textTheme.headlineSmall!
                             .copyWith(fontWeight: FontWeight.bold),
                       ),
@@ -56,7 +56,7 @@ class RecordCard extends StatelessWidget {
                                 ),
                                 WidgetSpan(child: SizedBox(width: 2)),
                                 TextSpan(
-                                  text: record.formatedDate,
+                                  text: recordWithAnalysis.record.formatedDate,
                                   style: Theme.of(context).textTheme.bodyMedium!
                                       .copyWith(
                                         color: Colors.white70,
@@ -107,7 +107,10 @@ class RecordCard extends StatelessWidget {
                   ),
                 ],
               ),
-              ProgressBar(progressValue: (record.score ?? 0) * 0.01),
+              ProgressBar(
+                progressValue:
+                    (recordWithAnalysis.analysis?.getFinalScore ?? 0) * 0.01,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -121,7 +124,7 @@ class RecordCard extends StatelessWidget {
                             listen: false,
                           ),
                           child: PlayAudioScreen(
-                            audioFilePath: record.audioPath,
+                            audioFilePath: recordWithAnalysis.record.audioPath,
                             isAudioSaved: true,
                           ),
                         ),
@@ -152,17 +155,17 @@ class RecordCard extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.fromLTRB(6, 2, 6, 2),
                     decoration: BoxDecoration(
-                      color: (record.score != null)
+                      color: (recordWithAnalysis.analysis != null)
                           ? Theme.of(context).colorScheme.primary.withAlpha(180)
                           : Colors.grey[800]!.withAlpha(100),
                       border: Border.all(
-                        color: (record.score != null)
+                        color: (recordWithAnalysis.analysis != null)
                             ? Theme.of(context).colorScheme.onPrimary
                             : Colors.grey,
                       ),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: (record.score != null)
+                    child: (recordWithAnalysis.analysis != null)
                         ? Text.rich(
                             TextSpan(
                               children: [
@@ -175,7 +178,10 @@ class RecordCard extends StatelessWidget {
                                 ),
                                 WidgetSpan(child: SizedBox(width: 2)),
                                 TextSpan(
-                                  text: record.score.toString(),
+                                  text: recordWithAnalysis
+                                      .analysis!
+                                      .getFinalScore
+                                      .toString(),
                                   style: Theme.of(context).textTheme.bodyMedium!
                                       .copyWith(
                                         color: Colors.white70,
