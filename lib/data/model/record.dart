@@ -37,6 +37,7 @@ class Record {
       DatabaseManager.recordNameLabel: name,
       DatabaseManager.recordAudioFilePathLabel: audioPath,
       DatabaseManager.recordDateCreationLabel: dateCreation.toString(),
+      DatabaseManager.recordSongLabel: songId,
     };
   }
 }

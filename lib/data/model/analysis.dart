@@ -46,7 +46,7 @@ class Analysis {
 
   Map<String, Object> toMap() {
     return {
-      DatabaseManager.analysisDateCreationLabel: dateCreation,
+      DatabaseManager.analysisDateCreationLabel: dateCreation.toString(),
       DatabaseManager.analysisPitchScoreLabel: pitchScore,
       DatabaseManager.analysisRhytmScoreLabel: rhytmScore,
       DatabaseManager.analysisDynamicsScoreLabel: dynamicsScore,

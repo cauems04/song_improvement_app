@@ -14,12 +14,13 @@ class AutoAnalysisViewModel extends ChangeNotifier {
     currentScoreType = ScoreType.values[0];
     scoreValues = {for (ScoreType type in ScoreType.values) type: 0};
     isLastPage = false;
-    recordLinked = recordLinked;
+    this.recordLinked = recordLinked;
   }
 
   void changePage(int value) {
     isLastPage = value == (ScoreType.values.length - 1);
     currentScoreType = ScoreType.values[value];
+    notifyListeners();
   }
 
   void selectScore(int value, ScoreType type) {

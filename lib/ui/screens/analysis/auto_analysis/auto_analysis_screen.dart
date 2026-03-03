@@ -30,33 +30,37 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
   }
 
   Future<void> submitScore() async {
-    final SelectedSongProvider selectedSongProvider =
-        Provider.of<SelectedSongProvider>(context, listen: false);
+    try {
+      final SelectedSongProvider selectedSongProvider =
+          Provider.of<SelectedSongProvider>(context, listen: false);
 
-    final MusicProvider musicProvider = Provider.of<MusicProvider>(
-      context,
-      listen: false,
-    );
+      final MusicProvider musicProvider = Provider.of<MusicProvider>(
+        context,
+        listen: false,
+      );
 
-    final navigator = Navigator.of(context);
+      final navigator = Navigator.of(context);
 
-    // await selectedSongProvider.updateScore(
-    //   autoAnalysisVM.finalScore,
-    //   widget.recordLinkedId,
-    // );
+      // await selectedSongProvider.updateScore(
+      //   autoAnalysisVM.finalScore,
+      //   widget.recordLinkedId,
+      // );
 
-    Analysis analysisCreated = await selectedSongProvider.addAnalysis(
-      autoAnalysisVM.scoreValues,
-    );
+      Analysis analysisCreated = await selectedSongProvider.addAnalysis(
+        autoAnalysisVM.scoreValues,
+      );
 
-    await musicProvider.getData();
+      await musicProvider.getData();
 
-    navigator.pushReplacement(
-      MaterialPageRoute(
-        builder: (context) =>
-            AnalysisResultScreen(analysisCreated.getFinalScore),
-      ),
-    );
+      navigator.pushReplacement(
+        MaterialPageRoute(
+          builder: (context) =>
+              AnalysisResultScreen(analysisCreated.getFinalScore),
+        ),
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override

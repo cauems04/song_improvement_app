@@ -177,7 +177,7 @@ class SongOverviewScreen extends StatelessWidget {
                                   Text(
                                     Provider.of<SelectedSongProvider>(
                                       context,
-                                    ).currentSong.timesPlayed.toString(),
+                                    ).getAnalysisCount.toString(),
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineLarge!
@@ -216,7 +216,7 @@ class SongOverviewScreen extends StatelessWidget {
                                   Text(
                                     (Provider.of<SelectedSongProvider>(
                                               context,
-                                            ).links?.length ??
+                                            ).records?.length ??
                                             0)
                                         .toString(),
                                     style: Theme.of(context)

@@ -43,21 +43,6 @@ class RecordDao {
         .toList();
 
     return records;
-
-    // List<Analysis> analyses = await AnalysisDao().analysesByMultipleRecord(
-    //   recordsFound
-    //       .map((record) => record[DatabaseManager.recordIdLabel] as int)
-    //       .toList(),
-    // );
-
-    // List<Record> records = [];
-    // for (Map<String, Object?> record in recordsFound) {
-    //   record["analysis"] = analyses.firstWhere(
-    //     (analysis) =>
-    //         analysis.recordId == record[DatabaseManager.recordIdLabel],
-    //   );
-    //   records.add(Record.fromDbJson(record));
-    // }
   }
 
   Future<void> delete(int recordId) async {

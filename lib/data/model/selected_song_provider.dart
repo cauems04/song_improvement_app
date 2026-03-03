@@ -15,6 +15,8 @@ class SelectedSongProvider extends ChangeNotifier {
   List<RecordWithAnalysis>? records;
   List<Analysis>? analysis;
 
+  int get getAnalysisCount => analysis?.length ?? 0;
+
   bool isInitialized = false;
 
   bool get isLoaded => (links != null && records != null && analysis != null);
@@ -41,6 +43,14 @@ class SelectedSongProvider extends ChangeNotifier {
 
     AnalysisDao analysisDao = AnalysisDao();
     analysis = await analysisDao.analysisBySong(currentSong.id!);
+
+    if (analysis != null || analysis!.isNotEmpty) {
+      for (var a in analysis!) {
+        print(a.id);
+      }
+    } else {
+      "No analyses!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+    }
 
     notifyListeners();
   }
@@ -109,7 +119,7 @@ class SelectedSongProvider extends ChangeNotifier {
       accuracyScore: scores[ScoreType.notation]!,
       songId: currentSong.id!,
     );
-    AnalysisDao().create(analysisToCreate);
+    await AnalysisDao().create(analysisToCreate);
 
     await getAnalysis();
 
