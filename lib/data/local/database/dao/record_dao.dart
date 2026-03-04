@@ -19,10 +19,7 @@ class RecordDao {
     Database database = await databaseManager.database;
     await database.update(
       DatabaseManager.recordTableName,
-      {
-        DatabaseManager.recordNameLabel: newRecord.name,
-        // DatabaseManager.recordScoreLabel: newRecord.score,
-      },
+      {DatabaseManager.recordNameLabel: newRecord.name},
       where: "${DatabaseManager.recordIdLabel} = ?",
       whereArgs: [oldRecordId],
     );
@@ -43,6 +40,17 @@ class RecordDao {
         .toList();
 
     return records;
+  }
+
+  Future<void> insertAnalysis(int recordId, int analysisId) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    await database.update(
+      DatabaseManager.recordTableName,
+      {DatabaseManager.recordAnalysisLabel: analysisId},
+      where: "${DatabaseManager.recordIdLabel} = ?",
+      whereArgs: [recordId],
+    );
   }
 
   Future<void> delete(int recordId) async {

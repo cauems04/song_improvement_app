@@ -3,6 +3,7 @@ import 'package:guitar_song_improvement/controller/link_controller.dart';
 import 'package:guitar_song_improvement/controller/record_controller.dart';
 import 'package:guitar_song_improvement/controller/song_controller.dart';
 import 'package:guitar_song_improvement/data/local/database/dao/analysis_dao.dart';
+import 'package:guitar_song_improvement/data/local/database/dao/record_dao.dart';
 import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/data/model/dtos/record_with_analysis.dart';
 import 'package:guitar_song_improvement/data/model/song.dart';
@@ -108,7 +109,10 @@ class SelectedSongProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Analysis> addAnalysis(Map<ScoreType, int> scores) async {
+  Future<Analysis> addAnalysis(
+    Map<ScoreType, int> scores,
+    int? recordId,
+  ) async {
     Analysis analysisToCreate = Analysis(
       dateCreation: DateTime.now(),
       // Fix DAOs for record, song, and analysis to guarantee they're passing and retrieving the right values
@@ -119,9 +123,19 @@ class SelectedSongProvider extends ChangeNotifier {
       accuracyScore: scores[ScoreType.notation]!,
       songId: currentSong.id!,
     );
-    await AnalysisDao().create(analysisToCreate);
+    final int analysisId = await AnalysisDao().create(analysisToCreate);
 
+    print("recordId: $recordId, analysisId: $analysisId");
+    if (recordId != null) {
+      await RecordDao().insertAnalysis(recordId, analysisId);
+    }
+
+    print("pre-records");
+    records!.forEach((rec) => print(rec.analysis));
     await getAnalysis();
+    await getRecords();
+    print("post-records");
+    records!.forEach((rec) => print(rec.analysis));
 
     notifyListeners();
 

@@ -5,10 +5,13 @@ import 'package:sqflite/sqflite.dart';
 class AnalysisDao {
   AnalysisDao();
 
-  Future<void> create(Analysis analysis) async {
+  Future<int> create(Analysis analysis) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
-    await database.insert(DatabaseManager.analysisTableName, analysis.toMap());
+    return await database.insert(
+      DatabaseManager.analysisTableName,
+      analysis.toMap(),
+    );
   }
 
   Future<List<Analysis>> analysisBySong(int songId) async {

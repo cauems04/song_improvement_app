@@ -48,6 +48,7 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
 
       Analysis analysisCreated = await selectedSongProvider.addAnalysis(
         autoAnalysisVM.scoreValues,
+        widget.recordLinkedId,
       );
 
       await musicProvider.getData();
