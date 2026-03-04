@@ -19,7 +19,7 @@ class SongLinksScreen extends StatelessWidget {
           slivers: [
             if (Provider.of<SelectedSongProvider>(context).links != null &&
                 Provider.of<SelectedSongProvider>(context).links!.isNotEmpty)
-              Listappbar(listType: SongListTypes.links),
+              ListAppbar(listType: SongListTypes.links),
             Consumer<SelectedSongProvider>(
               builder: (context, data, child) {
                 if (!data.isLoaded) {

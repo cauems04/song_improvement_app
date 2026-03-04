@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 
 enum SongListTypes { links, recordings }
 
-class Listappbar extends StatelessWidget {
+class ListAppbar extends StatelessWidget {
   final SongListTypes listType;
-  const Listappbar({super.key, required this.listType});
+  const ListAppbar({super.key, required this.listType});
 
   @override
   Widget build(BuildContext context) {

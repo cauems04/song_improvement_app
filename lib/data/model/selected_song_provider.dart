@@ -125,17 +125,17 @@ class SelectedSongProvider extends ChangeNotifier {
     );
     final int analysisId = await AnalysisDao().create(analysisToCreate);
 
-    print("recordId: $recordId, analysisId: $analysisId");
+    // print("recordId: $recordId, analysisId: $analysisId");
+    await getAnalysis();
     if (recordId != null) {
       await RecordDao().insertAnalysis(recordId, analysisId);
+      await getRecords();
     }
 
-    print("pre-records");
-    records!.forEach((rec) => print(rec.analysis));
-    await getAnalysis();
-    await getRecords();
-    print("post-records");
-    records!.forEach((rec) => print(rec.analysis));
+    // print("pre-records");
+    // records!.forEach((rec) => print(rec.analysis));
+    // print("post-records");
+    // records!.forEach((rec) => print(rec.analysis));
 
     notifyListeners();
 

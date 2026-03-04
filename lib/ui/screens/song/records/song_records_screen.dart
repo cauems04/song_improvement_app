@@ -33,7 +33,7 @@ class SongRecordsScreen extends StatelessWidget {
                   Provider.of<SelectedSongProvider>(
                     context,
                   ).records!.isNotEmpty)
-                Listappbar(listType: SongListTypes.recordings),
+                ListAppbar(listType: SongListTypes.recordings),
               Consumer<SelectedSongProvider>(
                 builder: (context, data, child) {
                   if (!data.isLoaded) {

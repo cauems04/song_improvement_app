@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/data/services/score_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/info_card.dart';
 import 'package:guitar_song_improvement/ui/widgets/progress_graph.dart';
@@ -45,35 +44,32 @@ class SongOverviewScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                           vertical: Spacing.sm,
                         ),
-                        child: Hero(
-                          tag: "song-artist",
-                          child: Material(
-                            color: Colors.transparent,
-                            child: Text.rich(
-                              TextSpan(
-                                children: [
-                                  WidgetSpan(
-                                    alignment: PlaceholderAlignment.middle,
-                                    child: Icon(
-                                      Icons.person,
-                                      size: 18,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.surfaceContainerHigh,
-                                    ),
-                                  ),
-                                  const WidgetSpan(child: SizedBox(width: 4)),
-                                  TextSpan(text: data.currentSong.artist),
-                                ],
-                              ),
-                              style: Theme.of(context).textTheme.titleLarge!
-                                  .copyWith(
-                                    fontWeight: FontWeight.w400,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                WidgetSpan(
+                                  alignment: PlaceholderAlignment.middle,
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 18,
                                     color: Theme.of(
                                       context,
                                     ).colorScheme.surfaceContainerHigh,
                                   ),
+                                ),
+                                const WidgetSpan(child: SizedBox(width: 4)),
+                                TextSpan(text: data.currentSong.artist),
+                              ],
                             ),
+                            style: Theme.of(context).textTheme.titleLarge!
+                                .copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHigh,
+                                ),
                           ),
                         ),
                       ),

@@ -28,12 +28,17 @@ class _SongScreenState extends State<SongScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<SelectedSongProvider>(context, listen: false).setup();
-    songVM = SongViewmodel(
-      SongController(),
-      AlbumController(),
-      ArtistController(),
-    );
+    try {
+      Provider.of<SelectedSongProvider>(context, listen: false).setup();
+      songVM = SongViewmodel(
+        SongController(),
+        AlbumController(),
+        ArtistController(),
+      );
+      songVM.initValues();
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -172,14 +177,28 @@ class _SongScreenState extends State<SongScreen> {
                       bottom: Spacing.md,
                     ),
                     child: TopNavigationBar(songVM.currentPage.value, (page) {
-                      songVM.currentPage.value = page;
+                      songVM.pageController.animateToPage(
+                        page,
+                        duration: Duration(milliseconds: 600),
+                        curve: Curves.ease,
+                      );
                     }),
                   ),
                 ),
-                // PageView(children: [ ],),
-                if (songVM.currentPage.value == 0) SongLinksScreen(),
-                if (songVM.currentPage.value == 1) SongOverviewScreen(),
-                if (songVM.currentPage.value == 2) SongRecordsScreen(),
+                Expanded(
+                  child: PageView(
+                    controller: songVM.pageController,
+                    onPageChanged: (page) => songVM.currentPage.value = page,
+                    children: [
+                      SongLinksScreen(),
+                      SongOverviewScreen(),
+                      SongRecordsScreen(),
+                    ],
+                  ),
+                ),
+                // if (songVM.currentPage.value == 0) SongLinksScreen(),
+                // if (songVM.currentPage.value == 1) SongOverviewScreen(),
+                // if (songVM.currentPage.value == 2) SongRecordsScreen(),
               ],
             ),
           ),

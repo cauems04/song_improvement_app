@@ -11,7 +11,9 @@ class SongViewmodel {
   final AlbumController _albumController;
   final ArtistController _artistController;
 
-  final ValueNotifier<int> _currentPage = ValueNotifier(1);
+  late final PageController pageController;
+
+  late final ValueNotifier<int> _currentPage;
 
   ValueNotifier<int> get currentPage => _currentPage;
   set setCurrentPage(int pageNumber) {
@@ -23,6 +25,11 @@ class SongViewmodel {
     this._albumController,
     this._artistController,
   );
+
+  void initValues() {
+    _currentPage = ValueNotifier(1);
+    pageController = PageController(initialPage: _currentPage.value);
+  }
 
   void deleteCurrentSong(Song song) async {
     await _songController.delete(song);
