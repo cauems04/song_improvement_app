@@ -14,24 +14,41 @@ class SelectedSongProvider extends ChangeNotifier {
   Song currentSong;
   List<Link>? links;
   List<RecordWithAnalysis>? records;
-  List<Analysis>? analysis;
+  List<Analysis>? _analysis;
 
-  int get getAnalysisCount => analysis?.length ?? 0;
+  int analysisCount = 0;
+  List<Analysis>? recentAnalyses;
+  List<Analysis>?
+  previousAnalyses; //Show message on UI filters for when there's no enough previousAnalyses (to present the trend values / filters)
 
   bool isInitialized = false;
 
-  bool get isLoaded => (links != null && records != null && analysis != null);
+  bool get isLoaded => (links != null && records != null && _analysis != null);
 
   Analysis? get getLastAnalysis {
-    if (analysis == null || analysis!.isEmpty) return null;
+    if (_analysis == null || _analysis!.isEmpty) return null;
 
-    return analysis!.reduce(
+    return _analysis!.reduce(
       (current, next) =>
           current.dateCreation.isAfter(next.dateCreation) ? current : next,
     );
   }
 
   SelectedSongProvider(this.currentSong);
+
+  void setRecentAndPreviousAnalyses() {
+    if (_analysis == null) {
+      recentAnalyses = null;
+      previousAnalyses = null;
+      return;
+    }
+
+    List<Analysis> sortedAnalyses = [..._analysis!];
+    sortedAnalyses.sort((a, b) => b.dateCreation.compareTo(a.dateCreation));
+
+    recentAnalyses = sortedAnalyses.take(5).toList();
+    previousAnalyses = sortedAnalyses.skip(5).take(5).toList();
+  }
 
   Future<void> setup() async {
     isInitialized = true;
@@ -43,10 +60,11 @@ class SelectedSongProvider extends ChangeNotifier {
     records = await recordController.recordsBySong(currentSong.id!);
 
     AnalysisDao analysisDao = AnalysisDao();
-    analysis = await analysisDao.analysisBySong(currentSong.id!);
+    _analysis = await analysisDao.lastAnalysesBySong(currentSong.id!);
+    analysisCount = await analysisDao.analysisCount(currentSong.id!);
 
-    if (analysis != null || analysis!.isNotEmpty) {
-      for (var a in analysis!) {
+    if (_analysis != null || _analysis!.isNotEmpty) {
+      for (var a in _analysis!) {
         print(a.id);
       }
     } else {
@@ -82,7 +100,8 @@ class SelectedSongProvider extends ChangeNotifier {
 
   Future<void> getAnalysis() async {
     AnalysisDao analysisDao = AnalysisDao();
-    analysis = await analysisDao.analysisBySong(currentSong.id!);
+    _analysis = await analysisDao.lastAnalysesBySong(currentSong.id!);
+    analysisCount = await analysisDao.analysisCount(currentSong.id!);
 
     notifyListeners();
   }

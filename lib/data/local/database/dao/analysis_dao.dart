@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/data/local/database/database_manager.dart';
 import 'package:sqflite/sqflite.dart';
@@ -14,7 +16,19 @@ class AnalysisDao {
     );
   }
 
-  Future<List<Analysis>> analysisBySong(int songId) async {
+  Future<int> analysisCount(int songId) async {
+    DatabaseManager databaseManager = DatabaseManager.databaseManager;
+    Database database = await databaseManager.database;
+    return Sqflite.firstIntValue(
+          await database.rawQuery(
+            "SELECT COUNT(*) FROM ${DatabaseManager.analysisTableName} WHERE ${DatabaseManager.analysisSongLabel} = ?",
+            [songId],
+          ),
+        ) ??
+        0;
+  }
+
+  Future<List<Analysis>> lastAnalysesBySong(int songId) async {
     DatabaseManager databaseManager = DatabaseManager.databaseManager;
     Database database = await databaseManager.database;
 
@@ -22,6 +36,8 @@ class AnalysisDao {
       DatabaseManager.analysisTableName,
       where: "${DatabaseManager.analysisSongLabel} = ?",
       whereArgs: [songId],
+      orderBy: "${DatabaseManager.analysisDateCreationLabel} DESC",
+      limit: 10,
     );
 
     if (analysisFound.isEmpty) return [];
