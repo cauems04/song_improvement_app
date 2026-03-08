@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/date_played_card.dart';
 import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/info_card.dart';
+import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/overall_card.dart';
+import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/session_title.dart';
 import 'package:guitar_song_improvement/ui/widgets/progress_graph.dart';
 import 'package:provider/provider.dart';
 
@@ -173,7 +176,7 @@ class SongOverviewScreen extends StatelessWidget {
                                   Text(
                                     Provider.of<SelectedSongProvider>(
                                       context,
-                                    ).getAnalysisCount.toString(),
+                                    ).analysisCount.toString(),
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineLarge!
@@ -238,6 +241,33 @@ class SongOverviewScreen extends StatelessWidget {
                           ),
                         ],
                       ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: Spacing.lg,
+                        ),
+                        child:
+                            (Provider.of<SelectedSongProvider>(
+                                      context,
+                                      listen: false,
+                                    ).recentAnalyses !=
+                                    null &&
+                                Provider.of<SelectedSongProvider>(
+                                  context,
+                                  listen: false,
+                                ).recentAnalyses!.isNotEmpty)
+                            ? DatePlayedCard(
+                                dateCreation: Provider.of<SelectedSongProvider>(
+                                  context,
+                                ).getLastAnalysis!.dateCreation,
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                      SessionTitle(
+                        icon: Icons.bar_chart,
+                        title: "Overall Performance",
+                      ),
+                      OverallCard(),
+                      SizedBox(height: 100),
                     ],
                   );
                 },

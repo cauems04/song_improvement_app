@@ -243,7 +243,7 @@ class OptionsSection extends StatelessWidget {
         }
         break;
       case ProcessingState.completed:
-        icon = Icon(Icons.restart_alt, size: 40);
+        icon = Icon(Icons.replay, size: 40);
         break;
       default:
         break;

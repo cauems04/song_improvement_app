@@ -153,7 +153,7 @@ class RecordCard extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(6, 2, 6, 2),
+                    padding: EdgeInsets.symmetric(vertical: 2, horizontal: 6),
                     decoration: BoxDecoration(
                       color: (recordWithAnalysis.analysis != null)
                           ? Theme.of(context).colorScheme.primary.withAlpha(180)

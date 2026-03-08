@@ -9,26 +9,45 @@ import 'package:guitar_song_improvement/data/model/dtos/record_with_analysis.dar
 import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/data/model/link.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
+import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/trend_indicator.dart';
 
 class SelectedSongProvider extends ChangeNotifier {
   Song currentSong;
   List<Link>? links;
   List<RecordWithAnalysis>? records;
-  List<Analysis>? _analysis;
+  // List<Analysis>? _analysis;
 
   int analysisCount = 0;
   List<Analysis>? recentAnalyses;
   List<Analysis>?
   previousAnalyses; //Show message on UI filters for when there's no enough previousAnalyses (to present the trend values / filters)
+  int? recentAnalysesMean;
+  int? previousAnalysesMean;
+
+  Trend get trend {
+    if (recentAnalysesMean == null || previousAnalysesMean == null) {
+      return Trend.flat;
+    }
+
+    if (recentAnalysesMean! > previousAnalysesMean!) {
+      return Trend.up;
+    } else if (recentAnalysesMean! < previousAnalysesMean!) {
+      return Trend.down;
+    } else {
+      return Trend.flat;
+    }
+  }
 
   bool isInitialized = false;
 
-  bool get isLoaded => (links != null && records != null && _analysis != null);
+  bool get isLoaded =>
+      (links != null && records != null && recentAnalyses != null);
 
   Analysis? get getLastAnalysis {
-    if (_analysis == null || _analysis!.isEmpty) return null;
+    if (recentAnalyses == null || recentAnalyses!.isEmpty) return null;
 
-    return _analysis!.reduce(
+    return recentAnalyses!.reduce(
+      // check if really necessary for waranty, cause recent analyses will be filled with already sorted data.
       (current, next) =>
           current.dateCreation.isAfter(next.dateCreation) ? current : next,
     );
@@ -36,18 +55,27 @@ class SelectedSongProvider extends ChangeNotifier {
 
   SelectedSongProvider(this.currentSong);
 
-  void setRecentAndPreviousAnalyses() {
-    if (_analysis == null) {
-      recentAnalyses = null;
-      previousAnalyses = null;
-      return;
-    }
+  Future<void> setRecentAndPreviousAnalyses() async {
+    List<Analysis> sortedAnalyses = (await AnalysisDao().lastAnalysesBySong(
+      currentSong.id!,
+    ));
 
-    List<Analysis> sortedAnalyses = [..._analysis!];
     sortedAnalyses.sort((a, b) => b.dateCreation.compareTo(a.dateCreation));
 
     recentAnalyses = sortedAnalyses.take(5).toList();
     previousAnalyses = sortedAnalyses.skip(5).take(5).toList();
+
+    //mean
+    recentAnalysesMean = (recentAnalyses == null || recentAnalyses!.isEmpty)
+        ? 0
+        : recentAnalyses!.fold(0, (sum, a) => sum + a.getFinalScore) ~/
+              recentAnalyses!.length;
+
+    previousAnalysesMean =
+        (previousAnalyses == null || previousAnalyses!.isEmpty)
+        ? 0
+        : previousAnalyses!.fold(0, (sum, a) => sum + a.getFinalScore) ~/
+              previousAnalyses!.length;
   }
 
   Future<void> setup() async {
@@ -59,12 +87,11 @@ class SelectedSongProvider extends ChangeNotifier {
     RecordController recordController = RecordController();
     records = await recordController.recordsBySong(currentSong.id!);
 
-    AnalysisDao analysisDao = AnalysisDao();
-    _analysis = await analysisDao.lastAnalysesBySong(currentSong.id!);
-    analysisCount = await analysisDao.analysisCount(currentSong.id!);
+    await setRecentAndPreviousAnalyses();
+    analysisCount = await AnalysisDao().analysisCount(currentSong.id!);
 
-    if (_analysis != null || _analysis!.isNotEmpty) {
-      for (var a in _analysis!) {
+    if (recentAnalyses != null || recentAnalyses!.isNotEmpty) {
+      for (var a in recentAnalyses!) {
         print(a.id);
       }
     } else {
@@ -99,9 +126,8 @@ class SelectedSongProvider extends ChangeNotifier {
   }
 
   Future<void> getAnalysis() async {
-    AnalysisDao analysisDao = AnalysisDao();
-    _analysis = await analysisDao.lastAnalysesBySong(currentSong.id!);
-    analysisCount = await analysisDao.analysisCount(currentSong.id!);
+    await setRecentAndPreviousAnalyses();
+    analysisCount = await AnalysisDao().analysisCount(currentSong.id!);
 
     notifyListeners();
   }
