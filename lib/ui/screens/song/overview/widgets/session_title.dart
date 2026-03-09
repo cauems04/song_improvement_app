@@ -10,7 +10,7 @@ class SessionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.xs),
+      padding: const EdgeInsets.only(bottom: Spacing.xs, left: Spacing.xs),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [

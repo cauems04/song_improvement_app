@@ -4,9 +4,8 @@ enum Trend { up, down, flat }
 
 class TrendIndicator extends StatelessWidget {
   final Trend trend;
-  final int score;
   late Color color;
-  TrendIndicator({super.key, required this.trend, required this.score}) {
+  TrendIndicator({super.key, required this.trend}) {
     color = switch (trend) {
       Trend.up => Colors.greenAccent,
       Trend.down => Colors.redAccent,

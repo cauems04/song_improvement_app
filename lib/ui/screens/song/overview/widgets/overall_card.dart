@@ -12,9 +12,19 @@ class OverallCard extends StatelessWidget {
     return Container(
       height: 150,
       decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.surfaceContainerLowest.withAlpha(100),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Theme.of(context).colorScheme.surfaceContainerLowest.withAlpha(100),
+            Theme.of(context).colorScheme.surfaceContainerLowest.withAlpha(100),
+            switch (Provider.of<SelectedSongProvider>(context).trend) {
+              Trend.up => Colors.greenAccent.withAlpha(180),
+              Trend.down => Colors.redAccent.withAlpha(180),
+              Trend.flat => Colors.blueAccent.withAlpha(180),
+            },
+          ],
+        ),
         border: Border.all(
           color: Theme.of(context).colorScheme.surfaceContainerLow,
         ),
@@ -54,7 +64,6 @@ class OverallCard extends StatelessWidget {
                 ),
                 TrendIndicator(
                   trend: Provider.of<SelectedSongProvider>(context).trend,
-                  score: 80,
                 ),
               ],
             ),
