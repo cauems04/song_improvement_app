@@ -19,8 +19,9 @@ class SelectedSongProvider extends ChangeNotifier {
 
   int analysisCount = 0;
   List<Analysis>? recentAnalyses;
-  List<Analysis>?
-  previousAnalyses; //Show message on UI filters for when there's no enough previousAnalyses (to present the trend values / filters)
+  List<Analysis>? previousAnalyses;
+  //Show message on UI filters for when there's no enough previousAnalyses (to present the trend values / filters)
+
   int? recentAnalysesMean;
   int? previousAnalysesMean;
 

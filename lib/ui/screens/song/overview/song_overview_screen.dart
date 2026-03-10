@@ -5,6 +5,8 @@ import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/date_pl
 import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/info_card.dart';
 import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/overall_card.dart';
 import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/session_title.dart';
+import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/skill_progress_bar.dart';
+import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/trend_indicator.dart';
 import 'package:guitar_song_improvement/ui/widgets/progress_graph.dart';
 import 'package:provider/provider.dart';
 
@@ -266,7 +268,44 @@ class SongOverviewScreen extends StatelessWidget {
                         icon: Icons.bar_chart,
                         title: "Overall Performance",
                       ),
-                      OverallCard(),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: Spacing.lg),
+                        child: OverallCard(),
+                      ),
+                      SessionTitle(
+                        icon: Icons.keyboard_double_arrow_up,
+                        title: "Skills Breakdown",
+                      ),
+                      Column(
+                        spacing: Spacing.xs,
+                        children: [
+                          SkillProgressBar(
+                            title: "Pitch",
+                            trend: Trend.up,
+                            scoreValue: 100,
+                          ),
+                          SkillProgressBar(
+                            title: "Rhytm",
+                            trend: Trend.flat,
+                            scoreValue: 60,
+                          ),
+                          SkillProgressBar(
+                            title: "Pitch",
+                            trend: Trend.up,
+                            scoreValue: 80,
+                          ),
+                          SkillProgressBar(
+                            title: "Pitch",
+                            trend: Trend.down,
+                            scoreValue: 20,
+                          ),
+                          SkillProgressBar(
+                            title: "Pitch",
+                            trend: Trend.down,
+                            scoreValue: 40,
+                          ),
+                        ],
+                      ),
                       SizedBox(height: 100),
                     ],
                   );
