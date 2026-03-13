@@ -6,6 +6,7 @@ import 'package:guitar_song_improvement/data/local/database/dao/analysis_dao.dar
 import 'package:guitar_song_improvement/data/local/database/dao/record_dao.dart';
 import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/data/model/dtos/record_with_analysis.dart';
+import 'package:guitar_song_improvement/data/model/metrics/analysis_metrics_mean.dart';
 import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/data/model/link.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
@@ -24,6 +25,7 @@ class SelectedSongProvider extends ChangeNotifier {
 
   int? recentAnalysesMean;
   int? previousAnalysesMean;
+  final AnalysisMetricsMean analysisMetricsMean = AnalysisMetricsMean();
 
   Trend get trend {
     if (recentAnalysesMean == null || previousAnalysesMean == null) {
@@ -77,6 +79,8 @@ class SelectedSongProvider extends ChangeNotifier {
         ? 0
         : previousAnalyses!.fold(0, (sum, a) => sum + a.getFinalScore) ~/
               previousAnalyses!.length;
+
+    analysisMetricsMean.CalculateMetrics(recentAnalyses!, previousAnalyses!);
   }
 
   Future<void> setup() async {

@@ -15,302 +15,319 @@ class SongOverviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.onSurface,
-              Theme.of(context).colorScheme.surface,
-            ],
-            begin: AlignmentGeometry.topLeft,
-            end: AlignmentGeometry.bottomRight,
-          ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.onSurface,
+            Theme.of(context).colorScheme.surface,
+          ],
+          begin: AlignmentGeometry.topLeft,
+          end: AlignmentGeometry.bottomRight,
         ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
-          child: SingleChildScrollView(
-            child: Center(
-              child: Consumer<SelectedSongProvider>(
-                builder: (context, data, child) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        data.currentSong.name,
-                        style: Theme.of(context).textTheme.headlineLarge!
-                            .copyWith(
-                              fontSize: 30,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: Spacing.sm,
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          child: Text.rich(
-                            TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 18,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHigh,
-                                  ),
-                                ),
-                                const WidgetSpan(child: SizedBox(width: 4)),
-                                TextSpan(text: data.currentSong.artist),
-                              ],
-                            ),
-                            style: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(
-                                  fontWeight: FontWeight.w400,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Consumer<SelectedSongProvider>(
+              builder: (context, data, child) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      data.currentSong.name,
+                      style: Theme.of(context).textTheme.headlineLarge!
+                          .copyWith(fontSize: 30, fontWeight: FontWeight.w600),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: Spacing.sm),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: Icon(
+                                  Icons.person,
+                                  size: 18,
                                   color: Theme.of(
                                     context,
                                   ).colorScheme.surfaceContainerHigh,
                                 ),
+                              ),
+                              const WidgetSpan(child: SizedBox(width: 4)),
+                              TextSpan(text: data.currentSong.artist),
+                            ],
                           ),
-                        ),
-                      ),
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.middle,
-                              child: Icon(
-                                Icons.library_music,
-                                size: 18,
+                          style: Theme.of(context).textTheme.titleLarge!
+                              .copyWith(
+                                fontWeight: FontWeight.w400,
                                 color: Theme.of(
                                   context,
-                                ).colorScheme.surfaceContainer,
+                                ).colorScheme.surfaceContainerHigh,
                               ),
-                            ),
-                            const WidgetSpan(child: SizedBox(width: 4)),
-                            TextSpan(text: data.currentSong.album),
-                          ],
-                        ),
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.w400,
-                          color: Theme.of(context).colorScheme.surfaceContainer,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: Spacing.xxl,
-                          bottom: Spacing.xxxl,
-                        ),
-                        child: SizedBox(
-                          height: 90,
-                          child: ProgressGraph(
-                            (Provider.of<SelectedSongProvider>(
-                                      context,
-                                      listen: false,
-                                    ).getLastAnalysis?.getFinalScore ??
-                                    0) /
-                                100,
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                    Text.rich(
+                      TextSpan(
                         children: [
-                          InfoCard(
-                            child: SizedBox(
-                              width: 100,
-                              height: 90,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(
-                                    Icons.link,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimary,
-                                  ),
-                                  Text(
-                                    (Provider.of<SelectedSongProvider>(
-                                              context,
-                                            ).links?.length ??
-                                            0)
-                                        .toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineLarge!
-                                        .copyWith(fontSize: 22),
-                                  ),
-                                  Text(
-                                    "Links",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.surfaceContainer,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                  ),
-                                ],
-                              ),
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Icon(
+                              Icons.library_music,
+                              size: 18,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.surfaceContainer,
                             ),
                           ),
-                          InfoCard(
-                            child: SizedBox(
-                              width: 100,
-                              height: 90,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(
-                                    Icons.play_arrow_outlined,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimary,
-                                  ),
-                                  Text(
-                                    Provider.of<SelectedSongProvider>(
-                                      context,
-                                    ).analysisCount.toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineLarge!
-                                        .copyWith(fontSize: 22),
-                                  ),
-                                  Text(
-                                    "Times Played",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.surfaceContainer,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          InfoCard(
-                            child: SizedBox(
-                              width: 100,
-                              height: 90,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Icon(
-                                    Icons.mic_none_rounded,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimary,
-                                  ),
-                                  Text(
-                                    (Provider.of<SelectedSongProvider>(
-                                              context,
-                                            ).records?.length ??
-                                            0)
-                                        .toString(),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineLarge!
-                                        .copyWith(fontSize: 22),
-                                  ),
-                                  Text(
-                                    "Recordings",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodySmall!
-                                        .copyWith(
-                                          color: Theme.of(
-                                            context,
-                                          ).colorScheme.surfaceContainer,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          const WidgetSpan(child: SizedBox(width: 4)),
+                          TextSpan(text: data.currentSong.album),
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: Spacing.lg,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: Spacing.xxl,
+                        bottom: Spacing.xxxl,
+                      ),
+                      child: SizedBox(
+                        height: 90,
+                        child: ProgressGraph(
+                          (Provider.of<SelectedSongProvider>(
+                                    context,
+                                    listen: false,
+                                  ).getLastAnalysis?.getFinalScore ??
+                                  0) /
+                              100,
                         ),
-                        child:
-                            (Provider.of<SelectedSongProvider>(
-                                      context,
-                                      listen: false,
-                                    ).recentAnalyses !=
-                                    null &&
-                                Provider.of<SelectedSongProvider>(
-                                  context,
-                                  listen: false,
-                                ).recentAnalyses!.isNotEmpty)
-                            ? DatePlayedCard(
-                                dateCreation: Provider.of<SelectedSongProvider>(
-                                  context,
-                                ).getLastAnalysis!.dateCreation,
-                              )
-                            : const SizedBox.shrink(),
                       ),
-                      SessionTitle(
-                        icon: Icons.bar_chart,
-                        title: "Overall Performance",
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: Spacing.lg),
-                        child: OverallCard(),
-                      ),
-                      SessionTitle(
-                        icon: Icons.keyboard_double_arrow_up,
-                        title: "Skills Breakdown",
-                      ),
-                      Column(
-                        spacing: Spacing.xs,
-                        children: [
-                          SkillProgressBar(
-                            title: "Pitch",
-                            trend: Trend.up,
-                            scoreValue: 100,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        InfoCard(
+                          child: SizedBox(
+                            width: 100,
+                            height: 90,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(
+                                  Icons.link,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                ),
+                                Text(
+                                  (Provider.of<SelectedSongProvider>(
+                                            context,
+                                          ).links?.length ??
+                                          0)
+                                      .toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineLarge!
+                                      .copyWith(fontSize: 22),
+                                ),
+                                Text(
+                                  "Links",
+                                  style: Theme.of(context).textTheme.bodySmall!
+                                      .copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.surfaceContainer,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
-                          SkillProgressBar(
-                            title: "Rhytm",
-                            trend: Trend.flat,
-                            scoreValue: 60,
+                        ),
+                        InfoCard(
+                          child: SizedBox(
+                            width: 100,
+                            height: 90,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(
+                                  Icons.play_arrow_outlined,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                ),
+                                Text(
+                                  Provider.of<SelectedSongProvider>(
+                                    context,
+                                  ).analysisCount.toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineLarge!
+                                      .copyWith(fontSize: 22),
+                                ),
+                                Text(
+                                  "Times Played",
+                                  style: Theme.of(context).textTheme.bodySmall!
+                                      .copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.surfaceContainer,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
-                          SkillProgressBar(
-                            title: "Pitch",
-                            trend: Trend.up,
-                            scoreValue: 80,
+                        ),
+                        InfoCard(
+                          child: SizedBox(
+                            width: 100,
+                            height: 90,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(
+                                  Icons.mic_none_rounded,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                ),
+                                Text(
+                                  (Provider.of<SelectedSongProvider>(
+                                            context,
+                                          ).records?.length ??
+                                          0)
+                                      .toString(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineLarge!
+                                      .copyWith(fontSize: 22),
+                                ),
+                                Text(
+                                  "Recordings",
+                                  style: Theme.of(context).textTheme.bodySmall!
+                                      .copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.surfaceContainer,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                              ],
+                            ),
                           ),
-                          SkillProgressBar(
-                            title: "Pitch",
-                            trend: Trend.down,
-                            scoreValue: 20,
-                          ),
-                          SkillProgressBar(
-                            title: "Pitch",
-                            trend: Trend.down,
-                            scoreValue: 40,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 100),
-                    ],
-                  );
-                },
-              ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: Spacing.lg),
+                      child:
+                          (Provider.of<SelectedSongProvider>(
+                                    context,
+                                    listen: false,
+                                  ).recentAnalyses !=
+                                  null &&
+                              Provider.of<SelectedSongProvider>(
+                                context,
+                                listen: false,
+                              ).recentAnalyses!.isNotEmpty)
+                          ? DatePlayedCard(
+                              dateCreation: Provider.of<SelectedSongProvider>(
+                                context,
+                              ).getLastAnalysis!.dateCreation,
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                    SessionTitle(
+                      icon: Icons.bar_chart,
+                      title: "Overall Performance",
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: Spacing.lg),
+                      child: OverallCard(),
+                    ),
+                    SessionTitle(
+                      icon: Icons.keyboard_double_arrow_up,
+                      title: "Skills Breakdown",
+                    ),
+                    Column(
+                      spacing: Spacing.xs,
+                      children: [
+                        SkillProgressBar(
+                          title: "Pitch",
+                          trend: Trend.up,
+                          scoreValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.recentPitchMean,
+                          previousValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.previousPitchMean,
+                        ),
+                        SkillProgressBar(
+                          title: "Rhytm",
+                          trend: Trend.flat,
+                          scoreValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.recentRythmMean,
+                          previousValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.previousRythmMean,
+                        ),
+                        SkillProgressBar(
+                          title: "Dynamics",
+                          trend: Trend.up,
+                          scoreValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.recentDynamicsMean,
+                          previousValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.previousDynamicsMean,
+                        ),
+                        SkillProgressBar(
+                          title: "Technique",
+                          trend: Trend.down,
+                          scoreValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.recentTechniqueMean,
+                          previousValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.previousTechniqueMean,
+                        ),
+                        SkillProgressBar(
+                          title: "Accuracy",
+                          trend: Trend.down,
+                          scoreValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.recentAccuracyMean,
+                          previousValueMean: Provider.of<SelectedSongProvider>(
+                            context,
+                            listen: false,
+                          ).analysisMetricsMean.previousAccuracyMean,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 100),
+                  ],
+                );
+              },
             ),
           ),
         ),

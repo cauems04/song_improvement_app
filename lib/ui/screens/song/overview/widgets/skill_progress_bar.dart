@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/song/overview/widgets/trend_indicator.dart';
-import 'package:provider/provider.dart';
 
 class SkillProgressBar extends StatelessWidget {
   final String title;
-  final int scoreValue;
+  final double scoreValueMean;
+  final double previousValueMean;
   final Trend trend;
 
   const SkillProgressBar({
     super.key,
     required this.title,
     required this.trend,
-    required this.scoreValue,
+    required this.scoreValueMean,
+    required this.previousValueMean,
   });
+
+  String formatScore(double value) {
+    return value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +65,7 @@ class SkillProgressBar extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text:
-                            "${Provider.of<SelectedSongProvider>(context, listen: false).recentAnalysesMean}%",
+                        text: "${formatScore(scoreValueMean)} / 5",
                         style: Theme.of(
                           context,
                         ).textTheme.headlineLarge!.copyWith(fontSize: 16),
@@ -78,8 +81,7 @@ class SkillProgressBar extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text:
-                            "${Provider.of<SelectedSongProvider>(context, listen: false).previousAnalysesMean}%",
+                        text: formatScore(previousValueMean),
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           color: Colors.white54,
                           fontSize: 12,
@@ -92,7 +94,7 @@ class SkillProgressBar extends StatelessWidget {
             ),
           ),
           LinearProgressIndicator(
-            value: scoreValue.toDouble() / 100,
+            value: scoreValueMean.toDouble() / 5,
             color: Theme.of(context).colorScheme.onPrimary,
             borderRadius: BorderRadius.circular(10),
             minHeight: 12,
