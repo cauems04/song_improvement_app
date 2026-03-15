@@ -12,8 +12,11 @@ class RecordAudioViewmodel extends ChangeNotifier {
   late int secondsToStart;
   late void Function() a;
 
-  late Timer timer;
+  Timer? timer;
   late ValueNotifier<int> countdownNumber;
+
+  Timer? recordingTimer;
+  late ValueNotifier<int> recordingSeconds;
 
   String? _audioFilePath;
 
@@ -23,19 +26,17 @@ class RecordAudioViewmodel extends ChangeNotifier {
     recordState = ValueNotifier(RecordState.idle);
     secondsToStart = 2; // Implement with caching later
     _recorder = AudioRecorder();
-  }
-
-  void initTimer() {
     countdownNumber = ValueNotifier(secondsToStart);
-    timer = startTimer();
+    recordingSeconds = ValueNotifier(0);
   }
 
   void startCountdown() {
-    print(".\n.\n.\n.\ncounting....\n.\n.\n.\n");
+    countdownNumber.value = secondsToStart;
     recordState.value = RecordState.countdown;
+    timer = startTimer();
   }
 
-  Future<void> startRecording() async {
+  Future<void> _startRecording() async {
     Directory tempAudioDirectory = await getTemporaryDirectory();
 
     tempAudioDirectory = Directory("${tempAudioDirectory.path}/tempAudioDir");
@@ -48,6 +49,13 @@ class RecordAudioViewmodel extends ChangeNotifier {
     final String filePath = '${tempAudioDirectory.path}/$fileName';
 
     _recorder.start(const RecordConfig(), path: filePath);
+
+    recordingTimer?.cancel();
+    recordingSeconds.value = 0;
+    recordingTimer = Timer.periodic(
+      Duration(seconds: 1),
+      (timer) => recordingSeconds.value++,
+    );
 
     _audioFilePath = filePath;
     recordState.value = RecordState.recording;
@@ -74,12 +82,8 @@ class RecordAudioViewmodel extends ChangeNotifier {
   }
 
   // Probably using it outside the PlayButton, with another button, no need to pass via parameter
-  Future<void> stopRecording<T>(
-    Future<T?> Function(String filePath) showDialog,
-  ) async {
+  Future<void> stopRecording() async {
     await _recorder.stop();
-
-    showDialog(_audioFilePath!);
 
     // Creating model to check whether to save it or discard , and create the remaining code based on it,
     // setting it to idle or saved
@@ -87,34 +91,30 @@ class RecordAudioViewmodel extends ChangeNotifier {
     recordState.value = RecordState.idle;
   }
 
-  Future<void> handlePlayButtonAction() async {
-    switch (recordState.value) {
-      case RecordState.idle:
-        startCountdown();
-        break;
-
-      case RecordState.countdown:
-        // await stopCountdown() or restartCountdown;
-        break;
-
-      case RecordState.recording:
-        await restartRecording();
-        break;
-
-      default:
-        break;
+  Future<void> handlePlayButtonAction<T>(
+    Future<T?> Function(String filePath) showDialog,
+  ) async {
+    if (recordState.value == RecordState.idle) {
+      startCountdown();
+    } else {
+      stopRecording();
+      showDialog(_audioFilePath!);
     }
   }
 
   Future<void> cancelRecord() async {
-    _recorder.cancel();
+    timer?.cancel();
+    recordingTimer?.cancel();
+    recordingSeconds.value = 0;
+    countdownNumber.value = secondsToStart;
+    await _recorder.cancel();
   }
 
   Timer startTimer() {
     return Timer.periodic(Duration(seconds: 1), (Timer timer) {
       if (countdownNumber.value < 1) {
         timer.cancel();
-        startRecording();
+        _startRecording();
         return;
       }
 

@@ -12,12 +12,6 @@ class InitialTimer extends StatefulWidget {
 
 class _InitialTimerState extends State<InitialTimer> {
   @override
-  void initState() {
-    super.initState();
-    widget.recordAudioVM.initTimer();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: widget.recordAudioVM.countdownNumber,
@@ -35,6 +29,6 @@ class _InitialTimerState extends State<InitialTimer> {
   @override
   void dispose() {
     super.dispose();
-    widget.recordAudioVM.timer.cancel();
+    widget.recordAudioVM.timer?.cancel();
   }
 }
