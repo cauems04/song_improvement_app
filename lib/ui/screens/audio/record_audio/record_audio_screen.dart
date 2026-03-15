@@ -3,7 +3,6 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/view_models/record_audio_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/play_button.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/record_management_button.dart';
-import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/time_value_picker.dart';
 
 class RecordAudioScreen extends StatefulWidget {
   const RecordAudioScreen({super.key});
@@ -56,7 +55,8 @@ class _RecordAudioScreenState extends State<RecordAudioScreen> {
                         top: Spacing.md,
                         bottom: Spacing.xxl,
                       ),
-                      child: PlayButton(recordAudioVM: recordAudioVM),
+                      child: PlayAnimation(),
+                      // child: PlayButton(recordAudioVM: recordAudioVM),
                     ),
 
                     RecordButton(

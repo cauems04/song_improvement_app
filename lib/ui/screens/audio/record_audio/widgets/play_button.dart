@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/view_models/record_audio_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/initial_timer.dart';
@@ -104,4 +106,123 @@ class _PlayButtonState extends State<PlayButton>
       ),
     );
   }
+}
+
+class PlayAnimation extends StatefulWidget {
+  const PlayAnimation({super.key});
+
+  @override
+  State<PlayAnimation> createState() => _PlayAnimationState();
+}
+
+class _PlayAnimationState extends State<PlayAnimation>
+    with TickerProviderStateMixin {
+  late final AnimationController circlePulseController;
+
+  late final AnimationController ringsPulseController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final Duration duration = Duration(milliseconds: 400);
+
+    circlePulseController = AnimationController(
+      vsync: this,
+      lowerBound: 0,
+      upperBound: 1,
+      duration: duration,
+    );
+
+    ringsPulseController = AnimationController(
+      vsync: this,
+      lowerBound: 0,
+      upperBound: 1,
+      duration: duration * 4,
+    );
+
+    circlePulseController.repeat(reverse: true);
+    ringsPulseController.repeat();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: Listenable.merge([
+        circlePulseController,
+        ringsPulseController,
+      ]),
+      builder: (context, child) {
+        return CustomPaint(
+          painter: _PlayAnimationPainter(
+            color: Theme.of(context).colorScheme.onPrimary,
+            circlePulse: circlePulseController.value,
+            ringsPulse: ringsPulseController.value,
+          ),
+          size: Size(200, 200),
+        );
+      },
+    );
+  }
+}
+
+class _PlayAnimationPainter extends CustomPainter {
+  // final List<Animation<double>> animations;
+  final Color color;
+  final double circlePulse;
+  final double ringsPulse;
+
+  _PlayAnimationPainter({
+    required this.circlePulse,
+    required this.ringsPulse,
+    required this.color,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Offset centerOffset = Offset(size.width / 2, size.height / 2);
+    final double baseRadius = size.width / 20;
+
+    Paint circlePainter = Paint()
+      ..style = PaintingStyle.fill
+      ..strokeCap = StrokeCap.round
+      ..color = color;
+
+    canvas.drawCircle(
+      centerOffset,
+      baseRadius + (baseRadius * 0.5 * circlePulse),
+      circlePainter,
+    );
+
+    final List<double> ringRadius = [
+      baseRadius * 5.0,
+      baseRadius * 8.0,
+      baseRadius * 11.0,
+    ];
+    final delays = [0.0, 0.2, 0.4];
+
+    for (int i = 0; i < ringRadius.length; i++) {
+      final offset = (ringsPulse - delays[i]) % 1.0;
+      final curved = (sin(offset * 2 * pi - pi / 2) + 0.6) / 2;
+      final opacity = 0.3 + (0.7 * curved);
+      final animatedRadius = ringRadius[i] * (0.8 + (0.2 * curved));
+
+      canvas.drawCircle(
+        centerOffset,
+        animatedRadius,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2
+          ..color = color.withValues(alpha: opacity),
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_PlayAnimationPainter oldDelegate) =>
+      (oldDelegate.circlePulse != circlePulse ||
+      oldDelegate.ringsPulse != ringsPulse);
+
+  @override
+  bool shouldRebuildSemantics(_PlayAnimationPainter oldDelegate) => false;
 }
