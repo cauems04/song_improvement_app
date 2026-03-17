@@ -20,6 +20,7 @@ class TimerCount extends StatelessWidget {
         return Text(
           _format(value),
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            fontSize: 30,
             fontWeight: FontWeight.w600,
             letterSpacing: 4,
           ),

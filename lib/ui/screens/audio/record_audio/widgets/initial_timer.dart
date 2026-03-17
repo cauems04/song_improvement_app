@@ -16,11 +16,38 @@ class _InitialTimerState extends State<InitialTimer> {
     return ValueListenableBuilder(
       valueListenable: widget.recordAudioVM.countdownNumber,
       builder: (context, value, child) {
-        return Text(
-          widget.recordAudioVM.countdownNumber.value.toString(),
-          style: Theme.of(
-            context,
-          ).textTheme.displayLarge!.copyWith(fontWeight: FontWeight.bold),
+        return AnimatedSwitcher(
+          duration: Duration(milliseconds: 300),
+          layoutBuilder: (currentChild, previousChildren) {
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                ...previousChildren,
+                if (currentChild != null) currentChild,
+              ],
+            );
+          },
+          transitionBuilder: (child, animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween(begin: 0.0, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                ),
+                child: child,
+              ),
+            );
+          },
+          child: Text(
+            widget.recordAudioVM.countdownNumber.value.toString(),
+            key: ValueKey(widget.recordAudioVM.countdownNumber.value),
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontSize: 30,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 4,
+            ),
+          ),
         );
       },
     );
