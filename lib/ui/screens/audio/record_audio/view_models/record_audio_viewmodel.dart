@@ -9,8 +9,6 @@ enum RecordState { idle, countdown, recording, paused }
 
 class RecordAudioViewmodel extends ChangeNotifier {
   late ValueNotifier<RecordState> recordState;
-  late int secondsToStart;
-  late void Function() a;
 
   Timer? timer;
   late ValueNotifier<int> countdownNumber;
@@ -22,16 +20,18 @@ class RecordAudioViewmodel extends ChangeNotifier {
 
   late final AudioRecorder _recorder;
 
+  set setCoundownNumber(int value) {
+    if (value <= 20 && value >= 0) countdownNumber.value = value;
+  }
+
   void initValues() {
     recordState = ValueNotifier(RecordState.idle);
-    secondsToStart = 2; // Implement with caching later
     _recorder = AudioRecorder();
-    countdownNumber = ValueNotifier(secondsToStart);
+    countdownNumber = ValueNotifier(3); // Implement with caching later
     recordingSeconds = ValueNotifier(0);
   }
 
   void startCountdown() {
-    countdownNumber.value = secondsToStart;
     recordState.value = RecordState.countdown;
     timer = startTimer();
   }
@@ -106,7 +106,6 @@ class RecordAudioViewmodel extends ChangeNotifier {
     timer?.cancel();
     recordingTimer?.cancel();
     recordingSeconds.value = 0;
-    countdownNumber.value = secondsToStart;
     await _recorder.cancel();
   }
 

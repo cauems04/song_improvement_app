@@ -61,6 +61,9 @@ ThemeData appTheme = ThemeData(
 
 class DarkThemeColors {
   static const Color alert = Color.fromRGBO(255, 137, 4, 1);
+
+  static const Color defaultModal = Color.fromRGBO(29, 41, 61, 1);
+  static const Color defaultModalDark = Color.fromRGBO(21, 31, 52, 1);
 }
 
 // DarkTheme darkTheme = DarkTheme(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/view_models/record_audio_viewmodel.dart';
+import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/config_util_button.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/confirm_send_modal.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/initial_timer.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/record_audio/widgets/play_animation.dart';
@@ -161,28 +162,11 @@ class _RecordAudioScreenState extends State<RecordAudioScreen>
                             ),
                             child: Material(
                               color: Colors.transparent,
-                              child: Text.rich(
-                                TextSpan(
-                                  children: [
-                                    WidgetSpan(
-                                      alignment: PlaceholderAlignment.middle,
-                                      child: Icon(
-                                        Icons.person,
-                                        size: 18,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.surfaceContainerHigh,
-                                      ),
-                                    ),
-                                    const WidgetSpan(child: SizedBox(width: 4)),
-                                    TextSpan(
-                                      text: Provider.of<SelectedSongProvider>(
-                                        context,
-                                        listen: false,
-                                      ).currentSong.artist,
-                                    ),
-                                  ],
-                                ),
+                              child: Text(
+                                Provider.of<SelectedSongProvider>(
+                                  context,
+                                  listen: false,
+                                ).currentSong.artist,
                                 style: Theme.of(context).textTheme.titleLarge!
                                     .copyWith(
                                       fontWeight: FontWeight.w400,
@@ -193,28 +177,11 @@ class _RecordAudioScreenState extends State<RecordAudioScreen>
                               ),
                             ),
                           ),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: Icon(
-                                    Icons.library_music,
-                                    size: 18,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainer,
-                                  ),
-                                ),
-                                const WidgetSpan(child: SizedBox(width: 4)),
-                                TextSpan(
-                                  text: Provider.of<SelectedSongProvider>(
-                                    context,
-                                    listen: false,
-                                  ).currentSong.album,
-                                ),
-                              ],
-                            ),
+                          Text(
+                            Provider.of<SelectedSongProvider>(
+                              context,
+                              listen: false,
+                            ).currentSong.album,
                             style: Theme.of(context).textTheme.titleLarge!
                                 .copyWith(
                                   fontWeight: FontWeight.w400,
@@ -239,6 +206,32 @@ class _RecordAudioScreenState extends State<RecordAudioScreen>
                               ),
                             ),
                             AnimatedOpacity(
+                              // add disable to avoid erros
+                              duration: Duration(milliseconds: 300),
+                              opacity:
+                                  (recordAudioVM.recordState.value ==
+                                      RecordState.idle)
+                                  ? 1
+                                  : 0,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    ConfigUtilButton(
+                                      recordAudioVM,
+                                      icon: Icons.timer_outlined,
+                                      label:
+                                          "${recordAudioVM.countdownNumber.value}s",
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            AnimatedOpacity(
+                              // add disable to avoid erros
                               duration: Duration(milliseconds: 300),
                               opacity:
                                   (recordAudioVM.recordState.value ==
