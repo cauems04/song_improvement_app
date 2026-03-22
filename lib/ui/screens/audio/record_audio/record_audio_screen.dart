@@ -290,7 +290,7 @@ class _RecordAudioScreenState extends State<RecordAudioScreen>
                         onTap: () => recordAudioVM.handlePlayButtonAction((
                           filePath,
                         ) {
-                          return showDialog(
+                          return showModalBottomSheet(
                             context: context,
                             builder: (newContext) => Center(
                               child: ConfirmSendModal(
