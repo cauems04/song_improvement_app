@@ -220,11 +220,17 @@ class _RecordAudioScreenState extends State<RecordAudioScreen>
                                       MainAxisAlignment.spaceBetween,
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    ConfigUtilButton(
-                                      recordAudioVM,
-                                      icon: Icons.timer_outlined,
-                                      label:
-                                          "${recordAudioVM.countdownNumber.value}s",
+                                    ValueListenableBuilder(
+                                      valueListenable:
+                                          recordAudioVM.countdownNumberDefined,
+                                      builder: (context, value, child) {
+                                        return ConfigUtilButton(
+                                          recordAudioVM,
+                                          icon: Icons.timer_outlined,
+                                          label:
+                                              "${recordAudioVM.countdownNumberDefined.value}s",
+                                        );
+                                      },
                                     ),
                                   ],
                                 ),
@@ -266,10 +272,8 @@ class _RecordAudioScreenState extends State<RecordAudioScreen>
                         height: 40,
                         child: Visibility(
                           visible:
-                              recordAudioVM.recordState.value ==
-                                  RecordState.countdown ||
-                              recordAudioVM.recordState.value ==
-                                  RecordState.recording,
+                              recordAudioVM.recordState.value !=
+                              RecordState.idle,
                           child:
                               (recordAudioVM.recordState.value ==
                                   RecordState.countdown)
@@ -279,8 +283,10 @@ class _RecordAudioScreenState extends State<RecordAudioScreen>
                       ),
                       RecordButton(
                         isRecording:
+                            (recordAudioVM.recordState.value ==
+                                RecordState.recording ||
                             recordAudioVM.recordState.value ==
-                            RecordState.recording,
+                                RecordState.paused),
                         onTap: () => recordAudioVM.handlePlayButtonAction((
                           filePath,
                         ) {

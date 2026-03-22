@@ -9,7 +9,7 @@ class RecordUtilButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () => onTap,
+      onPressed: onTap,
       icon: Icon(icon, color: Theme.of(context).colorScheme.onPrimary),
       style: IconButton.styleFrom(
         iconSize: 30,

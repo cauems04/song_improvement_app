@@ -10,7 +10,8 @@ enum RecordState { idle, countdown, recording, paused }
 class RecordAudioViewmodel extends ChangeNotifier {
   late ValueNotifier<RecordState> recordState;
 
-  Timer? timer;
+  Timer? countDownTimer;
+  late ValueNotifier<int> countdownNumberDefined;
   late ValueNotifier<int> countdownNumber;
 
   Timer? recordingTimer;
@@ -21,19 +22,22 @@ class RecordAudioViewmodel extends ChangeNotifier {
   late final AudioRecorder _recorder;
 
   set setCoundownNumber(int value) {
-    if (value <= 20 && value >= 0) countdownNumber.value = value;
+    if (value <= 20 && value >= 0) countdownNumberDefined.value = value;
   }
 
   void initValues() {
     recordState = ValueNotifier(RecordState.idle);
     _recorder = AudioRecorder();
-    countdownNumber = ValueNotifier(3); // Implement with caching later
+    countdownNumberDefined = ValueNotifier(3);
+    countdownNumber = ValueNotifier(
+      countdownNumberDefined.value,
+    ); // Implement with caching later
     recordingSeconds = ValueNotifier(0);
   }
 
   void startCountdown() {
     recordState.value = RecordState.countdown;
-    timer = startTimer();
+    countDownTimer = startTimer();
   }
 
   Future<void> _startRecording() async {
@@ -103,13 +107,14 @@ class RecordAudioViewmodel extends ChangeNotifier {
   }
 
   Future<void> cancelRecord() async {
-    timer?.cancel();
+    countDownTimer?.cancel();
     recordingTimer?.cancel();
     recordingSeconds.value = 0;
     await _recorder.cancel();
   }
 
   Timer startTimer() {
+    countdownNumber.value = countdownNumberDefined.value;
     return Timer.periodic(Duration(seconds: 1), (Timer timer) {
       if (countdownNumber.value < 1) {
         timer.cancel();

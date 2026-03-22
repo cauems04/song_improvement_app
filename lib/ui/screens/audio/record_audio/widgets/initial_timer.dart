@@ -56,6 +56,6 @@ class _InitialTimerState extends State<InitialTimer> {
   @override
   void dispose() {
     super.dispose();
-    widget.recordAudioVM.timer?.cancel();
+    widget.recordAudioVM.countDownTimer?.cancel();
   }
 }

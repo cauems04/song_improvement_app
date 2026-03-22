@@ -18,15 +18,19 @@ class _DefineCountdownModalState extends State<DefineCountdownModal> {
   @override
   void initState() {
     super.initState();
-    seconds = widget.recordAudioVM.countdownNumber.value;
+    seconds = widget.recordAudioVM.countdownNumberDefined.value;
   }
 
   void incrementCountdown() {
-    if (seconds < 20) seconds++;
+    setState(() {
+      if (seconds < 20) seconds++;
+    });
   }
 
   void decrementCountdown() {
-    if (seconds > 0) seconds--;
+    setState(() {
+      if (seconds > 0) seconds--;
+    });
   }
 
   @override
@@ -96,7 +100,7 @@ class _DefineCountdownModalState extends State<DefineCountdownModal> {
                     ),
                   ),
                   Text(
-                    "1",
+                    seconds.toString(),
                     style: Theme.of(
                       context,
                     ).textTheme.headlineLarge!.copyWith(fontSize: 34),
@@ -142,7 +146,6 @@ class _ConfirmButtom extends StatelessWidget {
               colors: [
                 Theme.of(context).colorScheme.primary,
                 Theme.of(context).colorScheme.onPrimary.withAlpha(180),
-                Theme.of(context).colorScheme.primary,
               ],
             ),
           ),
