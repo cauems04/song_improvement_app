@@ -64,6 +64,8 @@ class DarkThemeColors {
 
   static const Color defaultModal = Color.fromRGBO(29, 41, 61, 1);
   static const Color defaultModalDark = Color.fromRGBO(21, 31, 52, 1);
+
+  static const Color highestPurple = Color.fromRGBO(153, 66, 227, 1);
 }
 
 // DarkTheme darkTheme = DarkTheme(

@@ -5,20 +5,20 @@ import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/auto_a
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/view_models/play_audio_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/view_models/results/save_results.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/choose_button.dart';
+import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/songRecordedAnimation.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/song_line.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/util_button.dart';
-import 'package:guitar_song_improvement/ui/widgets/progress_graph.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 class PlayAudioScreen extends StatefulWidget {
   final String audioFilePath;
-  final bool isAudioSaved;
+  final bool isAudioAlreadySaved;
 
   const PlayAudioScreen({
     super.key,
     required this.audioFilePath,
-    this.isAudioSaved = false,
+    this.isAudioAlreadySaved = false,
   });
 
   @override
@@ -41,162 +41,163 @@ class _PlayAudioScreenscreeSState extends State<PlayAudioScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: AlignmentGeometry.topLeft,
-            end: AlignmentGeometry.centerRight,
             colors: [
-              Colors.deepPurple[900]!,
-              Theme.of(context).colorScheme.surfaceContainerLowest,
+              Theme.of(context).colorScheme.surface,
+              Theme.of(context).colorScheme.surface,
+              Theme.of(context).colorScheme.surface.withAlpha(40),
             ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(Spacing.xl),
           child: SafeArea(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: IntrinsicWidth(
+                            child: TextField(
+                              controller: playAudioVM.nameController,
+                              textAlign: TextAlign.center,
+                              textAlignVertical: TextAlignVertical.center,
+                              style: Theme.of(context).textTheme.headlineLarge!
+                                  .copyWith(fontWeight: FontWeight.bold),
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: Spacing.xs),
+                          child: Icon(Icons.edit),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Text(
+                        playAudioVM.songArtist,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      playAudioVM.songAlbum,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                      ),
+                    ),
+                  ],
+                ),
+                SongRecordedAnimation(),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: Spacing.lg,
+                        top: 140,
+                      ),
+                      child: SongLine(playAudioVM: playAudioVM),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 60),
+                      child: AnimatedBuilder(
+                        animation: Listenable.merge([
+                          playAudioVM.isPlaying,
+                          playAudioVM.playingState,
+                        ]),
+                        builder: (context, widget) {
+                          return OptionsSection(playAudioVM: playAudioVM);
+                        },
+                      ),
+                    ),
+                    Visibility(
+                      visible: !widget.isAudioAlreadySaved,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Center(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Flexible(
-                                  child: IntrinsicWidth(
-                                    child: TextField(
-                                      controller: playAudioVM.nameController,
-                                      textAlign: TextAlign.center,
-                                      textAlignVertical:
-                                          TextAlignVertical.center,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.headlineLarge!,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: Spacing.xs,
-                                  ),
-                                  child: Icon(Icons.edit),
-                                ),
-                              ],
+                          Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: Colors.red[400],
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                playAudioVM.deleteTempFile();
+                              },
+                              icon: Icon(Icons.delete, size: 24),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: Spacing.xs,
+                            padding: const EdgeInsets.only(left: Spacing.sm),
+                            child: ChooseButton(
+                              color: Theme.of(context).colorScheme.primary,
+                              label: "Save",
+                              action: () async {
+                                final SaveResult result = await playAudioVM
+                                    .saveRecord();
+
+                                if (!context.mounted) return;
+
+                                //Implement personalized SnackBar
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(result.message)),
+                                );
+
+                                if (result is ErrorResult) {
+                                  Navigator.of(context).pop();
+                                  return;
+                                }
+
+                                Provider.of<SelectedSongProvider>(
+                                  context,
+                                  listen: false,
+                                ).getRecords();
+
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (newContext) =>
+                                        ChangeNotifierProvider.value(
+                                          value:
+                                              Provider.of<SelectedSongProvider>(
+                                                context,
+                                                listen: false,
+                                              ),
+                                          child: AutoAnalysisScreen(
+                                            recordLinkedId:
+                                                (result as SuccessResult)
+                                                    .recordId,
+                                          ),
+                                        ),
+                                  ),
+                                );
+                              },
                             ),
-                            child: Text(
-                              playAudioVM.songArtist,
-                              style: Theme.of(context).textTheme.bodyLarge!
-                                  .copyWith(fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                          Text(
-                            playAudioVM.songAlbum,
-                            style: Theme.of(context).textTheme.bodyLarge!
-                                .copyWith(fontWeight: FontWeight.w600),
                           ),
                         ],
                       ),
-                      (widget.isAudioSaved == true)
-                          ? Center(child: ProgressGraph(0.8))
-                          : Text(""),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.lg, top: 140),
-                  child: SongLine(playAudioVM: playAudioVM),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 60),
-                  child: AnimatedBuilder(
-                    animation: Listenable.merge([
-                      playAudioVM.isPlaying,
-                      playAudioVM.playingState,
-                    ]),
-                    builder: (context, widget) {
-                      return OptionsSection(playAudioVM: playAudioVM);
-                    },
-                  ),
-                ),
-                Visibility(
-                  visible: !widget.isAudioSaved,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.red[400],
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-                            playAudioVM.deleteTempFile();
-                          },
-                          icon: Icon(Icons.delete, size: 24),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: Spacing.sm),
-                        child: ChooseButton(
-                          color: Theme.of(context).colorScheme.primary,
-                          label: "Save",
-                          action: () async {
-                            final SaveResult result = await playAudioVM
-                                .saveRecord();
-
-                            if (!context.mounted) return;
-
-                            //Implement personalized SnackBar
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(result.message)),
-                            );
-
-                            if (result is ErrorResult) {
-                              Navigator.of(context).pop();
-                              return;
-                            }
-
-                            Provider.of<SelectedSongProvider>(
-                              context,
-                              listen: false,
-                            ).getRecords();
-
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (newContext) =>
-                                    ChangeNotifierProvider.value(
-                                      value: Provider.of<SelectedSongProvider>(
-                                        context,
-                                        listen: false,
-                                      ),
-                                      child: AutoAnalysisScreen(
-                                        recordLinkedId:
-                                            (result as SuccessResult).recordId,
-                                      ),
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),

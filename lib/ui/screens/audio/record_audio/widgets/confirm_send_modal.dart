@@ -208,6 +208,12 @@ class _AnimatedDiskIconState extends State<_AnimatedDiskIcon>
       ),
     );
   }
+
+  @override
+  void dispose() {
+    iconController.dispose();
+    super.dispose();
+  }
 }
 
 class _ConfirmButtom extends StatelessWidget {

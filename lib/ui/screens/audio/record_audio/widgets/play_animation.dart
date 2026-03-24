@@ -73,6 +73,13 @@ class _PlayAnimationState extends State<PlayAnimation>
       },
     );
   }
+
+  @override
+  void dispose() {
+    circlePulseController.dispose();
+    ringsPulseController.dispose();
+    super.dispose();
+  }
 }
 
 class _PlayAnimationPainter extends CustomPainter {
