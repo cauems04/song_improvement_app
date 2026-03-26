@@ -125,6 +125,7 @@ class RecordCard extends StatelessWidget {
                           ),
                           child: PlayAudioScreen(
                             audioFilePath: recordWithAnalysis.record.audioPath,
+                            recordingAnalysis: recordWithAnalysis.analysis,
                             isAudioAlreadySaved: true,
                           ),
                         ),

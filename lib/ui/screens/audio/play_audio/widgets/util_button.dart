@@ -23,7 +23,7 @@ class UtilButton extends StatelessWidget {
             : Theme.of(context).colorScheme.surfaceContainer,
       ),
       child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 200),
+        duration: Duration(milliseconds: 120),
         child: IconButton(
           key: ValueKey(icon),
           onPressed: () => onPressed(),

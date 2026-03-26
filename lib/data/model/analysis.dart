@@ -55,4 +55,14 @@ class Analysis {
       DatabaseManager.analysisSongLabel: songId,
     };
   }
+
+  Map<String, int> toScoresMap() {
+    return {
+      "Pitch": pitchScore,
+      "Rhytm": rhytmScore,
+      "Dynamics": dynamicsScore,
+      "Technique": techniqueScore,
+      "Accuracy": accuracyScore,
+    };
+  }
 }

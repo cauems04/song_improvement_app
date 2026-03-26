@@ -52,8 +52,7 @@ class _SongRecordedAnimationState extends State<SongRecordedAnimation>
 
   @override
   void dispose() {
-    super.dispose();
-
     opacityController.dispose();
+    super.dispose();
   }
 }
