@@ -47,4 +47,28 @@ class MusicProvider extends ChangeNotifier {
 
   //   return filteredSongs;
   // }
+
+  int songsByAlbumCount(String albumName) {
+    int count = 0;
+
+    if (songs != null) {
+      for (Song song in songs!) {
+        if (song.album == albumName) count++;
+      }
+    }
+
+    return count;
+  }
+
+  int songsByArtistCount(String artistName) {
+    int count = 0;
+
+    if (songs != null) {
+      for (Song song in songs!) {
+        if (song.artist == artistName) count++;
+      }
+    }
+
+    return count;
+  }
 }

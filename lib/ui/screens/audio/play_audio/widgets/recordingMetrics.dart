@@ -61,13 +61,27 @@ class RecordingMetrics extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "Overall Score",
-                          style: Theme.of(context).textTheme.titleLarge!
-                              .copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: Icon(
+                                  Icons.bolt_rounded,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                ),
                               ),
+                              TextSpan(
+                                text: "Overall Score",
+                                style: Theme.of(context).textTheme.titleLarge!
+                                    .copyWith(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                            ],
+                          ),
                         ),
                         Text(
                           "${analysis!.getFinalScore}%",

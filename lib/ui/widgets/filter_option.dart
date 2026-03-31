@@ -30,23 +30,38 @@ class FilterOption extends StatelessWidget {
         child: Ink(
           decoration: BoxDecoration(),
           child: InkWell(
+            onTap: onTap,
             customBorder: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
             child: Padding(
               padding: const EdgeInsets.all(Spacing.xs),
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.bodyMedium!
-                    .copyWith(fontWeight: FontWeight.bold)
-                    .copyWith(
-                      color: (isSelected) ? Colors.black : Colors.white,
-                    ),
+              child: Row(
+                children: [
+                  Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodyMedium!
+                        .copyWith(fontSize: 13, fontWeight: FontWeight.bold)
+                        .copyWith(
+                          color: (isSelected) ? Colors.black : Colors.white,
+                        ),
+                  ),
+                  AnimatedSize(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: isSelected
+                        ? Padding(
+                            padding: const EdgeInsets.only(left: Spacing.xs),
+                            child: Transform.translate(
+                              offset: Offset(0, -3), // sobe 3px
+                              child: Icon(Icons.check, color: Colors.black),
+                            ),
+                          )
+                        : SizedBox.shrink(),
+                  ),
+                ],
               ),
             ),
-            onTap: () {
-              onTap();
-            },
           ),
         ),
       ),

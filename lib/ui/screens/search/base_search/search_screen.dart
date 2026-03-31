@@ -26,80 +26,102 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: searchVM,
-      builder: (context, widget) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          appBar: AppBar(
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: Spacing.sm),
-                child: InkWell(
-                  customBorder: CircleBorder(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Icon(
-                      Icons.dark_mode,
-                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Theme.of(context).colorScheme.surface, Colors.black87],
+          begin: AlignmentGeometry.topLeft,
+          end: AlignmentGeometry.bottomRight,
+        ),
+      ),
+      child: AnimatedBuilder(
+        animation: searchVM,
+        builder: (context, widget) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
+              forceMaterialTransparency: true,
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: Spacing.sm),
+                  child: InkWell(
+                    customBorder: CircleBorder(),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Icon(
+                        Icons.dark_mode,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHigh,
+                      ),
                     ),
+                    onTap: () {},
                   ),
-                  onTap: () {},
-                ),
-              ),
-            ],
-          ),
-          body: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              Spacing.lg,
-              Spacing.sm,
-              Spacing.lg,
-              Spacing.sm,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SearchSong(
-                  hint: "Search a song",
-                  search: searchVM.search,
-                  onSearch: (value) {
-                    searchVM.setSearch = value;
-                  },
-                  onChanged: (value) {
-                    searchVM.setLocalSearch = value;
-                  },
-                ),
-                Expanded(
-                  child: (searchVM.currentPage == SearchOptions.onlineSearch)
-                      ? OnlineSearchScreen(
-                          searchVM.songController,
-                          search: searchVM.search,
-                        )
-                      : LocalSearchScreen(search: searchVM.search),
                 ),
               ],
             ),
-          ),
-          bottomNavigationBar: NavigationBar(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            indicatorColor: Theme.of(context).colorScheme.onPrimary,
-            onDestinationSelected: (index) {
-              searchVM.setCurrentPage = index;
-            },
-            destinations: [
-              NavigationDestination(
-                icon: Icon(Icons.online_prediction),
-                label: "Online Search",
+            body: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                Spacing.lg,
+                Spacing.sm,
+                Spacing.lg,
+                Spacing.sm,
               ),
-              NavigationDestination(
-                icon: Icon(Icons.list),
-                label: "Saved Songs",
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SearchSong(
+                    hint: "Search a song",
+                    search: searchVM.search,
+                    onSearch: (value) {
+                      searchVM.setSearch = value;
+                    },
+                    onChanged: (value) {
+                      searchVM.setLocalSearch = value;
+                    },
+                  ),
+                  Expanded(
+                    child: (searchVM.currentPage == SearchOptions.onlineSearch)
+                        ? OnlineSearchScreen(
+                            searchVM.songController,
+                            search: searchVM.search,
+                          )
+                        : LocalSearchScreen(search: searchVM.search),
+                  ),
+                ],
               ),
-            ],
-            selectedIndex: searchVM.currentPage.index,
-          ),
-        );
-      },
+            ),
+            bottomNavigationBar: Theme(
+              data: Theme.of(context).copyWith(
+                navigationBarTheme: NavigationBarThemeData(
+                  labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                    return TextStyle(color: Colors.white);
+                  }),
+                ),
+              ),
+              child: NavigationBar(
+                backgroundColor: Colors.transparent,
+                indicatorColor: Theme.of(context).colorScheme.onPrimary,
+
+                onDestinationSelected: (index) {
+                  searchVM.setCurrentPage = index;
+                },
+                destinations: [
+                  NavigationDestination(
+                    icon: Icon(Icons.online_prediction, color: Colors.white),
+                    label: "Online Search",
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.list, color: Colors.white),
+                    label: "Saved Songs",
+                  ),
+                ],
+                selectedIndex: searchVM.currentPage.index,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

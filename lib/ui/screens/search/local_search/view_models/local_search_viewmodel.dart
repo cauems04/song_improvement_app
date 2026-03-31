@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-enum FilterOptions { albums, artists, favorites }
+enum FilterOptions { songs, albums, artists, favorites }
 
 class LocalSearchViewmodel {
-  final ValueNotifier<FilterOptions?> currentFilter = ValueNotifier(null);
+  final ValueNotifier<FilterOptions?> currentFilter = ValueNotifier(
+    FilterOptions.songs,
+  );
 
   void changeFilter(FilterOptions filter) {
     if (currentFilter.value == filter) {
-      currentFilter.value = null;
       return;
     }
 

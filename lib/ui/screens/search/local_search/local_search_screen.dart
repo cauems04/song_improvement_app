@@ -47,6 +47,15 @@ class _LocalSearchScreenState extends State<LocalSearchScreen> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       FilterOption(
+                        label: "Songs",
+                        isSelected:
+                            (localSearchVM.currentFilter.value ==
+                            FilterOptions.songs),
+                        onTap: () {
+                          localSearchVM.changeFilter(FilterOptions.songs);
+                        },
+                      ),
+                      FilterOption(
                         label: "Albums",
                         isSelected:
                             (localSearchVM.currentFilter.value ==
@@ -80,59 +89,19 @@ class _LocalSearchScreenState extends State<LocalSearchScreen> {
               Expanded(
                 child: Consumer<MusicProvider>(
                   builder: (context, data, child) {
-                    if (!data.isLoaded) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-
                     Widget resultWidget = const Center(
                       child: CircularProgressIndicator(),
                     );
 
+                    if (!data.isLoaded) {
+                      return resultWidget;
+                    }
+
                     switch (localSearchVM.currentFilter.value) {
-                      case FilterOptions.albums:
-                        if (data.albums == null || data.albums!.isEmpty) {
-                          resultWidget = Center(child: Text("No albums found"));
-                        }
-
-                        List<Album> albums = (widget.search.isEmpty)
-                            ? data.albums!
-                            : SearchFilterUtils.filter<Album>(
-                                data.albums!,
-                                widget.search,
-                              );
-
-                        List<AlbumCard> albumCards = albums
-                            .map((album) => AlbumCard(album))
-                            .toList();
-                        resultWidget = ListView(children: albumCards);
-                        break;
-
-                      case FilterOptions.artists:
-                        if (data.artists == null || data.artists!.isEmpty) {
-                          resultWidget = Center(
-                            child: Text("No artists found"),
-                          );
-                        }
-
-                        List<Artist> artists = (widget.search.isEmpty)
-                            ? data.artists!
-                            : SearchFilterUtils.filter<Artist>(
-                                data.artists!,
-                                widget.search,
-                              );
-
-                        List<ArtistCard> artistCards = artists
-                            .map((artist) => ArtistCard(artist))
-                            .toList();
-                        resultWidget = ListView(children: artistCards);
-                        break;
-
-                      // case "favorites":    ***REMEMBER*** Favorites will work together with the others, so its implementation's gonna be kinda different
-                      //   break;
-
-                      default:
+                      case FilterOptions.songs:
                         if (data.songs == null || data.songs!.isEmpty) {
                           resultWidget = Center(child: Text("No songs found"));
+                          break;
                         }
 
                         List<Song> songs = (widget.search.isEmpty)
@@ -150,6 +119,73 @@ class _LocalSearchScreenState extends State<LocalSearchScreen> {
                           children: songCards,
                         );
                         break;
+
+                      case FilterOptions.albums:
+                        if (data.albums == null || data.albums!.isEmpty) {
+                          resultWidget = Center(child: Text("No albums found"));
+                          break;
+                        }
+
+                        List<Album> albums = (widget.search.isEmpty)
+                            ? data.albums!
+                            : SearchFilterUtils.filter<Album>(
+                                data.albums!,
+                                widget.search,
+                              );
+
+                        List<AlbumCard> albumCards = albums
+                            .map((album) => AlbumCard(album))
+                            .toList();
+
+                        resultWidget = GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: Spacing.lg,
+                                crossAxisSpacing: Spacing.md,
+                                childAspectRatio: 50 / 60,
+                              ),
+                          itemCount: albumCards.length,
+                          itemBuilder: (context, index) => albumCards[index],
+                        );
+                        break;
+
+                      case FilterOptions.artists:
+                        if (data.artists == null || data.artists!.isEmpty) {
+                          resultWidget = Center(
+                            child: Text("No artists found"),
+                          );
+                          break;
+                        }
+
+                        List<Artist> artists = (widget.search.isEmpty)
+                            ? data.artists!
+                            : SearchFilterUtils.filter<Artist>(
+                                data.artists!,
+                                widget.search,
+                              );
+
+                        List<ArtistCard> artistCards = artists
+                            .map((artist) => ArtistCard(artist))
+                            .toList();
+
+                        resultWidget = GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: Spacing.lg,
+                                crossAxisSpacing: Spacing.md,
+                                childAspectRatio: 50 / 60,
+                              ),
+                          itemCount: artistCards.length,
+                          itemBuilder: (context, index) => artistCards[index],
+                        );
+                        break;
+
+                      // case "favorites":    ***REMEMBER*** Favorites will work together with the others, so its implementation's gonna be kinda different
+                      //   break;
+
+                      default:
                     }
 
                     return resultWidget;
