@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/album.dart';
 import 'package:guitar_song_improvement/data/model/music_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/collection_displayer/album/album_screen.dart';
 import 'package:provider/provider.dart';
 
 class AlbumCard extends StatelessWidget {
@@ -26,6 +27,9 @@ class AlbumCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color baseColor = getColorFromText(album.name);
+    final int songCount = Provider.of<MusicProvider>(
+      context,
+    ).songsByAlbumCount(album.name);
 
     return SizedBox(
       height: 60,
@@ -33,17 +37,20 @@ class AlbumCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(10),
+        clipBehavior: Clip.antiAlias,
         child: InkWell(
           borderRadius: BorderRadius.circular(10),
-          customBorder: Border.all(
-            color: Theme.of(context).colorScheme.surfaceContainerLow,
-            width: 5,
-          ),
           onTap: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => SongPage(song)),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AlbumScreen(
+                  album: album,
+                  songCount: songCount,
+                  baseColor: baseColor,
+                ),
+              ),
+            );
           },
           child: DecoratedBox(
             decoration: BoxDecoration(
@@ -107,7 +114,7 @@ class AlbumCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${Provider.of<MusicProvider>(context).songsByAlbumCount(album.name)} Songs",
+                        "$songCount Songs",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
