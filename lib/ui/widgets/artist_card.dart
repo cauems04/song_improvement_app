@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/artist.dart';
 import 'package:guitar_song_improvement/data/model/music_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/collection_displayer/artist/artist_screen.dart';
 import 'package:provider/provider.dart';
 
 class ArtistCard extends StatelessWidget {
@@ -26,6 +27,9 @@ class ArtistCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color baseColor = getColorFromText(artist.name);
+    final int songCount = Provider.of<MusicProvider>(
+      context,
+    ).songsByArtistCount(artist.name);
 
     return SizedBox(
       height: 60,
@@ -41,10 +45,16 @@ class ArtistCard extends StatelessWidget {
             width: 5,
           ),
           onTap: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => SongPage(song)),
-            // );
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ArtistScreen(
+                  artist: artist,
+                  songCount: songCount,
+                  baseColor: baseColor,
+                ),
+              ),
+            );
           },
           child: DecoratedBox(
             decoration: BoxDecoration(
@@ -108,7 +118,7 @@ class ArtistCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "${Provider.of<MusicProvider>(context).songsByArtistCount(artist.name)} Songs",
+                        "$songCount Songs",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(

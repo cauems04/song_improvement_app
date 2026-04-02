@@ -32,8 +32,8 @@ class AlbumCard extends StatelessWidget {
     ).songsByAlbumCount(album.name);
 
     return SizedBox(
-      height: 60,
-      width: 50,
+      height: 165,
+      width: 145,
       child: Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(10),
