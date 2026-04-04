@@ -3,11 +3,10 @@ import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/data/model/music_provider.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
-import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/rate_info.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/view_models/auto_analysis_viewmodel.dart';
-import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_bottom_sheet.dart';
-import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_selector.dart';
-import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/section_indicator.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_card.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_rate_box.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/result/analysis_result_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -131,107 +130,79 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          Spacing.lg,
-          Spacing.none,
-          Spacing.lg,
-          Spacing.none,
-        ),
-        child: ListenableBuilder(
-          listenable: autoAnalysisVM,
-          builder: (context, child) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 100),
-                  child: Text(
-                    "How well did you do?",
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.xxl),
-                  child: SizedBox(
-                    height: 80,
-                    width: 600,
-                    child: PageView(
-                      controller: autoAnalysisVM.pageController,
-                      children: [
-                        for (ScoreType type in ScoreType.values)
-                          ScoreSelector(
-                            type.name,
-                            initialPosition: autoAnalysisVM.scoreValues[type]!,
-                            onTap: (value) =>
-                                autoAnalysisVM.selectScore(value, type),
-                          ),
-                      ],
-                      onPageChanged: (value) =>
-                          autoAnalysisVM.changePage(value),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: Spacing.xxl),
-                  child: SizedBox(
-                    height: 100,
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        for (int i = 0; i < ScoreType.values.length; i++)
-                          SectionIndicator(
-                            autoAnalysisVM.scoreValues[ScoreType.values[i]]!,
-                            isSelected:
-                                autoAnalysisVM.currentScoreType ==
-                                ScoreType.values[i],
-                            onTap: () {
-                              autoAnalysisVM.pageController.jumpToPage(i);
-                            },
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 140),
-                  child: AnimatedOpacity(
-                    opacity: autoAnalysisVM.isLastPage ? 1 : 0,
-                    duration: Duration(milliseconds: 200),
-                    child: _SendButtom(() async => await submitScore()),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-
-      bottomSheet: Material(
-        color: Theme.of(context).colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-        child: InkWell(
-          child: SizedBox(
-            height: 120,
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.md),
-              child: Text(
-                "What does it mean?",
-                style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            Spacing.lg,
+            Spacing.none,
+            Spacing.lg,
+            Spacing.none,
           ),
-          onTap: () => showModalBottomSheet(
-            context: context,
-            builder: (context) =>
-                ScoreBottomSheet(autoAnalysisVM.currentScoreType),
+          child: ListenableBuilder(
+            listenable: autoAnalysisVM,
+            builder: (context, child) {
+              return Stack(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          for (RateType rateType in RateType.values)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: Spacing.sm,
+                              ),
+                              child: ScoreRateBox(rateType: rateType),
+                            ),
+                        ],
+                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(
+                      //     top: 20,
+                      //     bottom: Spacing.xxl,
+                      //   ),
+                      //   child: SizedBox(
+                      //     height: 100,
+                      //     width: double.infinity,
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //       crossAxisAlignment: CrossAxisAlignment.end,
+                      //       children: [
+                      //         for (int i = 0; i < ScoreType.values.length; i++)
+                      //           SectionIndicator(
+                      //             autoAnalysisVM.scoreValues[ScoreType
+                      //                 .values[i]]!,
+                      //             isSelected:
+                      //                 autoAnalysisVM.currentScoreType ==
+                      //                 ScoreType.values[i],
+                      //             onTap: () {
+                      //               autoAnalysisVM.pageController.jumpToPage(i);
+                      //             },
+                      //           ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
+                      Padding(
+                        padding: EdgeInsets.only(top: Spacing.md),
+                        child: AnimatedOpacity(
+                          opacity: autoAnalysisVM.isLastPage ? 1 : 0.2,
+                          duration: Duration(milliseconds: 200),
+                          child: _SendButtom(() async => await submitScore()),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Center(
+                    child: DraggableScoreCard(
+                      scoreType: autoAnalysisVM.currentScoreType,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
