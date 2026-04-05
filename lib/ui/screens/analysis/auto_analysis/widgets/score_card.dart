@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/drag_card_data.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_info.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
 
@@ -10,21 +11,19 @@ class DraggableScoreCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double endAnimationScale = 0.4;
     final Widget child = ScoreCard(scoreType: scoreType);
 
     return Draggable(
-      data: scoreType,
+      data: DragCardData(scoreType: scoreType, scale: endAnimationScale),
       childWhenDragging: SizedBox.shrink(),
       feedback: Material(
         color: Colors.transparent,
         child: TweenAnimationBuilder<double>(
-          tween: Tween(begin: 1.0, end: 0.4),
+          tween: Tween(begin: 1.0, end: endAnimationScale),
           duration: Duration(milliseconds: 200),
-          builder: (context, value, child) {
-            return Transform.scale(
-              scale: value,
-              child: ScoreCard(scoreType: scoreType),
-            );
+          builder: (context, value, _) {
+            return Transform.scale(scale: value, child: child);
           },
         ),
       ),

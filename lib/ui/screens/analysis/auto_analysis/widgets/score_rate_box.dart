@@ -1,14 +1,17 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/drag_card_data.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/rate_info.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_card.dart';
 
 class ScoreRateBox extends StatefulWidget {
+  final GlobalKey boxKey;
   final RateType rateType;
 
-  const ScoreRateBox({super.key, required this.rateType});
+  const ScoreRateBox({super.key, required this.rateType, required this.boxKey});
 
   @override
   State<ScoreRateBox> createState() => _ScoreRateBoxState();
@@ -27,12 +30,48 @@ class _ScoreRateBoxState extends State<ScoreRateBox> {
     baseColor = Colors.white54;
   }
 
+  Offset getNextAvailableCardPosition() {
+    final RenderBox renderBox =
+        widget.boxKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset boxPosition = renderBox.localToGlobal(Offset.zero);
+
+    print("boxPosition: $boxPosition");
+    print("receivedScoreTypes.length: ${receivedScoreTypes.length}");
+
+    const double cardWidth = 50;
+    const double spacing = Spacing.sm;
+    const double paddingLeft = Spacing.sm;
+
+    final double nextX =
+        boxPosition.dx +
+        paddingLeft +
+        (receivedScoreTypes.length * (cardWidth + spacing));
+    final double nextY =
+        boxPosition.dy + 30; // altura do texto do título aproximadamente
+
+    print("nextPosition: ${Offset(nextX, nextY)}");
+
+    return Offset(nextX, nextY);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DragTarget<ScoreType>(
-      onAcceptWithDetails: (DragTargetDetails<ScoreType> details) {
+    return DragTarget<DragCardData>(
+      key: widget.boxKey,
+      onAcceptWithDetails: (DragTargetDetails<DragCardData> details) {
+        final targetPosition = getNextAvailableCardPosition();
+        Overlay.of(context).insert(
+          OverlayEntry(
+            builder: (context) => CardPlacingAnimation(
+              cardData: details.data,
+              initialPosition: details.offset,
+              finalPosition: targetPosition,
+            ),
+          ),
+        );
+
         setState(() {
-          receivedScoreTypes.add(details.data);
+          receivedScoreTypes.add(details.data.scoreType);
         });
       },
       builder: (context, candidateData, rejectedData) {
@@ -85,6 +124,72 @@ class _ScoreRateBoxState extends State<ScoreRateBox> {
                 ),
               ),
             ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class CardPlacingAnimation extends StatefulWidget {
+  final DragCardData cardData;
+  final Offset initialPosition;
+  final Offset finalPosition;
+
+  const CardPlacingAnimation({
+    super.key,
+    required this.cardData,
+    required this.initialPosition,
+    required this.finalPosition,
+  });
+
+  @override
+  State<CardPlacingAnimation> createState() => _CardPlacingAnimationState();
+}
+
+class _CardPlacingAnimationState extends State<CardPlacingAnimation>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController transitionController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    transitionController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 400),
+    );
+    transitionController.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: transitionController,
+      builder: (context, child) {
+        final Offset currentPosition = Offset.lerp(
+          widget.initialPosition,
+          widget.finalPosition,
+          transitionController.value,
+        )!;
+
+        final double currentScale = lerpDouble(
+          widget.cardData.scale,
+          50 / 220,
+          transitionController.value,
+        )!;
+
+        return Positioned(
+          left: currentPosition.dx,
+          top: currentPosition.dy,
+
+          child: SizedBox(
+            width: 220 * currentScale,
+            height: 250 * currentScale,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: ScoreCard(scoreType: widget.cardData.scoreType),
+            ),
           ),
         );
       },

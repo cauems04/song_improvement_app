@@ -20,12 +20,14 @@ class AutoAnalysisScreen extends StatefulWidget {
 
 class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
   late final AutoAnalysisViewModel autoAnalysisVM;
+  late final List<GlobalKey> boxKeys;
 
   @override
   void initState() {
     super.initState();
     autoAnalysisVM = AutoAnalysisViewModel();
     autoAnalysisVM.initValues();
+    boxKeys = List.generate(5, (_) => GlobalKey());
   }
 
   Future<void> submitScore() async {
@@ -149,12 +151,15 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
                     children: [
                       Column(
                         children: [
-                          for (RateType rateType in RateType.values)
+                          for (int i = 0; i < RateType.values.length; i++)
                             Padding(
                               padding: const EdgeInsets.only(
                                 bottom: Spacing.sm,
                               ),
-                              child: ScoreRateBox(rateType: rateType),
+                              child: ScoreRateBox(
+                                boxKey: boxKeys[i],
+                                rateType: RateType.values[i],
+                              ),
                             ),
                         ],
                       ),
