@@ -4,18 +4,41 @@ import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/conten
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_info.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
 
-class DraggableScoreCard extends StatelessWidget {
+class DraggableScoreCard extends StatefulWidget {
   final ScoreType scoreType;
 
   const DraggableScoreCard({super.key, required this.scoreType});
 
   @override
-  Widget build(BuildContext context) {
-    final double endAnimationScale = 0.4;
-    final Widget child = ScoreCard(scoreType: scoreType);
+  State<DraggableScoreCard> createState() => _DraggableScoreCardState();
+}
 
+class _DraggableScoreCardState extends State<DraggableScoreCard> {
+  late Size _cardSize = Size(0, 0);
+  final GlobalKey scoreCardKey = GlobalKey();
+  final double endAnimationScale = 0.4;
+
+  Size getScoreCardSize() => scoreCardKey.currentContext!.size!;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((duration) {
+      _cardSize = getScoreCardSize();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget child = ScoreCard(
+      scoreCardKey: scoreCardKey,
+      scoreType: widget.scoreType,
+    );
     return Draggable(
-      data: DragCardData(scoreType: scoreType, scale: endAnimationScale),
+      data: DragCardData(
+        scoreType: widget.scoreType,
+        size: _cardSize * endAnimationScale,
+      ),
       childWhenDragging: SizedBox.shrink(),
       feedback: Material(
         color: Colors.transparent,
@@ -37,12 +60,14 @@ class DraggableScoreCard extends StatelessWidget {
 
 class ScoreCard extends StatelessWidget {
   final ScoreType scoreType;
+  final GlobalKey? scoreCardKey;
 
-  const ScoreCard({super.key, required this.scoreType});
+  const ScoreCard({super.key, this.scoreCardKey, required this.scoreType});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: scoreCardKey,
       padding: const EdgeInsets.all(Spacing.sm),
       width: 220,
       height: 250,
@@ -60,6 +85,14 @@ class ScoreCard extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(180),
+            blurRadius: 20,
+            spreadRadius: 12,
+            offset: Offset(0, 6),
+          ),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

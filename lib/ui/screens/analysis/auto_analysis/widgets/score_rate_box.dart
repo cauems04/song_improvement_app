@@ -173,9 +173,9 @@ class _CardPlacingAnimationState extends State<CardPlacingAnimation>
           transitionController.value,
         )!;
 
-        final double currentScale = lerpDouble(
-          widget.cardData.scale,
-          50 / 220,
+        final Size currentSize = Size.lerp(
+          widget.cardData.size,
+          Size(50, 70),
           transitionController.value,
         )!;
 
@@ -184,8 +184,8 @@ class _CardPlacingAnimationState extends State<CardPlacingAnimation>
           top: currentPosition.dy,
 
           child: SizedBox(
-            width: 220 * currentScale,
-            height: 250 * currentScale,
+            width: currentSize.width,
+            height: currentSize.height,
             child: FittedBox(
               fit: BoxFit.contain,
               child: ScoreCard(scoreType: widget.cardData.scoreType),
