@@ -22,6 +22,8 @@ class _ScoreRateBoxState extends State<ScoreRateBox> {
   late final Color rateColor;
   late final Color baseColor;
 
+  late final OverlayEntry overlayEntry;
+
   @override
   void initState() {
     super.initState();
@@ -60,15 +62,19 @@ class _ScoreRateBoxState extends State<ScoreRateBox> {
       key: widget.boxKey,
       onAcceptWithDetails: (DragTargetDetails<DragCardData> details) {
         final targetPosition = getNextAvailableCardPosition();
-        Overlay.of(context).insert(
-          OverlayEntry(
-            builder: (context) => CardPlacingAnimation(
-              cardData: details.data,
-              initialPosition: details.offset,
-              finalPosition: targetPosition,
-            ),
+
+        late final OverlayEntry overlayEntry;
+        overlayEntry = OverlayEntry(
+          builder: (context) => CardPlacingAnimation(
+            cardData: details.data,
+            cardFinalSize: Size(0, 0),
+            initialPosition: details.offset,
+            finalPosition: targetPosition,
+            onAnimationEnd: overlayEntry.remove,
           ),
         );
+
+        Overlay.of(context).insert(overlayEntry);
 
         setState(() {
           receivedScoreTypes.add(details.data.scoreType);
@@ -133,14 +139,18 @@ class _ScoreRateBoxState extends State<ScoreRateBox> {
 
 class CardPlacingAnimation extends StatefulWidget {
   final DragCardData cardData;
+  final Size cardFinalSize;
   final Offset initialPosition;
   final Offset finalPosition;
+  final VoidCallback onAnimationEnd;
 
   const CardPlacingAnimation({
     super.key,
     required this.cardData,
     required this.initialPosition,
     required this.finalPosition,
+    required this.cardFinalSize,
+    required this.onAnimationEnd,
   });
 
   @override
@@ -159,6 +169,13 @@ class _CardPlacingAnimationState extends State<CardPlacingAnimation>
       vsync: this,
       duration: Duration(milliseconds: 400),
     );
+
+    transitionController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        widget.onAnimationEnd();
+      }
+    });
+
     transitionController.forward();
   }
 
@@ -194,5 +211,11 @@ class _CardPlacingAnimationState extends State<CardPlacingAnimation>
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    transitionController.dispose();
+    super.dispose();
   }
 }

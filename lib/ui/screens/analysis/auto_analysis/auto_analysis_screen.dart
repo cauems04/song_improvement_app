@@ -67,147 +67,162 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        leading: InkWell(
-          customBorder: CircleBorder(),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Icon(Icons.arrow_back),
-          ),
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            SizedBox(
-              width: 120,
-              height: 40,
-              child: Material(
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.amber[300],
-                child: InkWell(
-                  onTap: () {},
-                  child: Center(
-                    child: Text(
-                      "Simplified analysis",
-                      textAlign: TextAlign.center,
-
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 120,
-              height: 40,
-              child: Material(
-                borderRadius: BorderRadius.circular(5),
-                color: Colors.grey[300],
-                child: InkWell(
-                  onTap: () {},
-                  child: Center(
-                    child: Text(
-                      "Record Audio",
-                      textAlign: TextAlign.center,
-
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        height: 1,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Theme.of(context).colorScheme.surface, Colors.black87],
+          begin: AlignmentGeometry.topLeft,
+          end: AlignmentGeometry.bottomRight,
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            Spacing.lg,
-            Spacing.none,
-            Spacing.lg,
-            Spacing.none,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leading: InkWell(
+            customBorder: CircleBorder(),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Icon(Icons.arrow_back),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+            },
           ),
-          child: ListenableBuilder(
-            listenable: autoAnalysisVM,
-            builder: (context, child) {
-              return Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              SizedBox(
+                width: 120,
+                height: 40,
+                child: Material(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.amber[300],
+                  child: InkWell(
+                    onTap: () {},
+                    child: Center(
+                      child: Text(
+                        "Simplified analysis",
+                        textAlign: TextAlign.center,
+
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          height: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 120,
+                height: 40,
+                child: Material(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.grey[300],
+                  child: InkWell(
+                    onTap: () {},
+                    child: Center(
+                      child: Text(
+                        "Record Audio",
+                        textAlign: TextAlign.center,
+
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          height: 1,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                Spacing.lg,
+                Spacing.none,
+                Spacing.lg,
+                Spacing.none,
+              ),
+              child: ListenableBuilder(
+                listenable: autoAnalysisVM,
+                builder: (context, child) {
+                  return Stack(
+                    alignment: Alignment.center,
                     children: [
                       Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          for (int i = 0; i < RateType.values.length; i++)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: Spacing.sm,
-                              ),
-                              child: ScoreRateBox(
-                                boxKey: boxKeys[i],
-                                rateType: RateType.values[i],
+                          Column(
+                            children: [
+                              for (int i = 0; i < RateType.values.length; i++)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: Spacing.sm,
+                                  ),
+                                  child: ScoreRateBox(
+                                    boxKey: boxKeys[i],
+                                    rateType: RateType.values[i],
+                                  ),
+                                ),
+                            ],
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(
+                          //     top: 20,
+                          //     bottom: Spacing.xxl,
+                          //   ),
+                          //   child: SizedBox(
+                          //     height: 100,
+                          //     width: double.infinity,
+                          //     child: Row(
+                          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //       crossAxisAlignment: CrossAxisAlignment.end,
+                          //       children: [
+                          //         for (int i = 0; i < ScoreType.values.length; i++)
+                          //           SectionIndicator(
+                          //             autoAnalysisVM.scoreValues[ScoreType
+                          //                 .values[i]]!,
+                          //             isSelected:
+                          //                 autoAnalysisVM.currentScoreType ==
+                          //                 ScoreType.values[i],
+                          //             onTap: () {
+                          //               autoAnalysisVM.pageController.jumpToPage(i);
+                          //             },
+                          //           ),
+                          //       ],
+                          //     ),
+                          //   ),
+                          // ),
+                          Padding(
+                            padding: EdgeInsets.only(top: Spacing.md),
+                            child: AnimatedOpacity(
+                              opacity: autoAnalysisVM.isLastPage ? 1 : 0.2,
+                              duration: Duration(milliseconds: 200),
+                              child: _SendButtom(
+                                () async => await submitScore(),
                               ),
                             ),
+                          ),
                         ],
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(
-                      //     top: 20,
-                      //     bottom: Spacing.xxl,
-                      //   ),
-                      //   child: SizedBox(
-                      //     height: 100,
-                      //     width: double.infinity,
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //       crossAxisAlignment: CrossAxisAlignment.end,
-                      //       children: [
-                      //         for (int i = 0; i < ScoreType.values.length; i++)
-                      //           SectionIndicator(
-                      //             autoAnalysisVM.scoreValues[ScoreType
-                      //                 .values[i]]!,
-                      //             isSelected:
-                      //                 autoAnalysisVM.currentScoreType ==
-                      //                 ScoreType.values[i],
-                      //             onTap: () {
-                      //               autoAnalysisVM.pageController.jumpToPage(i);
-                      //             },
-                      //           ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      Padding(
-                        padding: EdgeInsets.only(top: Spacing.md),
-                        child: AnimatedOpacity(
-                          opacity: autoAnalysisVM.isLastPage ? 1 : 0.2,
-                          duration: Duration(milliseconds: 200),
-                          child: _SendButtom(() async => await submitScore()),
+                      Center(
+                        child: DraggableScoreCard(
+                          scoreType: autoAnalysisVM.currentScoreType,
                         ),
                       ),
                     ],
-                  ),
-                  Center(
-                    child: DraggableScoreCard(
-                      scoreType: autoAnalysisVM.currentScoreType,
-                    ),
-                  ),
-                ],
-              );
-            },
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),

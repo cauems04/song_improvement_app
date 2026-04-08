@@ -14,17 +14,20 @@ class DraggableScoreCard extends StatefulWidget {
 }
 
 class _DraggableScoreCardState extends State<DraggableScoreCard> {
-  late Size _cardSize = Size(0, 0);
+  Size _cardSize = Size(0, 0);
+  Offset fingerTouchOffset = Offset(0, 0);
   final GlobalKey scoreCardKey = GlobalKey();
-  final double endAnimationScale = 0.4;
+  final double endAnimationScale = 0.5;
 
-  Size getScoreCardSize() => scoreCardKey.currentContext!.size!;
+  Size get getScoreCardSize => scoreCardKey.currentContext!.size!;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((duration) {
-      _cardSize = getScoreCardSize();
+      setState(() {
+        _cardSize = getScoreCardSize;
+      });
     });
   }
 
@@ -34,12 +37,14 @@ class _DraggableScoreCardState extends State<DraggableScoreCard> {
       scoreCardKey: scoreCardKey,
       scoreType: widget.scoreType,
     );
+
     return Draggable(
       data: DragCardData(
         scoreType: widget.scoreType,
         size: _cardSize * endAnimationScale,
       ),
       childWhenDragging: SizedBox.shrink(),
+      feedbackOffset: Offset(fingerTouchOffset.dx, fingerTouchOffset.dy),
       feedback: Material(
         color: Colors.transparent,
         child: TweenAnimationBuilder<double>(
