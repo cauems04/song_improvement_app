@@ -14,14 +14,14 @@ As a solution, I've thought of an app that must have the following core features
 - Organize the songs along with their links to external content (e.g., Youtube tutorials) and recording (consequently saving the user's song portfolio).
 
 
-Due to my personal problem experience, this project targets rokkies up to mid-level players who want to learn songs they like, follow  their progress and organize its data on an organized and pretty enviroment. 
+Due to my personal problem experience, this project targets rokkies up to mid-level players who want to learn songs they like, follow their progress and organize its data in an organized and pretty enviroment. 
 
 
 ## Starting the project
 
-At the beggining, I was so excited to start that I did it with no usefull prior organization. Later on, I got so lost that I had to take a step back, create some useful diagrams, and organize the next tasks.
+At the beggining, I was so excited to start that I did it with no usefull prior organization. Later on, I got so lost that I had to take a step back, create some useful diagrams, and organize the next to-do tasks.
 
-To create and organize the tasks, I created a Kanban dashboard on trello. To keep track of the tasks, label them based on importance (focusing on core tasks), and insert some future new ideas. 
+To create and organize the tasks, I've made a Kanban dashboard on trello. To keep track of the tasks, label them based on importance (focusing on core tasks), and insert some future new ideas. 
 
 I've also created two UML diagrams:
 
