@@ -83,145 +83,115 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
             customBorder: CircleBorder(),
             child: Padding(
               padding: const EdgeInsets.all(8),
-              child: Icon(Icons.arrow_back),
+              child: Icon(Icons.arrow_back, color: Colors.white60),
             ),
             onTap: () {
               Navigator.pop(context);
             },
           ),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SizedBox(
-                width: 120,
-                height: 40,
-                child: Material(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Colors.amber[300],
-                  child: InkWell(
-                    onTap: () {},
-                    child: Center(
-                      child: Text(
-                        "Simplified analysis",
-                        textAlign: TextAlign.center,
-
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          height: 1,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 120,
-                height: 40,
-                child: Material(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Colors.grey[300],
-                  child: InkWell(
-                    onTap: () {},
-                    child: Center(
-                      child: Text(
-                        "Record Audio",
-                        textAlign: TextAlign.center,
-
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          height: 1,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                Spacing.lg,
-                Spacing.none,
-                Spacing.lg,
-                Spacing.none,
-              ),
-              child: ListenableBuilder(
-                listenable: autoAnalysisVM,
-                builder: (context, child) {
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              for (int i = 0; i < RateType.values.length; i++)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: Spacing.sm,
-                                  ),
-                                  child: ScoreRateBox(
-                                    boxKey: boxKeys[i],
-                                    rateType: RateType.values[i],
-                                  ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              Spacing.lg,
+              Spacing.none,
+              Spacing.lg,
+              Spacing.none,
+            ),
+            child: ListenableBuilder(
+              listenable: autoAnalysisVM,
+              builder: (context, child) {
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            for (int i = 0; i < RateType.values.length; i++)
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: Spacing.sm,
                                 ),
-                            ],
-                          ),
-                          // Padding(
-                          //   padding: const EdgeInsets.only(
-                          //     top: 20,
-                          //     bottom: Spacing.xxl,
-                          //   ),
-                          //   child: SizedBox(
-                          //     height: 100,
-                          //     width: double.infinity,
-                          //     child: Row(
-                          //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //       crossAxisAlignment: CrossAxisAlignment.end,
-                          //       children: [
-                          //         for (int i = 0; i < ScoreType.values.length; i++)
-                          //           SectionIndicator(
-                          //             autoAnalysisVM.scoreValues[ScoreType
-                          //                 .values[i]]!,
-                          //             isSelected:
-                          //                 autoAnalysisVM.currentScoreType ==
-                          //                 ScoreType.values[i],
-                          //             onTap: () {
-                          //               autoAnalysisVM.pageController.jumpToPage(i);
-                          //             },
-                          //           ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
-                          Padding(
-                            padding: EdgeInsets.only(top: Spacing.md),
-                            child: AnimatedOpacity(
-                              opacity: autoAnalysisVM.isLastPage ? 1 : 0.2,
-                              duration: Duration(milliseconds: 200),
-                              child: _SendButtom(
-                                () async => await submitScore(),
+                                child: ScoreRateBox(
+                                  boxKey: boxKeys[i],
+                                  rateType: RateType.values[i],
+                                  autoAnalysisVM: autoAnalysisVM,
+                                ),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Center(
-                        child: DraggableScoreCard(
-                          scoreType: autoAnalysisVM.currentScoreType,
+                          ],
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                        // Padding(
+                        //   padding: const EdgeInsets.only(
+                        //     top: 20,
+                        //     bottom: Spacing.xxl,
+                        //   ),
+                        //   child: SizedBox(
+                        //     height: 100,
+                        //     width: double.infinity,
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //       crossAxisAlignment: CrossAxisAlignment.end,
+                        //       children: [
+                        //         for (int i = 0; i < ScoreType.values.length; i++)
+                        //           SectionIndicator(
+                        //             autoAnalysisVM.scoreValues[ScoreType
+                        //                 .values[i]]!,
+                        //             isSelected:
+                        //                 autoAnalysisVM.currentScoreType ==
+                        //                 ScoreType.values[i],
+                        //             onTap: () {
+                        //               autoAnalysisVM.pageController.jumpToPage(i);
+                        //             },
+                        //           ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        Padding(
+                          padding: EdgeInsets.only(top: Spacing.md),
+                          child: AnimatedOpacity(
+                            opacity: autoAnalysisVM.isLastCard ? 1 : 0.2,
+                            duration: Duration(milliseconds: 200),
+                            child: _SendButtom(() async => await submitScore()),
+                          ),
+                        ),
+                      ],
+                    ),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      transitionBuilder: (child, animation) {
+                        final slideIn =
+                            Tween<Offset>(
+                              begin: const Offset(1.5, 0),
+                              end: Offset.zero,
+                            ).animate(
+                              CurvedAnimation(
+                                parent: animation,
+                                curve: Curves.easeOut,
+                              ),
+                            );
+
+                        return SlideTransition(position: slideIn, child: child);
+                      },
+                      layoutBuilder: (currentChild, previousChildren) {
+                        // descarta os filhos saindo — sem animação de saída
+                        return currentChild ?? const SizedBox.shrink();
+                      },
+                      child:
+                          (!autoAnalysisVM.isAnimatingCard &&
+                              !autoAnalysisVM.isLastCard)
+                          ? DraggableScoreCard(
+                              key: ValueKey(autoAnalysisVM.currentScoreType),
+                              scoreType: autoAnalysisVM.currentScoreType,
+                            )
+                          : const SizedBox.shrink(key: ValueKey('empty')),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

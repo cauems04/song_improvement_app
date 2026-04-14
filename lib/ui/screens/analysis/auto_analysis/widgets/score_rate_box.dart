@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -5,13 +6,20 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/drag_card_data.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/rate_info.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/view_models/auto_analysis_viewmodel.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_card.dart';
 
 class ScoreRateBox extends StatefulWidget {
   final GlobalKey boxKey;
   final RateType rateType;
+  final AutoAnalysisViewModel autoAnalysisVM;
 
-  const ScoreRateBox({super.key, required this.rateType, required this.boxKey});
+  const ScoreRateBox({
+    super.key,
+    required this.rateType,
+    required this.boxKey,
+    required this.autoAnalysisVM,
+  });
 
   @override
   State<ScoreRateBox> createState() => _ScoreRateBoxState();
@@ -56,12 +64,34 @@ class _ScoreRateBoxState extends State<ScoreRateBox> {
     return Offset(nextX, nextY);
   }
 
+  Color getBorderColor(List<DragCardData?> candidateData) {
+    if (candidateData.isNotEmpty) {
+      return rateColor.withAlpha(200);
+    } else if (receivedScoreTypes.isNotEmpty) {
+      return rateColor.withAlpha(140);
+    }
+    return baseColor.withAlpha(60);
+  }
+
+  Color getBackgroundColor(List<DragCardData?> candidateData) {
+    if (candidateData.isNotEmpty) {
+      return rateColor.withAlpha(80);
+    } else if (receivedScoreTypes.isNotEmpty) {
+      return rateColor.withAlpha(45);
+    }
+    return baseColor.withAlpha(15);
+  }
+
   @override
   Widget build(BuildContext context) {
     return DragTarget<DragCardData>(
       key: widget.boxKey,
-      onAcceptWithDetails: (DragTargetDetails<DragCardData> details) {
+      onAcceptWithDetails: (DragTargetDetails<DragCardData> details) async {
         final targetPosition = getNextAvailableCardPosition();
+
+        final Completer completer = Completer<void>();
+
+        widget.autoAnalysisVM.setAnimating(true);
 
         late final OverlayEntry overlayEntry;
         overlayEntry = OverlayEntry(
@@ -70,15 +100,19 @@ class _ScoreRateBoxState extends State<ScoreRateBox> {
             cardFinalSize: Size(0, 0),
             initialPosition: details.offset,
             finalPosition: targetPosition,
-            onAnimationEnd: overlayEntry.remove,
+            onAnimationEnd: () {
+              overlayEntry.remove();
+              completer.complete();
+            },
           ),
         );
 
         Overlay.of(context).insert(overlayEntry);
 
-        setState(() {
-          receivedScoreTypes.add(details.data.scoreType);
-        });
+        await completer.future;
+
+        receivedScoreTypes.add(details.data.scoreType);
+        widget.autoAnalysisVM.changeNextScoreType();
       },
       builder: (context, candidateData, rejectedData) {
         return Container(
@@ -88,14 +122,8 @@ class _ScoreRateBoxState extends State<ScoreRateBox> {
           ),
           width: double.infinity,
           decoration: BoxDecoration(
-            color: (candidateData.isEmpty)
-                ? baseColor.withAlpha(30)
-                : rateColor.withAlpha(30),
-            border: Border.all(
-              color: (candidateData.isEmpty)
-                  ? baseColor.withAlpha(120)
-                  : rateColor.withAlpha(120),
-            ),
+            color: getBackgroundColor(candidateData),
+            border: Border.all(color: getBorderColor(candidateData)),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
@@ -160,6 +188,7 @@ class CardPlacingAnimation extends StatefulWidget {
 class _CardPlacingAnimationState extends State<CardPlacingAnimation>
     with SingleTickerProviderStateMixin {
   late final AnimationController transitionController;
+  late final CurvedAnimation curvedTransitionAnimation;
 
   @override
   void initState() {
@@ -167,7 +196,12 @@ class _CardPlacingAnimationState extends State<CardPlacingAnimation>
 
     transitionController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 600),
+    );
+
+    curvedTransitionAnimation = CurvedAnimation(
+      parent: transitionController,
+      curve: Curves.easeOutQuart,
     );
 
     transitionController.addStatusListener((status) {
@@ -182,18 +216,18 @@ class _CardPlacingAnimationState extends State<CardPlacingAnimation>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: transitionController,
+      animation: curvedTransitionAnimation,
       builder: (context, child) {
         final Offset currentPosition = Offset.lerp(
           widget.initialPosition,
           widget.finalPosition,
-          transitionController.value,
+          curvedTransitionAnimation.value,
         )!;
 
         final Size currentSize = Size.lerp(
           widget.cardData.size,
           Size(50, 70),
-          transitionController.value,
+          curvedTransitionAnimation.value,
         )!;
 
         return Positioned(
