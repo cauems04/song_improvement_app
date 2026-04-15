@@ -90,7 +90,7 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
             },
           ),
         ),
-        body: SingleChildScrollView(
+        body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
               Spacing.lg,
@@ -105,7 +105,7 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
                   alignment: Alignment.center,
                   children: [
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Column(
@@ -150,14 +150,16 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
                         //     ),
                         //   ),
                         // ),
-                        Padding(
-                          padding: EdgeInsets.only(top: Spacing.md),
-                          child: AnimatedOpacity(
-                            opacity: autoAnalysisVM.isLastCard ? 1 : 0.2,
-                            duration: Duration(milliseconds: 200),
-                            child: _SendButtom(() async => await submitScore()),
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.only(top: Spacing.md),
+                        //   child: AnimatedOpacity(
+                        //     opacity: autoAnalysisVM.isLastCard ? 1 : 0.2,
+                        //     duration: Duration(milliseconds: 200),
+                        //     child: _SendButtom(
+                        //       () async => await submitScore(),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     AnimatedSwitcher(

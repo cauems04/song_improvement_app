@@ -5,11 +5,11 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/audio/play_audio/play_audio_screen.dart';
 import 'package:provider/provider.dart';
 
-class ConfirmSendModal extends StatelessWidget {
+class SubmitModal extends StatelessWidget {
   final SelectedSongProvider selectedSongProvider;
   final String audioFilePath;
 
-  const ConfirmSendModal({
+  const SubmitModal({
     super.key,
     required this.selectedSongProvider,
     required this.audioFilePath,
@@ -35,9 +35,8 @@ class ConfirmSendModal extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _AnimatedDiskIcon(),
             Text(
-              "Save Recording?",
+              "Make Analysis?",
               style: Theme.of(
                 context,
               ).textTheme.headlineLarge!.copyWith(fontWeight: FontWeight.bold),
@@ -81,65 +80,6 @@ class ConfirmSendModal extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _AnimatedDiskIcon extends StatefulWidget {
-  const _AnimatedDiskIcon();
-
-  @override
-  State<_AnimatedDiskIcon> createState() => _AnimatedDiskIconState();
-}
-
-class _AnimatedDiskIconState extends State<_AnimatedDiskIcon>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController iconController;
-
-  @override
-  void initState() {
-    super.initState();
-    iconController = AnimationController(
-      vsync: this,
-      lowerBound: 0.85,
-      upperBound: 1.0,
-      duration: Duration(seconds: 1),
-    );
-    iconController.repeat(reverse: true);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 60,
-      height: 60,
-      child: AnimatedBuilder(
-        animation: iconController,
-        builder: (context, child) {
-          return Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: Theme.of(context).colorScheme.onPrimary,
-                width: 3,
-              ),
-            ),
-            child: Icon(
-              Icons.album,
-              size: 40 * iconController.value,
-              color: Theme.of(context).colorScheme.onPrimary,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    iconController.dispose();
-    super.dispose();
   }
 }
 
