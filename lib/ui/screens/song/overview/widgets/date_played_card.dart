@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/themes/dark_theme.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/widgets/starter_shimmer.dart';
 
 class DatePlayedCard extends StatelessWidget {
   final DateTime dateCreation;

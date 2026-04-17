@@ -3,6 +3,7 @@ import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/drag_card_data.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_info.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/score_type.dart';
+import 'package:guitar_song_improvement/ui/widgets/starter_shimmer.dart';
 
 class DraggableScoreCard extends StatefulWidget {
   final ScoreType scoreType;
