@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/song.dart';
 import 'package:guitar_song_improvement/ui/widgets/song_card.dart';
+import 'package:guitar_song_improvement/ui/widgets/starter_shimmer.dart';
 
 class HomeSection extends StatelessWidget {
   final List<Song> songs;
@@ -21,12 +22,14 @@ class HomeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     List<SongCard> songCards = songToCard(songs);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title, style: Theme.of(context).textTheme.headlineSmall),
-        ...songCards,
-      ],
+    return StarterShimmer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: Theme.of(context).textTheme.headlineSmall),
+          ...songCards,
+        ],
+      ),
     );
   }
 }

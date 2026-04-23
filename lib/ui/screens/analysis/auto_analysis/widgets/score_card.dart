@@ -34,9 +34,8 @@ class _DraggableScoreCardState extends State<DraggableScoreCard> {
 
   @override
   Widget build(BuildContext context) {
-    final Widget child = ScoreCard(
-      scoreCardKey: scoreCardKey,
-      scoreType: widget.scoreType,
+    final Widget child = StarterShimmer(
+      child: ScoreCard(scoreCardKey: scoreCardKey, scoreType: widget.scoreType),
     );
 
     return Draggable(

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class _StarterShimmerState extends State<StarterShimmer>
     print('StarterShimmer initStateeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
     transitionController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 600),
     );
 
     Future.delayed(Duration(milliseconds: 100), () {
@@ -57,32 +58,37 @@ class _ShimmerPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final double shimmerLength = size.width * 0.3;
+    final double diagonal = sqrt(
+      size.width * size.width + size.height * size.height,
+    );
+    final double shimmerLength = diagonal * 0.4;
 
     final double shimmerX =
-        (animationProgress * (size.width + shimmerLength)) - shimmerLength;
+        (animationProgress * (size.width + shimmerLength * 2)) - shimmerLength;
+    final double shimmerY =
+        (animationProgress * (size.height + shimmerLength * 2)) - shimmerLength;
+
+    print('shimmerX: $shimmerX, shimmerLength: $shimmerLength, size: $size');
 
     final List<Color> gradient = [
-      Colors.transparent,
-      Colors.white.withAlpha(120),
-      Colors.transparent,
+      Colors.white.withAlpha(0),
+      Colors.white.withAlpha(180),
+      Colors.white.withAlpha(0),
     ];
-
-    if (animationProgress < 0.1)
-      print(
-        'shimmerXaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: $shimmerX, progress: $animationProgress',
-      );
 
     final Paint paint = Paint()
       ..style = PaintingStyle.fill
       ..shader = ui.Gradient.linear(
-        Offset(shimmerX, 0),
-        Offset(shimmerX + shimmerLength, size.height),
+        Offset(shimmerX, shimmerY),
+        Offset(shimmerX + shimmerLength, shimmerY + shimmerLength),
         gradient,
         [0.0, 0.5, 1.0],
       );
 
-    canvas.drawRect(Offset.zero & size, paint);
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(10)),
+      paint,
+    );
   }
 
   @override
