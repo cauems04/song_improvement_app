@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/data/model/music_provider.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
+import 'package:guitar_song_improvement/data/services/score_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/rate_info.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/view_models/auto_analysis_viewmodel.dart';
+import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/confirm_send_modal.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_card.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/widgets/score_rate_box.dart';
-import 'package:guitar_song_improvement/ui/screens/analysis/result/analysis_result_screen.dart';
 import 'package:provider/provider.dart';
 
 class AutoAnalysisScreen extends StatefulWidget {
@@ -26,42 +26,37 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
   void initState() {
     super.initState();
     autoAnalysisVM = AutoAnalysisViewModel();
-    autoAnalysisVM.initValues();
+    autoAnalysisVM.initValues(recordLinked: widget.recordLinkedId);
+    autoAnalysisVM.addListener(_onViewModelChange);
     boxKeys = List.generate(5, (_) => GlobalKey());
   }
 
-  Future<void> submitScore() async {
-    try {
-      final SelectedSongProvider selectedSongProvider =
-          Provider.of<SelectedSongProvider>(context, listen: false);
-
-      final MusicProvider musicProvider = Provider.of<MusicProvider>(
-        context,
-        listen: false,
-      );
-
-      final navigator = Navigator.of(context);
-
-      // await selectedSongProvider.updateScore(
-      //   autoAnalysisVM.finalScore,
-      //   widget.recordLinkedId,
-      // );
-
-      Analysis analysisCreated = await selectedSongProvider.addAnalysis(
-        autoAnalysisVM.scoreValues,
-        widget.recordLinkedId,
-      );
-
-      await musicProvider.getData();
-
-      navigator.pushReplacement(
-        MaterialPageRoute(
-          builder: (context) =>
-              AnalysisResultScreen(analysisCreated.getFinalScore),
-        ),
-      );
-    } catch (e) {
-      print(e);
+  void _onViewModelChange() {
+    if (autoAnalysisVM.isLastCard) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await showModalBottomSheet(
+          context: context,
+          constraints: BoxConstraints(maxHeight: 350),
+          isDismissible: false,
+          enableDrag: false,
+          builder: (newContext) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider.value(
+                value: Provider.of<SelectedSongProvider>(context),
+              ),
+              ChangeNotifierProvider.value(
+                value: Provider.of<MusicProvider>(context),
+              ),
+            ],
+            child: PopScope(
+              canPop: false,
+              child: Center(
+                child: ConfirmSendModal(autoAnalysisVM: autoAnalysisVM),
+              ),
+            ),
+          ),
+        );
+      });
     }
   }
 
@@ -123,43 +118,6 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
                               ),
                           ],
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(
-                        //     top: 20,
-                        //     bottom: Spacing.xxl,
-                        //   ),
-                        //   child: SizedBox(
-                        //     height: 100,
-                        //     width: double.infinity,
-                        //     child: Row(
-                        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //       crossAxisAlignment: CrossAxisAlignment.end,
-                        //       children: [
-                        //         for (int i = 0; i < ScoreType.values.length; i++)
-                        //           SectionIndicator(
-                        //             autoAnalysisVM.scoreValues[ScoreType
-                        //                 .values[i]]!,
-                        //             isSelected:
-                        //                 autoAnalysisVM.currentScoreType ==
-                        //                 ScoreType.values[i],
-                        //             onTap: () {
-                        //               autoAnalysisVM.pageController.jumpToPage(i);
-                        //             },
-                        //           ),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ),
-                        // Padding(
-                        //   padding: EdgeInsets.only(top: Spacing.md),
-                        //   child: AnimatedOpacity(
-                        //     opacity: autoAnalysisVM.isLastCard ? 1 : 0.2,
-                        //     duration: Duration(milliseconds: 200),
-                        //     child: _SendButtom(
-                        //       () async => await submitScore(),
-                        //     ),
-                        //   ),
-                        // ),
                       ],
                     ),
                     AnimatedSwitcher(
@@ -197,36 +155,6 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _SendButtom extends StatelessWidget {
-  final Function() onTap;
-
-  const _SendButtom(this.onTap);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).colorScheme.primary,
-      borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(10),
-        child: SizedBox(
-          height: 50,
-          width: 150,
-          child: Center(
-            child: Text(
-              "Send",
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w600),
-            ),
-          ),
-        ),
-        onTap: () => onTap(),
       ),
     );
   }

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:guitar_song_improvement/data/model/analysis.dart';
 
 class AnalysisResultScreen extends StatefulWidget {
-  final int score;
-  const AnalysisResultScreen(this.score, {super.key});
+  final Analysis analysis;
+  // create single score visuals using the toScoresMap function from the Analysis model
+  // create single score visuals using the toScoresMap function from the Analysis model
+  // create single score visuals using the toScoresMap function from the Analysis model
+  // create single score visuals using the toScoresMap function from the Analysis model
+  const AnalysisResultScreen(this.analysis, {super.key});
 
   @override
   State<AnalysisResultScreen> createState() => _AnalysisResultScreenState();
@@ -96,7 +101,8 @@ class _AnalysisResultScreenState extends State<AnalysisResultScreen>
                     ),
                   ),
                   Text(
-                    widget.score.toString(),
+                    widget.analysis.getFinalScore.toString(),
+                    // create single score visuals using the toScoresMap function from the Analysis model
                     style: Theme.of(context).textTheme.displayLarge!.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -109,7 +115,7 @@ class _AnalysisResultScreenState extends State<AnalysisResultScreen>
                   context,
                 ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w600),
               ),
-              _ConfirmButtom(widget.score),
+              _ConfirmButtom(),
             ],
           ),
         ),
@@ -128,9 +134,7 @@ class _AnalysisResultScreenState extends State<AnalysisResultScreen>
 }
 
 class _ConfirmButtom extends StatelessWidget {
-  final int score;
-
-  const _ConfirmButtom(this.score);
+  const _ConfirmButtom();
 
   @override
   Widget build(BuildContext context) {

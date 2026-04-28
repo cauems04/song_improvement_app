@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/data/local/database/database_manager.dart';
 import 'package:sqflite/sqflite.dart';
