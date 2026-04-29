@@ -38,6 +38,14 @@ class _ScoreRateBoxState extends State<ScoreRateBox> {
     receivedScoreTypes = [];
     rateColor = rateColors[widget.rateType]!;
     baseColor = Colors.white54;
+
+    widget.autoAnalysisVM.addListener(() {
+      if (widget.autoAnalysisVM.currentScoreType == ScoreType.values[0]) {
+        setState(() {
+          receivedScoreTypes = [];
+        });
+      }
+    });
   }
 
   Offset getNextAvailableCardPosition() {

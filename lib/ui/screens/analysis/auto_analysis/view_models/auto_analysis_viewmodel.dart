@@ -19,6 +19,15 @@ class AutoAnalysisViewModel extends ChangeNotifier {
     this.recordLinked = recordLinked;
   }
 
+  void resetValues() {
+    currentScoreType = ScoreType.values[0];
+    scoreValues = {for (ScoreType type in ScoreType.values) type: 0};
+    isLastCard = false;
+    isAnimatingCard = false;
+
+    notifyListeners();
+  }
+
   void changeNextScoreType() {
     final int currentIndex = currentScoreType.index;
     final bool hasNext = currentIndex + 1 < ScoreType.values.length;

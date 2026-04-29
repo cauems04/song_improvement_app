@@ -8,13 +8,19 @@ import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/view_m
 import 'package:guitar_song_improvement/ui/screens/analysis/result/analysis_result_screen.dart';
 import 'package:provider/provider.dart';
 
-class ConfirmSendModal extends StatelessWidget {
+class ConfirmSendModal extends StatefulWidget {
   final AutoAnalysisViewModel autoAnalysisVM;
 
   const ConfirmSendModal({super.key, required this.autoAnalysisVM});
 
+  @override
+  State<ConfirmSendModal> createState() => _ConfirmSendModalState();
+}
+
+class _ConfirmSendModalState extends State<ConfirmSendModal> {
+  bool _submitted = false;
+
   Future<void> submitScore(BuildContext context) async {
-    print('submitScore chamado');
     SelectedSongProvider selectedSongProvider =
         Provider.of<SelectedSongProvider>(context, listen: false);
 
@@ -26,12 +32,13 @@ class ConfirmSendModal extends StatelessWidget {
     NavigatorState navigator = Navigator.of(context);
 
     Analysis analysisCreated = await selectedSongProvider.addAnalysis(
-      autoAnalysisVM.scoreValues,
-      autoAnalysisVM.recordLinked,
+      widget.autoAnalysisVM.scoreValues,
+      widget.autoAnalysisVM.recordLinked,
     );
 
     await musicProvider.getData();
 
+    _submitted = true;
     navigator.pop();
     navigator.pushReplacement(
       MaterialPageRoute(
@@ -90,7 +97,7 @@ class ConfirmSendModal extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: Spacing.xs),
               child: Row(
                 children: [
-                  _ResetButton(() {}),
+                  _ResetButton(() => Navigator.of(context).pop()),
                   Expanded(child: _ConfirmButtom(() => submitScore(context))),
                 ],
               ),
@@ -99,6 +106,17 @@ class ConfirmSendModal extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    if (!_submitted) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.autoAnalysisVM.resetValues();
+      });
+    }
+
+    super.dispose();
   }
 }
 

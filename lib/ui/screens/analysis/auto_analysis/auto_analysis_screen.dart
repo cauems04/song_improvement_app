@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/music_provider.dart';
 import 'package:guitar_song_improvement/data/model/selected_song_provider.dart';
-import 'package:guitar_song_improvement/data/services/score_service.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/content/rate_info.dart';
 import 'package:guitar_song_improvement/ui/screens/analysis/auto_analysis/view_models/auto_analysis_viewmodel.dart';
@@ -48,11 +47,8 @@ class _AutoAnalysisScreenState extends State<AutoAnalysisScreen> {
                 value: Provider.of<MusicProvider>(context),
               ),
             ],
-            child: PopScope(
-              canPop: false,
-              child: Center(
-                child: ConfirmSendModal(autoAnalysisVM: autoAnalysisVM),
-              ),
+            child: Center(
+              child: ConfirmSendModal(autoAnalysisVM: autoAnalysisVM),
             ),
           ),
         );
