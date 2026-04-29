@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guitar_song_improvement/data/model/analysis.dart';
 import 'package:guitar_song_improvement/themes/spacing.dart';
+import 'package:guitar_song_improvement/ui/screens/audio/play_audio/widgets/skill_metric_card.dart';
 
 class RecordingMetrics extends StatelessWidget {
   final Analysis? analysis;
@@ -9,9 +10,9 @@ class RecordingMetrics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, Object> analysisMap = analysis!.toScoresMap();
+    final Map<String, Object>? analysisMap = analysis?.toScoresMap();
 
-    final List<MapEntry<String, Object>> entries = analysisMap.entries
+    final List<MapEntry<String, Object>>? entries = analysisMap?.entries
         .where((e) => e.value is int)
         .toList();
 
@@ -32,11 +33,11 @@ class RecordingMetrics extends StatelessWidget {
                 ),
               ),
               SliverList.separated(
-                itemCount: entries.length,
+                itemCount: entries!.length,
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: Spacing.xs),
                 itemBuilder: (context, index) {
-                  return SkillMetric(
+                  return SkillMetricCard(
                     title: entries[index].key,
                     scoreValue:
                         (entries[index].value as int) +
@@ -98,63 +99,79 @@ class RecordingMetrics extends StatelessWidget {
               ),
             ],
           )
-        : Text("Add new");
-  }
-}
-
-class SkillMetric extends StatelessWidget {
-  final String title;
-  final int scoreValue;
-
-  const SkillMetric({super.key, required this.title, required this.scoreValue});
-
-  String formatScore(double value) {
-    return value % 1 == 0 ? value.toInt().toString() : value.toStringAsFixed(1);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(Spacing.sm),
-      decoration: BoxDecoration(
-        color: Colors.white.withAlpha(25),
-        border: Border.all(color: Theme.of(context).colorScheme.surface),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: Spacing.sm),
-                child: Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+        : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).colorScheme.surfaceContainerLowest,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).colorScheme.primary,
+                        blurRadius: 20,
+                        spreadRadius: 4,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Icon(Icons.trending_up, size: 40),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: Spacing.xxl,
+                    bottom: Spacing.lg,
+                  ),
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Still empty here\n",
+                          style: Theme.of(
+                            context,
+                          ).textTheme.headlineLarge!.copyWith(fontSize: 18),
+                        ),
+                        TextSpan(
+                          text:
+                              "Track your progress and see how you're improving across all five abilities.",
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withAlpha(160),
+                              ),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-              ),
-              Row(
-                children: List.generate(5, (index) {
-                  return (index + 1 <= scoreValue)
-                      ? Icon(
-                          Icons.star_rounded,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        )
-                      : Icon(
-                          Icons.star_border_rounded,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        );
-                }),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.xl),
+                  child: Material(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: BorderRadius.circular(10),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      child: SizedBox(
+                        height: 40,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            "Add Analysis",
+                            style: Theme.of(context).textTheme.titleLarge!
+                                .copyWith(fontWeight: FontWeight.w700),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 }
